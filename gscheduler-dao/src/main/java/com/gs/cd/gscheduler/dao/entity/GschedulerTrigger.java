@@ -30,26 +30,28 @@ public class GschedulerTrigger implements Serializable {
 
     private String taskId;
 
+    private String groupName = "DEFAULT";
+
     private String corn;
 
     private Date createTime;
 
     private Date updateTime;
 
-    private Date startTime;
+    private Date startTime = new Date();
 
-    private Date endTime;
+    private Date endTime = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365);
 
     private String params;
 
     private TriggerType type;
 
-    public ITrigger params2ITrigger() {
-        switch (type) {
+    public static ITrigger params2ITrigger(GschedulerTrigger gschedulerTrigger) {
+        switch (gschedulerTrigger.getType()) {
             case HTTP:
-                return JSONUtil.toBean(params, HttpParams.class);
+                return JSONUtil.toBean(gschedulerTrigger.getParams(), HttpParams.class);
             default:
-                throw new RuntimeException("未知类型错误，TriggerType=" + type);
+                throw new RuntimeException("未知类型错误，TriggerType=" + gschedulerTrigger.getType());
         }
     }
 }
