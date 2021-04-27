@@ -1,0 +1,14 @@
+
+
+spring:
+  application:
+    name: gscheduler-server
+  cloud:
+    nacos:
+      server-addr: 10.201.83.180:8840
+      config:
+        file-extension: yml
+        shared-dataids: environment.yml,common.yml
+        refreshable-dataids:  environment.yml,common.yml
+server:
+  port: 18077
