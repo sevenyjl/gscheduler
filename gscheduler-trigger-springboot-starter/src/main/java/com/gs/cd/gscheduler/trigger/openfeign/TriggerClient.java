@@ -24,8 +24,8 @@ public interface TriggerClient {
     @PostMapping(value = "/gscheduler/trigger/create")
     public ApiResult create(@RequestBody GschedulerTriggerVO params);
 
-    @PostMapping(value = "/gscheduler/trigger/delete/{id}")
-    public ApiResult delete(@PathVariable("id") String id);
+    @PostMapping(value = "/gscheduler/trigger/delete")
+     ApiResult delete(String taskId, String groupName);
 
     @PostMapping(value = "/gscheduler/trigger/update")
     public ApiResult update(@RequestBody GschedulerTriggerVO params);
