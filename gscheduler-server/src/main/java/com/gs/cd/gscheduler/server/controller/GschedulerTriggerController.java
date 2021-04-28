@@ -1,5 +1,6 @@
 package com.gs.cd.gscheduler.server.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.gscheduler.server.quartz.QuartzExecutors;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,11 @@ public class GschedulerTriggerController {
     @GetMapping(value = "/{id}")
     public ApiResult getById(@PathVariable("id") String id) {
         return ApiResult.success(gschedulerTriggerService.getById(id));
+    }
+
+    @GetMapping(value = "/gscheduler/trigger")
+    ApiResult getByTaskIdAndGroupName(String taskId, String groupName) {
+        return ApiResult.success(gschedulerTriggerService.getByTaskIdAndGroupName(taskId, groupName));
     }
 
     @PostMapping(value = "/create")
@@ -75,6 +81,25 @@ public class GschedulerTriggerController {
 
     @PostMapping(value = "/update")
     public ApiResult update(@RequestBody GschedulerTrigger params) {
+        params.setUpdateTime(new Date());
+        boolean b = gschedulerTriggerService.updateById(params);
+        if (b) {
+            // TODO: 2021/4/27 转移到server层 并 校验corn表达式 先更新再删除？！ 还是直接就支持更新 待验证
+            quartzExecutors.addJob(params);
+        }
+        return b ? ApiResult.success() : ApiResult.error();
+    }
+
+    @PostMapping(value = "/update/{taskId}/{groupName}")
+    public ApiResult updateByTaskIdAndGroupName(
+            @PathVariable String taskId,
+            @PathVariable String groupName,
+            @RequestBody GschedulerTrigger params) {
+        GschedulerTrigger byTaskIdAndGroupName = gschedulerTriggerService.getByTaskIdAndGroupName(taskId, groupName);
+        if (byTaskIdAndGroupName == null) {
+            return ApiResult.error(String.format("未找到taskId=%s,groupName=%s的数据", taskId, groupName));
+        }
+        params.setId(byTaskIdAndGroupName.getId());
         params.setUpdateTime(new Date());
         boolean b = gschedulerTriggerService.updateById(params);
         if (b) {

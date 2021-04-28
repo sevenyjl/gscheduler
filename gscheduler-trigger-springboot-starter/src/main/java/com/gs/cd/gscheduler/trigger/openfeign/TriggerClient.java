@@ -17,16 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @Version 1.0
  */
 @Component
-@FeignClient(url = "${gscheduler.server:gscheduler-server}",name = "gscheduler-server")
+@FeignClient(url = "${gscheduler.server:gscheduler-server}", name = "gscheduler-server")
 public interface TriggerClient {
-    @GetMapping(value = "/gscheduler/trigger/{id}")
-    ApiResult getById(@PathVariable("id") String id);
+    @GetMapping(value = "/gscheduler/trigger")
+    ApiResult getByTaskIdAndGroupName(String taskId, String groupName);
+
     @PostMapping(value = "/gscheduler/trigger/create")
     public ApiResult create(@RequestBody GschedulerTriggerVO params);
 
     @PostMapping(value = "/gscheduler/trigger/delete")
-     ApiResult delete(String taskId, String groupName);
+    ApiResult delete(String taskId, String groupName);
 
-    @PostMapping(value = "/gscheduler/trigger/update")
-    public ApiResult update(@RequestBody GschedulerTriggerVO params);
+    @PostMapping(value = "/gscheduler/trigger/update/{taskId}/{groupName}")
+    ApiResult updateByTaskIdAndGroupName(
+            @PathVariable String taskId,
+            @PathVariable String groupName,
+            @RequestBody GschedulerTriggerVO params);
 }
