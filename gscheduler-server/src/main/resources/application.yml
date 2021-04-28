@@ -1,29 +1,29 @@
-server:
-  port: 18336
-postgresql:
-  ip: localhost
-  port: 5432
-  dbname: gscheduler
-  schema: public
-  dbType: PG
-  username: postgres
-  password: root
-mybatis-plus:
-  configuration:
-    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
-spring:
-  datasource:
-    driverClassName: org.postgresql.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://${postgresql.ip}:${postgresql.port}/${postgresql.dbname}?currentSchema=${postgresql.schema}&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
-    username: ${postgresql.username}
-    password: ${postgresql.password}
-  hikari:
-    minimum-idle: 5
-    maximum-pool-size: 100
-    idle-timeout: 600000
-    max-lifetime: 1800000
-    connection-timeout: 30000
-    connection-test-query: SELECT 1
-    pool-name: ${spring.application.name}
-
+#server:
+#  port: 18336
+#postgresql:
+#  ip: localhost
+#  port: 5432
+#  dbname: gscheduler
+#  schema: public
+#  dbType: PG
+#  username: postgres
+#  password: root
+#mybatis-plus:
+#  configuration:
+#    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+#spring:
+#  datasource:
+#    driverClassName: org.postgresql.Driver
+#    type: com.zaxxer.hikari.HikariDataSource
+#    url: jdbc:postgresql://${postgresql.ip}:${postgresql.port}/${postgresql.dbname}?currentSchema=${postgresql.schema}&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+#    username: ${postgresql.username}
+#    password: ${postgresql.password}
+#  hikari:
+#    minimum-idle: 5
+#    maximum-pool-size: 100
+#    idle-timeout: 600000
+#    max-lifetime: 1800000
+#    connection-timeout: 30000
+#    connection-test-query: SELECT 1
+#    pool-name: ${spring.application.name}
+#

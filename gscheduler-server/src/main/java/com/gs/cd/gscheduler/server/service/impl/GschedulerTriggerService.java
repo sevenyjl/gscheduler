@@ -2,6 +2,9 @@ package com.gs.cd.gscheduler.server.service.impl;
 
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +24,9 @@ public interface GschedulerTriggerService extends IService<GschedulerTrigger> {
      * @return
      */
     GschedulerTrigger getByTaskIdAndGroupName(String taskId, String groupName);
+
+    // TODO: 2021/4/28 可能会存在 租户在其他pg表上情况
+    List<String> listAllTenantCode();
+
+    List<GschedulerTrigger> listByTenantCode(String tenantCode);
 }

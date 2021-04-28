@@ -8,6 +8,8 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务实现类
@@ -26,5 +28,15 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
     @Override
     public GschedulerTrigger getByTaskIdAndGroupName(String taskId, String groupName) {
         return getOne(new QueryWrapper<GschedulerTrigger>().lambda().eq(GschedulerTrigger::getTaskId, taskId).eq(GschedulerTrigger::getGroupName, groupName));
+    }
+
+    @Override
+    public List<String> listAllTenantCode() {
+        return getBaseMapper().listAllTenantCode();
+    }
+
+    @Override
+    public List<GschedulerTrigger> listByTenantCode(String tenantCode) {
+        return getBaseMapper().listByTenantCode(tenantCode);
     }
 }

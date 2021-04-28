@@ -20,16 +20,19 @@ public class GSchedulerServerInit implements ApplicationRunner {
     @Autowired
     QuartzExecutors quartzExecutors;
 
+    public void TriggerInit() {
+        log.info("*******\tinit GSchedulerTrigger corn task\t*******");
+        List<String> tenantCodeList = gschedulerTriggerService.listAllTenantCode();
+        tenantCodeList.forEach(tenantCode -> {
+            List<GschedulerTrigger> list = gschedulerTriggerService.listByTenantCode(tenantCode);
+            list.forEach(t -> quartzExecutors.addJob(t));
+        });
+    }
+
     @Override
     public void run(ApplicationArguments arg0) throws Exception {
         TriggerInit();
 
-    }
-
-    public void TriggerInit() {
-        log.info("*******\tinit GSchedulerTrigger corn task\t*******");
-        List<GschedulerTrigger> list = gschedulerTriggerService.list();
-        list.forEach(t -> quartzExecutors.addJob(t));
     }
 
 }
