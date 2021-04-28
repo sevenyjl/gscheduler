@@ -19,13 +19,10 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.5.8</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.gs.cd</groupId>
             <artifactId>common-utils</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

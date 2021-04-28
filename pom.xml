@@ -25,6 +25,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <kmp.version>3.7.1-SNAPSHOT</kmp.version>
+        <gscheduler.version>1.1.0</gscheduler.version>
     </properties>
     <dependencies>
         <dependency>
@@ -41,8 +42,61 @@
         <dependencies>
             <dependency>
                 <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-trigger-springboot-starter</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-server</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-quartz</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-dao</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-common</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>gscheduler-api</artifactId>
+                <version>${gscheduler.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>db-mybatis</artifactId>
+                <version>${kmp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
                 <artifactId>db-dynamic</artifactId>
                 <version>${kmp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>common-utils</artifactId>
+                <version>${kmp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>cloud-starter</artifactId>
+                <version>${kmp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.5.8</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
