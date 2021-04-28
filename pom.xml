@@ -22,6 +22,7 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <kmp.version>3.7.1-SNAPSHOT</kmp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -34,5 +35,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>db-dynamic</artifactId>
+                <version>${kmp.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

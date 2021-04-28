@@ -1,9 +1,11 @@
 package com.gs.cd.gscheduler.server;
 
+import com.gs.cd.db.dynamic.core.register.DynamicDataSourceRegister;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Import;
 
 /**
  * @Author seven
@@ -11,7 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @Description
  * @Version 1.0
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.gs.cd.gscheduler.server","com.gs.cd.db.dynamic.*"})
+@Import(DynamicDataSourceRegister.class)
 @EnableFeignClients
 @MapperScan("com.gs.cd.gscheduler.dao.mapper")
 public class GschedulerServerApplication {

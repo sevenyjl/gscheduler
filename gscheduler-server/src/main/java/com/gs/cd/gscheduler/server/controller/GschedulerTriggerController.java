@@ -2,6 +2,7 @@ package com.gs.cd.gscheduler.server.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.gs.cd.cloud.common.ApiResult;
+import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.server.quartz.QuartzExecutors;
 import org.springframework.web.bind.annotation.*;
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
@@ -30,7 +31,8 @@ public class GschedulerTriggerController {
 
 
     @GetMapping(value = "/{id}")
-    public ApiResult getById(@PathVariable("id") String id) {
+    public ApiResult getById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                             @PathVariable("id") String id) {
         return ApiResult.success(gschedulerTriggerService.getById(id));
     }
 
@@ -40,7 +42,8 @@ public class GschedulerTriggerController {
     }
 
     @PostMapping(value = "/create")
-    public ApiResult create(@RequestBody GschedulerTrigger params) {
+    public ApiResult create(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                            @RequestBody GschedulerTrigger params) {
         params.setUpdateTime(new Date());
         params.setCreateTime(new Date());
         boolean b = gschedulerTriggerService.save(params);
@@ -52,7 +55,8 @@ public class GschedulerTriggerController {
     }
 
     @PostMapping(value = "/delete/{id}")
-    public ApiResult delete(@PathVariable("id") String id) {
+    public ApiResult delete(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                            @PathVariable("id") String id) {
         GschedulerTrigger byId = gschedulerTriggerService.getById(id);
         if (byId == null) {
             return ApiResult.error(String.format("不存在id=%s，的数据", id));
@@ -66,7 +70,8 @@ public class GschedulerTriggerController {
     }
 
     @PostMapping(value = "/delete")
-    public ApiResult delete(String taskId, String groupName) {
+    public ApiResult delete(
+            @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode, String taskId, String groupName) {
         GschedulerTrigger byId = gschedulerTriggerService.getByTaskIdAndGroupName(taskId, groupName);
         if (byId == null) {
             return ApiResult.error(String.format("不存在taskId=%s;groupName=%s，的数据", taskId, groupName));
@@ -80,7 +85,8 @@ public class GschedulerTriggerController {
     }
 
     @PostMapping(value = "/update")
-    public ApiResult update(@RequestBody GschedulerTrigger params) {
+    public ApiResult update(
+            @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode, @RequestBody GschedulerTrigger params) {
         params.setUpdateTime(new Date());
         boolean b = gschedulerTriggerService.updateById(params);
         if (b) {
@@ -92,6 +98,7 @@ public class GschedulerTriggerController {
 
     @PostMapping(value = "/update/{taskId}/{groupName}")
     public ApiResult updateByTaskIdAndGroupName(
+            @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @PathVariable String taskId,
             @PathVariable String groupName,
             @RequestBody GschedulerTrigger params) {

@@ -30,6 +30,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>db-dynamic</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
