@@ -4,9 +4,7 @@ import com.gs.cd.gscheduler.common.entity.ITrigger;
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 
 import java.io.Serializable;
 
@@ -28,8 +26,9 @@ public class GschedulerTriggerJob implements Serializable, Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        ITrigger iTrigger = gschedulerTrigger.params2ITrigger();
-//        iTrigger.execute();
+        JobDetail jobDetail = jobExecutionContext.getJobDetail();
+        JobKey key = jobDetail.getKey();
+        log.debug("定时任务name={},group={},des={}", key.getName(), key.getGroup(), jobDetail.getDescription());
         GschedulerTrigger gschedulerTrigger = (GschedulerTrigger) jobExecutionContext.getMergedJobDataMap().get("gschedulerTrigger");
         log.debug("转换gschedulerTrigger=" + gschedulerTrigger);
         ITrigger iTrigger = GschedulerTrigger.params2ITrigger(gschedulerTrigger);

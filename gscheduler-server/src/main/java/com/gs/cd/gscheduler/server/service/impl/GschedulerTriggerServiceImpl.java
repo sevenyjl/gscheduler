@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.dao.mapper.GschedulerTriggerMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
+import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

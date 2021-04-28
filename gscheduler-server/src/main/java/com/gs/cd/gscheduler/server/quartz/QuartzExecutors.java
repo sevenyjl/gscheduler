@@ -32,14 +32,14 @@ public class QuartzExecutors {
         scheduler.start();
     }
 
-    public void addJob(GschedulerTrigger gschedulerTrigger) {
-        addJob(GschedulerTriggerJob.class, gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName(), gschedulerTrigger.getStartTime(), gschedulerTrigger.getEndTime(),
+    public void addJob(String tenantCode, GschedulerTrigger gschedulerTrigger) {
+        addJob(GschedulerTriggerJob.class, gschedulerTrigger.getTaskId(), tenantCode + "," + gschedulerTrigger.getGroupName(), gschedulerTrigger.getStartTime(), gschedulerTrigger.getEndTime(),
                 gschedulerTrigger.getCorn(), Map.of("gschedulerTrigger", gschedulerTrigger));
     }
 
-    public void addJob(Class<? extends Job> clazz, String jobName, String jobGroupName, Date startDate, Date endDate,
-                       String cronExpression,
-                       Map<String, Object> jobDataMap) {
+    private void addJob(Class<? extends Job> clazz, String jobName, String jobGroupName, Date startDate, Date endDate,
+                        String cronExpression,
+                        Map<String, Object> jobDataMap) {
         try {
             JobKey jobKey = new JobKey(jobName, jobGroupName);
             JobDetail jobDetail;
@@ -80,7 +80,7 @@ public class QuartzExecutors {
         }
     }
 
-    public boolean deleteJob(String jobName, String jobGroupName) {
+    public boolean deleteJob(String tenantCode, String jobName, String jobGroupName) {
         try {
             JobKey jobKey = new JobKey(jobName, jobGroupName);
             if (scheduler.checkExists(jobKey)) {
@@ -96,7 +96,7 @@ public class QuartzExecutors {
         return false;
     }
 
-    public boolean deleteAllJobs(String jobGroupName) {
+    public boolean deleteAllJobs(String tenantCode, String jobGroupName) {
         try {
             log.info("尝试删除JobGroupName中的所有job: {}", jobGroupName);
             List<JobKey> jobKeys = new ArrayList<>();

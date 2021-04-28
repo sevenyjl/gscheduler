@@ -1,4 +1,4 @@
-package com.gs.cd.gscheduler.server.service.impl;
+package com.gs.cd.gscheduler.server.service;
 
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
 import com.baomidou.mybatisplus.extension.service.IService;

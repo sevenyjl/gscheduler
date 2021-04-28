@@ -2,7 +2,7 @@ package com.gs.cd.gscheduler.server.config;
 
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.server.quartz.QuartzExecutors;
-import com.gs.cd.gscheduler.server.service.impl.GschedulerTriggerService;
+import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -36,7 +36,7 @@ public class GSchedulerServerInit implements ApplicationRunner {
             }
             gschedulerTriggers.forEach(t -> {
                 try {
-                    quartzExecutors.addJob(t);
+                    quartzExecutors.addJob(tenantCode, t);
                 } catch (Exception e) {
                     errorMsg.put(String.format("tenantCode=%s data=> %s", tenantCode, t.toString()), e.getMessage());
                 }

@@ -28,12 +28,12 @@ public class QuartzExecutorsTest {
 
     @Test
     public void test() throws InterruptedException {
-        for (int i = 0; i < 100; i++) {
-            quartzExecutors.addJob(GschedulerTriggerJob.class, "jobname", "group", new Date()
-                    , new Date(System.currentTimeMillis() + 10000), "* * * * * ? *", Map.of("data", i));
-            quartzExecutors.addJob(GschedulerTriggerJob.class, "jobname-" + i, "group", new Date()
-                    , new Date(System.currentTimeMillis() + 10000), "* * * * * ? *", Map.of("data", i));
-        }
-        Thread.sleep(10000L);
+//        for (int i = 0; i < 100; i++) {
+//            quartzExecutors.addJob(GschedulerTriggerJob.class, "jobname", "group", new Date()
+//                    , new Date(System.currentTimeMillis() + 10000), "* * * * * ? *", Map.of("data", i));
+//            quartzExecutors.addJob(GschedulerTriggerJob.class, "jobname-" + i, "group", new Date()
+//                    , new Date(System.currentTimeMillis() + 10000), "* * * * * ? *", Map.of("data", i));
+//        }
+//        Thread.sleep(10000L);
     }
 }

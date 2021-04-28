@@ -1,12 +1,11 @@
 package com.gs.cd.gscheduler.server.controller;
 
-import cn.hutool.core.util.StrUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.server.quartz.QuartzExecutors;
 import org.springframework.web.bind.annotation.*;
 import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
-import com.gs.cd.gscheduler.server.service.impl.GschedulerTriggerService;
+import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -47,7 +46,7 @@ public class GschedulerTriggerController {
         boolean b = gschedulerTriggerService.save(params);
         if (b) {
             // TODO: 2021/4/27 转移到server层 并 校验corn表达式
-            quartzExecutors.addJob(params);
+            quartzExecutors.addJob(tenantCode, params);
         }
         return b ? ApiResult.success() : ApiResult.error();
     }
@@ -62,7 +61,7 @@ public class GschedulerTriggerController {
         boolean b = gschedulerTriggerService.removeById(id);
         if (b) {
             // TODO: 2021/4/27 转移到server层 并 校验corn表达式
-            quartzExecutors.deleteJob(byId.getTaskId(), byId.getGroupName());
+            quartzExecutors.deleteJob(tenantCode, byId.getTaskId(), byId.getGroupName());
         }
         return b ? ApiResult.success() : ApiResult.error();
     }
@@ -77,7 +76,7 @@ public class GschedulerTriggerController {
         boolean b = gschedulerTriggerService.removeById(byId.getId());
         if (b) {
             // TODO: 2021/4/27 转移到server层 并 校验corn表达式
-            quartzExecutors.deleteJob(taskId, groupName);
+            quartzExecutors.deleteJob(tenantCode, taskId, groupName);
         }
         return b ? ApiResult.success() : ApiResult.error();
     }
@@ -89,7 +88,7 @@ public class GschedulerTriggerController {
         boolean b = gschedulerTriggerService.updateById(params);
         if (b) {
             // TODO: 2021/4/27 转移到server层 并 校验corn表达式 先更新再删除？！ 还是直接就支持更新 待验证
-            quartzExecutors.addJob(params);
+            quartzExecutors.addJob(tenantCode, params);
         }
         return b ? ApiResult.success() : ApiResult.error();
     }
@@ -109,7 +108,8 @@ public class GschedulerTriggerController {
         boolean b = gschedulerTriggerService.updateById(params);
         if (b) {
             // TODO: 2021/4/27 转移到server层 并 校验corn表达式 先更新再删除？！ 还是直接就支持更新 待验证
-            quartzExecutors.addJob(params);
+            // TODO: 2021/4/28 直接加有问题吗 待测试 
+            quartzExecutors.addJob(tenantCode, params);
         }
         return b ? ApiResult.success() : ApiResult.error();
     }
