@@ -34,7 +34,7 @@ public class QuartzExecutors {
 
     public void addJob(GschedulerTrigger gschedulerTrigger) {
         addJob(GschedulerTriggerJob.class, gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName(), gschedulerTrigger.getStartTime(), gschedulerTrigger.getEndTime(),
-                gschedulerTrigger.getCorn(), Map.of("params", gschedulerTrigger.getParams()));
+                gschedulerTrigger.getCorn(), Map.of("gschedulerTrigger", gschedulerTrigger));
     }
 
     public void addJob(Class<? extends Job> clazz, String jobName, String jobGroupName, Date startDate, Date endDate,

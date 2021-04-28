@@ -1,4 +1,4 @@
-package com.gs.cd.gscheduler.common.enums.entity;
+package com.gs.cd.gscheduler.common.entity;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -58,7 +58,7 @@ public class HttpParams implements ITrigger {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws Exception{
         HttpResponse execute = getHttpRequest().execute();
         if (execute.isOk()) {
             log.debug("执行成功，执行返回值：" + execute.body());

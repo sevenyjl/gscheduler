@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 
 /**
- * <p>
- * 前端控制器
- * </p>
+ * 触发器管理
  *
  * @author
  * @since 2021-04-27

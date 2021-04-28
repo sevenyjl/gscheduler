@@ -19,6 +19,6 @@ public interface GschedulerTriggerMapper extends BaseMapper<GschedulerTrigger> {
     @Select("SELECT tenant_code FROM \"kipf_platform\".\"sys_tenant_own_store\"")
     List<String> listAllTenantCode();
 
-    @Select("SELECT * FROM \"#{tenantCode}\".\"gscheduler_trigger\"")
+    @Select("SELECT * FROM \"${tenantCode}\".\"gscheduler_trigger\"")
     List<GschedulerTrigger> listByTenantCode(String tenantCode);
 }

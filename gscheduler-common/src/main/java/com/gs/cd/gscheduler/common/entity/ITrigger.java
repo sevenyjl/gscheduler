@@ -1,4 +1,4 @@
-package com.gs.cd.gscheduler.common.enums.entity;
+package com.gs.cd.gscheduler.common.entity;
 
 /**
  * @Author seven
@@ -7,5 +7,5 @@ package com.gs.cd.gscheduler.common.enums.entity;
  * @Version 1.0
  */
 public interface ITrigger {
-    void execute();
+    void execute() throws Exception;
 }

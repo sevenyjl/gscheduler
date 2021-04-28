@@ -4,9 +4,9 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.gs.cd.gscheduler.common.enums.TriggerType;
-import com.gs.cd.gscheduler.common.enums.entity.HttpParams;
-import com.gs.cd.gscheduler.common.enums.entity.ITrigger;
+import com.gs.cd.gscheduler.common.TriggerType;
+import com.gs.cd.gscheduler.common.entity.HttpParams;
+import com.gs.cd.gscheduler.common.entity.ITrigger;
 import lombok.Data;
 
 import java.util.Date;

@@ -19,7 +19,7 @@
         <dependency>
             <groupId>com.gs.cd</groupId>
             <artifactId>cloud-starter</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>${kmp.version}</version>
         </dependency>
         <dependency>
             <groupId>com.gs.cd</groupId>

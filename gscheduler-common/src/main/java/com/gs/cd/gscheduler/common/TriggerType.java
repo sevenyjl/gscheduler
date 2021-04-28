@@ -1,4 +1,4 @@
-package com.gs.cd.gscheduler.common.enums;
+package com.gs.cd.gscheduler.common;
 
 import lombok.Getter;
 

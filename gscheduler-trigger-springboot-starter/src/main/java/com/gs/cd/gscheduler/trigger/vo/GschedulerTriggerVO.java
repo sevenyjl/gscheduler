@@ -1,9 +1,8 @@
 package com.gs.cd.gscheduler.trigger.vo;
 
 import cn.hutool.json.JSONUtil;
-import com.gs.cd.gscheduler.common.enums.TriggerType;
-import com.gs.cd.gscheduler.common.enums.entity.HttpParams;
-import lombok.Data;
+import com.gs.cd.gscheduler.common.TriggerType;
+import com.gs.cd.gscheduler.common.entity.HttpParams;
 import lombok.Getter;
 import lombok.NonNull;
 

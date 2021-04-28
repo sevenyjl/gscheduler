@@ -1,5 +1,3 @@
-
-
 spring:
   application:
     name: gscheduler-server
@@ -12,3 +10,9 @@ spring:
         refreshable-dataids:  environment.yml,common.yml
 server:
   port: 18077
+
+cloud:
+  starter:
+    jackson:
+      property-naming-strategy:
+        use-snake-case: false

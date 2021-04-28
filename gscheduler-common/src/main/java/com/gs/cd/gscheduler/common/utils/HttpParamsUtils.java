@@ -1,8 +1,8 @@
-package com.gs.cd.gscheduler.common.enums.utils;
+package com.gs.cd.gscheduler.common.utils;
 
 import cn.hutool.http.Header;
 import cn.hutool.http.Method;
-import com.gs.cd.gscheduler.common.enums.entity.HttpParams;
+import com.gs.cd.gscheduler.common.entity.HttpParams;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,8 @@ public class HttpParamsUtils {
         if (header == null) {
             header = new HashMap<>();
         }
-        header.put(Header.CONTENT_TYPE.getValue(), "application/json");
-        return new HttpParams(Method.POST, url, header, null, null, jsonBody);
+        Map<String, String> map = new HashMap<>(header);
+        map.put(Header.CONTENT_TYPE.getValue(), "application/json");
+        return new HttpParams(Method.POST, url, map, null, null, jsonBody);
     }
 }
