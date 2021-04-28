@@ -73,6 +73,11 @@
 
             <dependency>
                 <groupId>com.gs.cd</groupId>
+                <artifactId>kmp-auth-spring-boot-starter</artifactId>
+                <version>${kmp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.gs.cd</groupId>
                 <artifactId>db-mybatis</artifactId>
                 <version>${kmp.version}</version>
             </dependency>

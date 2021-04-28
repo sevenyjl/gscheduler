@@ -25,8 +25,6 @@ public interface GschedulerTriggerService extends IService<GschedulerTrigger> {
      */
     GschedulerTrigger getByTaskIdAndGroupName(String taskId, String groupName);
 
-    // TODO: 2021/4/28 可能会存在 租户在其他pg表上情况
-    List<String> listAllTenantCode();
 
     List<GschedulerTrigger> listByTenantCode(String tenantCode);
 }

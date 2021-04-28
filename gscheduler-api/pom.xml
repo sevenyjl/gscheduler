@@ -32,6 +32,10 @@
             <groupId>com.gs.cd</groupId>
             <artifactId>gscheduler-dao</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>kmp-auth-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

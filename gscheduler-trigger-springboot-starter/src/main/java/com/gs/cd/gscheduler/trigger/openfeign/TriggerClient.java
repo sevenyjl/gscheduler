@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @Version 1.0
  */
 @Component
-@FeignClient(url = "${gscheduler.server:gscheduler-server}", name = "gscheduler-server")
+@FeignClient(name = "${gscheduler.server:gscheduler-server}")
 public interface TriggerClient {
     @GetMapping(value = "/gscheduler/trigger")
     ApiResult getByTaskIdAndGroupName(@NonNull @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,

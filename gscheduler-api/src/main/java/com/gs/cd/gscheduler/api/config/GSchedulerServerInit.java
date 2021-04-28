@@ -1,8 +1,15 @@
 package com.gs.cd.gscheduler.api.config;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.gs.cd.cloud.common.ApiResult;
+import com.gs.cd.cloud.utils.ApiResultParserUtils;
+import com.gs.cd.cloud.utils.JsonUtils;
 import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.quartz.QuartzExecutors;
 import com.gs.cd.gscheduler.api.service.GschedulerTriggerService;
+import com.gs.cd.kmp.api.AuthClient;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -21,24 +28,30 @@ public class GSchedulerServerInit implements ApplicationRunner {
     GschedulerTriggerService gschedulerTriggerService;
     @Autowired
     QuartzExecutors quartzExecutors;
+    @Autowired
+    AuthClient authClient;
 
     public void TriggerInit() {
         log.info("*******\tinit GSchedulerTrigger corn task\t*******");
-        List<String> tenantCodeList = gschedulerTriggerService.listAllTenantCode();
+        ApiResult apiResult = authClient.listAllValidTenantCode();
+        if (!apiResult.isSuccess()) {
+            log.error("调用 authClient.listAllValidTenantCode 错误：" + apiResult);
+            System.exit(-1);
+        }
         // TODO: 2021/4/28 记录一个可能得问题  如果说 sys_tenant_own_store 中的租户不在同一个pg上 可能存在查询失败的问题
         HashMap<String, String> errorMsg = new HashMap<>();
-        tenantCodeList.forEach(tenantCode -> {
+        JSONUtil.parseArray(apiResult.getData()).forEach(tenantCode -> {
             List<GschedulerTrigger> gschedulerTriggers = new ArrayList<>();
             try {
-                gschedulerTriggers = gschedulerTriggerService.listByTenantCode(tenantCode);
+                gschedulerTriggers = gschedulerTriggerService.listByTenantCode(tenantCode.toString());
             } catch (Exception e) {
-                errorMsg.put(tenantCode, e.getMessage());
+                errorMsg.put(tenantCode.toString(), e.getMessage());
             }
             gschedulerTriggers.forEach(t -> {
                 try {
-                    quartzExecutors.addJob(tenantCode, t);
+                    quartzExecutors.addJob(tenantCode.toString(), t);
                 } catch (Exception e) {
-                    errorMsg.put(String.format("tenantCode=%s data=> %s", tenantCode, t.toString()), e.getMessage());
+                    errorMsg.put(String.format("tenantCode=%s data=> %s", tenantCode.toString(), t.toString()), e.getMessage());
                 }
             });
         });

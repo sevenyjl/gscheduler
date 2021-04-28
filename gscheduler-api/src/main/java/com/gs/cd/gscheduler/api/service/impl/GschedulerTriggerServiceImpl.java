@@ -30,10 +30,6 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
                 lambda().eq(GschedulerTrigger::getTaskId, taskId).eq(GschedulerTrigger::getGroupName, groupName));
     }
 
-    @Override
-    public List<String> listAllTenantCode() {
-        return baseMapper.listAllTenantCode();
-    }
 
     @Override
     public List<GschedulerTrigger> listByTenantCode(String tenantCode) {
