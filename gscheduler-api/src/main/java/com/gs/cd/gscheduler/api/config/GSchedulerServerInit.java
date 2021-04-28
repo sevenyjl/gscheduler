@@ -1,8 +1,8 @@
-package com.gs.cd.gscheduler.server.config;
+package com.gs.cd.gscheduler.api.config;
 
 import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.quartz.QuartzExecutors;
-import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
+import com.gs.cd.gscheduler.api.service.GschedulerTriggerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

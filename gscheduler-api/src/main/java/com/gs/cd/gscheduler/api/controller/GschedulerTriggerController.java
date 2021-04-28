@@ -1,11 +1,11 @@
-package com.gs.cd.gscheduler.server.controller;
+package com.gs.cd.gscheduler.api.controller;
 
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.quartz.QuartzExecutors;
 import org.springframework.web.bind.annotation.*;
-import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
+import com.gs.cd.gscheduler.api.service.GschedulerTriggerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;

@@ -1,10 +1,10 @@
-package com.gs.cd.gscheduler.server.service.impl;
+package com.gs.cd.gscheduler.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.dao.mapper.GschedulerTriggerMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.gs.cd.gscheduler.server.service.GschedulerTriggerService;
+import com.gs.cd.gscheduler.api.service.GschedulerTriggerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

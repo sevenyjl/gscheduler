@@ -1,7 +1,7 @@
-package com.gs.cd.gscheduler.server.quartz;
+package com.gs.cd.gscheduler.api.quartz;
 
 import com.gs.cd.gscheduler.quartz.QuartzExecutors;
-import com.gs.cd.gscheduler.server.GschedulerServerApplication;
+import com.gs.cd.gscheduler.api.GschedulerServerApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.gs.cd.gscheduler.server.service;
+package com.gs.cd.gscheduler.api.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
