@@ -1,6 +1,6 @@
 package com.gs.cd.gscheduler.dao.mapper;
 
-import com.gs.cd.gscheduler.dao.entity.GschedulerTrigger;
+import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 

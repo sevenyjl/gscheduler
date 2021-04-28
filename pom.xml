@@ -17,6 +17,8 @@
         <module>gscheduler-dao</module>
         <module>gscheduler-common</module>
         <module>gscheduler-server</module>
+        <module>gscheduler-api</module>
+        <module>gscheduler-quartz</module>
     </modules>
 
     <properties>
@@ -45,4 +47,29 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>java-releases</name>
+            <url>http://10.201.50.145:8081/nexus/repository/java-release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>java-snapshots</name>
+            <url>http://10.201.50.145:8081/nexus/repository/java-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>nexus-releases</id>
+            <name>java-releases</name>
+            <url>http://10.201.50.145:8081/nexus/repository/java-release/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <name>java-snapshots</name>
+            <url>http://10.201.50.145:8081/nexus/repository/java-snapshot/</url>
+        </repository>
+
+    </repositories>
 </project>

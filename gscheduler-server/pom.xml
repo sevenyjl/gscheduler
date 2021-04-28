@@ -15,34 +15,5 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>com.gs.cd</groupId>
-            <artifactId>cloud-starter</artifactId>
-            <version>${kmp.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gs.cd</groupId>
-            <artifactId>gscheduler-dao</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.gs.cd</groupId>
-            <artifactId>db-dynamic</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

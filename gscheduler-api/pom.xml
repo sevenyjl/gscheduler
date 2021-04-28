@@ -8,9 +8,8 @@
         <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
-    <artifactId>gscheduler-trigger-springboot-starter</artifactId>
+    <artifactId>gscheduler-api</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -19,17 +18,32 @@
     <dependencies>
         <dependency>
             <groupId>com.gs.cd</groupId>
-            <artifactId>gscheduler-common</artifactId>
+            <artifactId>cloud-starter</artifactId>
+            <version>${kmp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>db-dynamic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>gscheduler-quartz</artifactId>
             <version>1.1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>gscheduler-dao</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

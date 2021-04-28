@@ -8,9 +8,8 @@
         <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
-    <artifactId>gscheduler-trigger-springboot-starter</artifactId>
+    <artifactId>gscheduler-quartz</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -25,10 +24,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
 
