@@ -10,7 +10,9 @@ spring:
         refreshable-dataids:  environment.yml,common.yml
 server:
   port: 18077
-
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
 cloud:
   starter:
     jackson:

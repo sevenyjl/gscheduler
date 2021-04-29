@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.gs.cd.gscheduler.common.enums.Flag;
 import com.gs.cd.gscheduler.common.enums.ReleaseState;
 import com.gs.cd.gscheduler.common.process.Property;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
@@ -36,11 +37,12 @@ import java.util.stream.Collectors;
  * process definition
  */
 @TableName("t_ds_process_definition")
+@Data
 public class ProcessDefinition {
     /**
      * id
      */
-    @TableId(value="id", type=IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private int id;
 
     /**
@@ -81,14 +83,14 @@ public class ProcessDefinition {
     /**
      * user defined parameter list
      */
-    @TableField(exist=false)
+    @TableField(exist = false)
     private List<Property> globalParamList;
 
     /**
      * user define parameter map
      */
-    @TableField(exist=false)
-    private Map<String,String> globalParamMap;
+    @TableField(exist = false)
+    private Map<String, String> globalParamMap;
 
     /**
      * create time
@@ -100,6 +102,9 @@ public class ProcessDefinition {
      */
     private Date updateTime;
 
+    private String creator;
+    private String updater;
+
     /**
      * process is valid: yes/no
      */
@@ -108,7 +113,7 @@ public class ProcessDefinition {
     /**
      * process user id
      */
-    private int userId;
+    private String userId;
 
     /**
      * user name
@@ -145,7 +150,7 @@ public class ProcessDefinition {
     /**
      * schedule release state : online/offline
      */
-    @TableField(exist=false)
+    @TableField(exist = false)
     private ReleaseState scheduleReleaseState;
 
     /**
@@ -241,13 +246,6 @@ public class ProcessDefinition {
         this.flag = flag;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public String getUserName() {
         return userName;
@@ -288,7 +286,7 @@ public class ProcessDefinition {
         List<Property> propList;
 
         if (globalParamMap == null && StrUtil.isNotEmpty(globalParams)) {
-            propList =  JSONUtil.toList(globalParams, Property.class);
+            propList = JSONUtil.toList(globalParams, Property.class);
             globalParamMap = propList.stream().collect(Collectors.toMap(Property::getProp, Property::getValue));
         }
 

@@ -41,7 +41,7 @@ public class Project {
      * user id
      */
     @TableField("user_id")
-    private int userId;
+    private String userId;
 
     /**
      * user name
@@ -68,6 +68,9 @@ public class Project {
      * update time
      */
     private Date updateTime;
+
+    private String creator;
+    private String updater;
 
     /**
      * permission
