@@ -34,6 +34,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         Project project = new Project();
         Date now = new Date();
         project.setName(name);
+        project.setUserName(loginUser.getUserName());
         project.setDescription(desc);
         project.setCreator(loginUser.getUserName());
         project.setUpdater(loginUser.getUserName());
@@ -50,7 +51,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             throw new RuntimeException(String.format("修改失败,无id=%s的项目", projectId));
         }
         Project tempProject = queryByName(projectName);
-        if (tempProject != null) {
+        if (tempProject != null && !tempProject.getName().equals(projectName)) {
             throw new RuntimeException(String.format("名称为\"%s\"的项目已经存在", projectName));
         }
         project.setName(projectName);

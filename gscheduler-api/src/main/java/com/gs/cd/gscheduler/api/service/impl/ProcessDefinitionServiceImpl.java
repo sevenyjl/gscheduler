@@ -97,6 +97,9 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
         processDefinition.setCreator(loginUser.getUserName());
         processDefinition.setUpdater(loginUser.getUserName());
         processDefinition.setFlag(Flag.YES);
+        processDefinition.setCreator(loginUser.getUserName());
+        processDefinition.setUpdater(loginUser.getUserName());
+        processDefinition.setUserId(loginUser.getUserId().toString());
         return save(processDefinition);
     }
 
@@ -194,7 +197,9 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
 
     @Override
     public List<ProcessDefinition> listByProjectName(String projectName) {
-        return list(new QueryWrapper<ProcessDefinition>().lambda().eq(ProcessDefinition::getProjectName, projectName));
+        Project project = projectService.queryByName(projectName);
+        if (project == null) throw new RuntimeException(String.format("不存在名称=%s的项目", projectName));
+        return list(new QueryWrapper<ProcessDefinition>().lambda().eq(ProcessDefinition::getProjectId, project.getId()));
     }
 
     @Override
@@ -335,16 +340,20 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
     public String addExportTaskNodeSpecialParam(String processDefinitionJson) {
         JSONObject jsonObject = JSONUtil.parseObj(processDefinitionJson);
         JSONArray jsonArray = jsonObject.getJSONArray("tasks");
-        jsonArray.forEach(j -> {
-            JSONObject taskNode = (JSONObject) j;
-            if (StrUtil.isNotEmpty(taskNode.getStr("type"))) {
-                String taskType = taskNode.getStr("type");
-                ProcessAddTaskParam addTaskParam = TaskNodeParamFactory.getByTaskType(taskType);
-                if (null != addTaskParam) {
-                    addTaskParam.addExportSpecialParam(taskNode);
+        if (jsonArray != null) {
+            jsonArray.forEach(j -> {
+                if (j != null) {
+                    JSONObject taskNode = (JSONObject) j;
+                    if (StrUtil.isNotEmpty(taskNode.getStr("type"))) {
+                        String taskType = taskNode.getStr("type");
+                        ProcessAddTaskParam addTaskParam = TaskNodeParamFactory.getByTaskType(taskType);
+                        if (null != addTaskParam) {
+                            addTaskParam.addExportSpecialParam(taskNode);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
         jsonObject.put("tasks", jsonArray);
         return jsonObject.toString();
     }
@@ -359,15 +368,16 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
     private String getResourceIds(ProcessData processData) {
         List<TaskNode> tasks = processData.getTasks();
         Set<Integer> resourceIds = new HashSet<>();
-        for (TaskNode taskNode : tasks) {
-            String taskParameter = taskNode.getParams();
-            AbstractParameters params = TaskParametersUtils.getParameters(taskNode.getType(), taskParameter);
-            if (CollectionUtil.isNotEmpty(params.getResourceFilesList())) {
-                Set<Integer> tempSet = params.getResourceFilesList().stream().filter(t -> t.getId() != 0).map(ResourceInfo::getId).collect(Collectors.toSet());
-                resourceIds.addAll(tempSet);
+        if (tasks != null) {
+            for (TaskNode taskNode : tasks) {
+                String taskParameter = taskNode.getParams();
+                AbstractParameters params = TaskParametersUtils.getParameters(taskNode.getType(), taskParameter);
+                if (CollectionUtil.isNotEmpty(params.getResourceFilesList())) {
+                    Set<Integer> tempSet = params.getResourceFilesList().stream().filter(t -> t.getId() != 0).map(ResourceInfo::getId).collect(Collectors.toSet());
+                    resourceIds.addAll(tempSet);
+                }
             }
         }
-
         StringBuilder sb = new StringBuilder();
         for (int i : resourceIds) {
             if (sb.length() > 0) {

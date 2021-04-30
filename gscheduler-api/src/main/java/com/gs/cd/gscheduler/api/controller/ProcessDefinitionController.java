@@ -11,6 +11,7 @@ import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.ProcessDefinitionService;
 import com.gs.cd.gscheduler.common.entity.ProcessDefinition;
+import com.gs.cd.gscheduler.common.enums.ReleaseState;
 import com.gs.cd.gscheduler.common.model.TaskNode;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,9 @@ public class ProcessDefinitionController {
      * @param token
      * @param projectName
      * @param name
-     * @param json
-     * @param locations
-     * @param connects
+     * @param json        {"globalParams":[],"tasks":[{"type":"SHELL","id":"tasks-78870","name":"123","params":{"resourceList":[],"localParams":[],"rawScript":"123"},"description":"","timeout":{"strategy":"","interval":null,"enable":false},"runFlag":"NORMAL","conditionResult":{"successNode":[""],"failedNode":[""]},"dependence":{},"maxRetryTimes":"0","retryInterval":"1","taskInstancePriority":"MEDIUM","workerGroup":"default","preTasks":[]}],"tenantId":1,"timeout":0}
+     * @param locations   {"tasks-78870":{"name":"123","targetarr":"","nodenumber":"0","x":239,"y":35}}
+     * @param connects    []
      * @param description
      * @return
      * @throws JsonProcessingException
@@ -164,8 +165,11 @@ public class ProcessDefinitionController {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         log.info("login user {}, release process definition, project name: {}, release state: {}",
                 loginUser.getUserName(), projectName, releaseState);
-//        boolean b = processDefinitionService.releaseProcessDefinition(loginUser, projectName, processId, releaseState);
-        return ApiResult.error("release 未开发");
+        ProcessDefinition byId = processDefinitionService.getById(processId);
+        if (byId == null) return ApiResult.error(String.format("不存在id=%s的工作流定义信息", processId));
+        byId.setReleaseState(ReleaseState.getEnum(releaseState));
+        boolean b = processDefinitionService.updateById(byId);
+        return b ? ApiResult.success() : ApiResult.error();
 
     }
 
@@ -351,7 +355,11 @@ public class ProcessDefinitionController {
         log.info("delete process definition by ids, login user:{}, project name:{}, process definition ids:{}",
                 loginUser.getUserName(), projectName, processDefinitionIds);
         if (StrUtil.isNotEmpty(processDefinitionIds)) {
-            boolean b = processDefinitionService.removeByIds(Arrays.asList(processDefinitionIds.split(",").clone()));
+            ArrayList<Integer> integers = new ArrayList<>();
+            for (String s : processDefinitionIds.split(",")) {
+                integers.add(Integer.parseInt(s));
+            }
+            boolean b = processDefinitionService.removeByIds(integers);
             return b ? ApiResult.success() : ApiResult.error();
         }
         return ApiResult.error();

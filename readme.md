@@ -190,9 +190,32 @@ index process_instance_index
 create
 index start_time_index
     on t_ds_process_instance (start_time);
-    
-    
-    
+
+
+DROP TABLE IF EXISTS "developer_gs"."t_ds_schedules";
+create table "developer_gs"."t_ds_schedules"
+(
+    id                        integer     default nextval('"developer_gs".g_scheduler_all_seq'::regclass) not null
+        constraint t_ds_schedules_pkey
+            primary key,
+    process_definition_id     integer                                                             not null,
+    start_time                timestamp(6)                                                        not null,
+    end_time                  timestamp(6)                                                        not null,
+    crontab                   varchar(256)                                                        not null,
+    failure_strategy          integer                                                             not null,
+    user_id                   integer                                                             not null,
+    release_state             integer                                                             not null,
+    warning_type              integer                                                             not null,
+    warning_group_id          integer,
+    process_instance_priority integer,
+    worker_group              varchar(64) default '-1'::integer,
+    create_time               timestamp(6)                                                        not null,
+    update_time               timestamp(6)                                                        not null
+);
+
+
+
+
 ```
 
 3. nacos 中yaml
