@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
  * @Version 1.0
  */
 @Component
-@FeignClient(name = "${gscheduler.server:gscheduler-server}")
+@FeignClient(name = "${gscheduler.api:gscheduler-api}")
 public interface TriggerClient {
     @GetMapping(value = "/gscheduler/trigger")
     ApiResult getByTaskIdAndGroupName(@NonNull @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                      @NonNull String taskId,
-                                      @NonNull String groupName);
+                                      @NonNull @RequestParam String taskId,
+                                      @NonNull @RequestParam String groupName);
 
     @PostMapping(value = "/gscheduler/trigger/create")
     public ApiResult create(@NonNull @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
@@ -29,8 +29,8 @@ public interface TriggerClient {
 
     @PostMapping(value = "/gscheduler/trigger/delete")
     ApiResult delete(@NonNull @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                     @NonNull String taskId,
-                     @NonNull String groupName);
+                     @NonNull @RequestParam String taskId,
+                     @NonNull @RequestParam String groupName);
 
     @PostMapping(value = "/gscheduler/trigger/update/{taskId}/{groupName}")
     ApiResult updateByTaskIdAndGroupName(
