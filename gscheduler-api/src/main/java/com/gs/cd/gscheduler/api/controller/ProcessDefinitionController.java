@@ -328,7 +328,7 @@ public class ProcessDefinitionController {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         log.info("delete process definition by id, login user:{}, project name:{}, process definition id:{}",
                 loginUser.getUserName(), projectName, processDefinitionId);
-        boolean b = processDefinitionService.removeById(processDefinitionId);
+        boolean b = processDefinitionService.deleteProcessDefinitionById(tenantCode, processDefinitionId);
         return b ? ApiResult.success() : ApiResult.error();
     }
 

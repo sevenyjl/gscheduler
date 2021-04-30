@@ -18,4 +18,6 @@ public interface ProcessInstanceService extends IService<ProcessInstance> {
     Map<String, Object> queryTaskListByProcessId(String projectName, Integer processInstanceId);
 
     boolean updateProcessInstance(JwtUserInfo loginUser, String projectName, Integer processInstanceId, String processInstanceJson, String scheduleTime, Boolean syncDefine, Flag flag, String locations, String connects);
+
+    void querySubProcessInstanceByTaskId(String projectName, Integer taskId);
 }

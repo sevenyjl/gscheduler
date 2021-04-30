@@ -49,5 +49,8 @@ public interface ProcessDefinitionService extends IService<ProcessDefinition> {
     void batchExportProcessDefinitionByIds( String projectName, String processDefinitionIds, HttpServletResponse response);
 
     void checkProcessNodeList(ProcessData processData, String processDefinitionJson);
+
+    boolean deleteProcessDefinitionById(String tenantCode, Integer processDefinitionId);
+
 }
 

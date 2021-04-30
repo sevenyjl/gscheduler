@@ -414,6 +414,20 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
         }
     }
 
+    @Override
+    public boolean deleteProcessDefinitionById(String tenantCode, Integer processDefinitionId) {
+        ProcessDefinition byId = getById(processDefinitionId);
+        if (byId == null) throw new RuntimeException(String.format("未找到id=%s的工作流定义", processDefinitionId));
+        //0.上线不能删除
+        if (byId.getReleaseState() == ReleaseState.ONLINE) {
+            throw new RuntimeException("请下线，再删除");
+        }
+        //1.删除相关 schedulers
+        schedulesService.deleteByDefinitionId(tenantCode, byId.getProjectId(), processDefinitionId);
+        //2.删除工作流定义表
+        return removeById(processDefinitionId);
+    }
+
     private boolean graphHasCycle(List<TaskNode> taskNodeResponseList) {
         DAG<String, TaskNode, String> graph = new DAG<>();
 

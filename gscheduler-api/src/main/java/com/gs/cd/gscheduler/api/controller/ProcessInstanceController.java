@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -144,8 +147,53 @@ public class ProcessInstanceController {
         log.info("delete process instance by id, login user:{}, project name:{}, process instance id:{}",
                 loginUser.getUserName(), projectName, processInstanceId);
         // task queue
-
         boolean b = processInstanceService.removeById(processInstanceId);
-//        return returnDataList(result);
+        return b ? ApiResult.success() : ApiResult.error();
     }
+
+    @GetMapping(value = "/select-sub-process")
+    public ApiResult querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                                     @PathVariable String projectName,
+                                                     @RequestParam("taskId") Integer taskId) {
+        return ApiResult.error("未开发");
+    }
+
+    @GetMapping(value = "/select-parent-process")
+    public ApiResult queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                                @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                                @PathVariable String projectName,
+                                                @RequestParam("subId") Integer subId) {
+        return ApiResult.error("未开发");
+    }
+
+
+    @GetMapping(value = "/view-variables")
+    public ApiResult viewVariables(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                   @PathVariable String projectName,
+                                   @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
+        return ApiResult.error("未开发");
+    }
+
+    @GetMapping(value = "/batch-delete")
+    public ApiResult batchDeleteProcessInstanceByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                                     @PathVariable String projectName,
+                                                     @RequestParam("processInstanceIds") String processInstanceIds
+    ) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        log.info("delete process instance by ids, login user:{}, project name:{}, process instance ids :{}",
+                loginUser.getUserName(), projectName, processInstanceIds);
+        if (StrUtil.isNotEmpty(processInstanceIds)) {
+            String[] processInstanceIdArray = processInstanceIds.split(",");
+            for (String strProcessInstanceId : processInstanceIdArray) {
+                int processInstanceId = Integer.parseInt(strProcessInstanceId);
+                processInstanceService.removeById(processInstanceId);
+            }
+        }
+        return ApiResult.success();
+    }
+
+
 }

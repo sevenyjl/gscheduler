@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -26,11 +27,12 @@ public class SchedulesServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> 
     @Autowired
     QuartzExecutors quartzExecutors;
 
-
-    public static void deleteSchedule(int projectId, int scheduleId) throws RuntimeException {
+    @Override
+    public boolean deleteSchedule(String tenantCode, int projectId, int scheduleId) throws RuntimeException {
         log.info("delete schedules of project id:{}, schedule id:{}", projectId, scheduleId);
-
-
+        boolean b = quartzExecutors.deleteJob(tenantCode, String.valueOf(scheduleId), String.valueOf(projectId));
+        boolean b1 = removeById(scheduleId);
+        return b & b1;
     }
 
     @Override
@@ -42,4 +44,15 @@ public class SchedulesServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> 
     public List<Schedule> queryByProcessDefinitionId(Integer processDefinitionId) {
         return list(new QueryWrapper<Schedule>().lambda().eq(Schedule::getProcessDefinitionId, processDefinitionId));
     }
+
+    @Override
+    public void deleteByDefinitionId(String tenantCode, Integer projectId, Integer processDefinitionId) {
+        List<Schedule> schedules = listByDefinitionId(processDefinitionId);
+        schedules.forEach(schedule -> deleteSchedule(tenantCode, projectId, schedule.getId()));
+    }
+
+    public List<Schedule> listByDefinitionId(Integer processDefinitionId) {
+        return list(new QueryWrapper<Schedule>().lambda().eq(Schedule::getProcessDefinitionId, processDefinitionId));
+    }
+
 }
