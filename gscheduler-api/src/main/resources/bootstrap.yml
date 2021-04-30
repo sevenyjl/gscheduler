@@ -1,6 +1,6 @@
 spring:
   application:
-    name: gscheduler-server
+    name: gscheduler-api
   cloud:
     nacos:
       server-addr: 10.201.83.180:8840
@@ -8,8 +8,6 @@ spring:
         file-extension: yml
         shared-dataids: environment.yml,common.yml
         refreshable-dataids:  environment.yml,common.yml
-server:
-  port: 18077
 mybatis-plus:
   configuration:
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler

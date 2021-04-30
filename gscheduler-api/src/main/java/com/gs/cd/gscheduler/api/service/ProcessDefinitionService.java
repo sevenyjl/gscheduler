@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.gscheduler.common.entity.GschedulerTrigger;
+import com.gs.cd.gscheduler.common.entity.ProcessData;
 import com.gs.cd.gscheduler.common.entity.ProcessDefinition;
 import com.gs.cd.gscheduler.common.model.TaskNode;
 import com.gs.cd.gscheduler.dao.mapper.ProcessDefinitionMapper;
@@ -46,5 +47,7 @@ public interface ProcessDefinitionService extends IService<ProcessDefinition> {
     Map<Integer, List<TaskNode>> getTaskNodeListByDefinitionIdList(String processDefinitionIdList);
 
     void batchExportProcessDefinitionByIds( String projectName, String processDefinitionIds, HttpServletResponse response);
+
+    void checkProcessNodeList(ProcessData processData, String processDefinitionJson);
 }
 

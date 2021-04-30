@@ -14,14 +14,19 @@ import com.gs.cd.gscheduler.api.service.ProcessInstanceService;
 import com.gs.cd.gscheduler.common.Constants;
 import com.gs.cd.gscheduler.common.entity.ProcessInstance;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
+import com.gs.cd.gscheduler.common.enums.Flag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 
 /**
+ * 工作流实例管理
+ *
  * @Author seven
  * @Date 2021/4/29 14:45
  * @Description
@@ -91,5 +96,56 @@ public class ProcessInstanceController {
                 loginUser.getUserName(), projectName, processInstanceId);
         Map<String, Object> result = processInstanceService.queryTaskListByProcessId(projectName, processInstanceId);
         return ApiResult.success(result);
+    }
+
+    @PostMapping(value = "/update")
+    public ApiResult updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                           @PathVariable String projectName,
+                                           @RequestParam(value = "processInstanceJson", required = false) String processInstanceJson,
+                                           @RequestParam(value = "processInstanceId") Integer processInstanceId,
+                                           @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
+                                           @RequestParam(value = "syncDefine", required = true) Boolean syncDefine,
+                                           @RequestParam(value = "locations", required = false) String locations,
+                                           @RequestParam(value = "connects", required = false) String connects,
+                                           @RequestParam(value = "flag", required = false) Flag flag
+    ) throws ParseException {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        log.info("updateProcessInstance process instance, login user:{}, project name:{}, process instance json:{}," +
+                        "process instance id:{}, schedule time:{}, sync define:{}, flag:{}, locations:{}, connects:{}",
+                loginUser.getUserName(), projectName, processInstanceJson, processInstanceId, scheduleTime,
+                syncDefine, flag, locations, connects);
+        boolean b = processInstanceService.updateProcessInstance(loginUser, projectName,
+                processInstanceId, processInstanceJson, scheduleTime, syncDefine, flag, locations, connects);
+        return b ? ApiResult.success() : ApiResult.error();
+    }
+
+    @GetMapping(value = "/select-by-id")
+    public ApiResult queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                              @PathVariable String projectName,
+                                              @RequestParam("processInstanceId") Integer processInstanceId
+    ) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        log.info("query process instance detail by id, login user:{},project name:{}, process instance id:{}",
+                loginUser.getUserName(), projectName, processInstanceId);
+        ProcessInstance processInstance = processInstanceService.getById(processInstanceId);
+        return ApiResult.success(processInstance);
+    }
+
+
+    @GetMapping(value = "/delete")
+    public ApiResult deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                               @PathVariable String projectName,
+                                               @RequestParam("processInstanceId") Integer processInstanceId
+    ) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        log.info("delete process instance by id, login user:{}, project name:{}, process instance id:{}",
+                loginUser.getUserName(), projectName, processInstanceId);
+        // task queue
+
+        boolean b = processInstanceService.removeById(processInstanceId);
+//        return returnDataList(result);
     }
 }

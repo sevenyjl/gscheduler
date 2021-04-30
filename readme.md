@@ -1,4 +1,4 @@
-#  
+#   
 
 ## 部署增加文件说明
 
@@ -141,6 +141,58 @@ ALTER TABLE "developer_gs"."t_ds_project"
 ALTER TABLE "developer_gs"."t_ds_project"
     ADD CONSTRAINT "t_ds_project_pkey" PRIMARY KEY ("id");
 
+
+-- t_ds_process_instance
+DROP TABLE IF EXISTS "developer_gs"."t_ds_process_instance";
+create table "developer_gs"."t_ds_process_instance"
+(
+    id                        integer      default nextval('"developer_gs".g_scheduler_all_seq'::regclass) not null
+        constraint t_ds_process_instance_pkey
+            primary key,
+    name                      varchar(255) default NULL:: character varying,
+    process_definition_id     integer,
+    state                     integer,
+    recovery                  integer,
+    start_time                timestamp(6),
+    end_time                  timestamp(6),
+    run_times                 integer,
+    host                      varchar(45)  default NULL:: character varying,
+    command_type              integer,
+    command_param             text,
+    task_depend_type          integer,
+    max_try_times             integer      default 0,
+    failure_strategy          integer      default 0,
+    warning_type              integer      default 0,
+    warning_group_id          integer,
+    schedule_time             timestamp(6),
+    command_start_time        timestamp(6),
+    global_params             text,
+    process_instance_json     text,
+    flag                      integer      default 1,
+    update_time               timestamp(6),
+    is_sub_process            integer      default 0,
+    executor_id               integer                                                                      not null,
+    locations                 text,
+    connects                  text,
+    history_cmd               text,
+    dependence_schedule_times text,
+    process_instance_priority integer,
+    worker_group              varchar(64)  default '-1':: integer,
+    timeout                   integer      default 0,
+    tenant_id                 integer      default '-1':: integer not null
+);
+
+
+create
+index process_instance_index
+    on t_ds_process_instance (process_definition_id, id);
+
+create
+index start_time_index
+    on t_ds_process_instance (start_time);
+    
+    
+    
 ```
 
 3. nacos 中yaml

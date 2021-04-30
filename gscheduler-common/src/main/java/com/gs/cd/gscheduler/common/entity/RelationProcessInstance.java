@@ -24,7 +24,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * process instance map
  */
 @TableName("t_ds_relation_process_instance")
-public class ProcessInstanceMap {
+public class RelationProcessInstance {
 
     /**
      * id
@@ -94,7 +94,7 @@ public class ProcessInstanceMap {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProcessInstanceMap that = (ProcessInstanceMap) o;
+        RelationProcessInstance that = (RelationProcessInstance) o;
 
         if (id != that.id) return false;
         if (parentProcessInstanceId != that.parentProcessInstanceId) return false;
