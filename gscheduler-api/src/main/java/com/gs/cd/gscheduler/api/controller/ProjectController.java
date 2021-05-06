@@ -8,6 +8,7 @@ import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.ProjectService;
+import com.gs.cd.gscheduler.api.utils.PageInfo;
 import com.gs.cd.gscheduler.common.entity.Project;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,7 +119,7 @@ public class ProjectController {
             tDsProjectQueryWrapper.lambda().like(Project::getName, "%" + searchVal + "%");
         }
         IPage<Project> page = projectService.page(new Page<>(pageNo, pageSize), tDsProjectQueryWrapper);
-        return ApiResult.success(page);
+        return ApiResult.success(PageInfo.pageInfoTrans(page));
     }
 
     /**

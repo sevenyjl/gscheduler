@@ -11,6 +11,7 @@ import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.ProcessInstanceService;
+import com.gs.cd.gscheduler.api.utils.PageInfo;
 import com.gs.cd.gscheduler.common.Constants;
 import com.gs.cd.gscheduler.common.entity.ProcessInstance;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
@@ -43,7 +44,22 @@ public class ProcessInstanceController {
     @Autowired
     ProcessInstanceService processInstanceService;
 
-
+    /**
+     * 分页查询
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processDefinitionId
+     * @param searchVal
+     * @param executorName
+     * @param stateType
+     * @param host
+     * @param startTime
+     * @param endTime
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
     @GetMapping(value = "list-paging")
     public ApiResult queryProcessInstanceList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -84,10 +100,18 @@ public class ProcessInstanceController {
             processInstanceQueryWrapper.lambda().le(ProcessInstance::getStartTime, endtime);
         }
         IPage<ProcessInstance> page = processInstanceService.page(new Page<>(pageNo, pageSize), processInstanceQueryWrapper);
-        return ApiResult.success(page);
+        return ApiResult.success(PageInfo.pageInfoTrans(page));
     }
 
-
+    /**
+     * 通过实例id获取
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceId
+     * @return
+     * @throws IOException
+     */
     @GetMapping(value = "/task-list-by-process-id")
     public ApiResult queryTaskListByProcessId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -101,6 +125,21 @@ public class ProcessInstanceController {
         return ApiResult.success(result);
     }
 
+    /**
+     * 更新
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceJson
+     * @param processInstanceId
+     * @param scheduleTime
+     * @param syncDefine
+     * @param locations
+     * @param connects
+     * @param flag
+     * @return
+     * @throws ParseException
+     */
     @PostMapping(value = "/update")
     public ApiResult updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -123,6 +162,14 @@ public class ProcessInstanceController {
         return b ? ApiResult.success() : ApiResult.error();
     }
 
+    /**
+     * 通过id选择
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceId
+     * @return
+     */
     @GetMapping(value = "/select-by-id")
     public ApiResult queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -137,6 +184,14 @@ public class ProcessInstanceController {
     }
 
 
+    /**
+     * 删除
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceId
+     * @return
+     */
     @GetMapping(value = "/delete")
     public ApiResult deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -151,6 +206,14 @@ public class ProcessInstanceController {
         return b ? ApiResult.success() : ApiResult.error();
     }
 
+    /**
+     * select-sub-process
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param taskId
+     * @return
+     */
     @GetMapping(value = "/select-sub-process")
     public ApiResult querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                      @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -159,6 +222,14 @@ public class ProcessInstanceController {
         return ApiResult.error("未开发");
     }
 
+    /**
+     * select-parent-process
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param subId
+     * @return
+     */
     @GetMapping(value = "/select-parent-process")
     public ApiResult queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                 @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -168,6 +239,15 @@ public class ProcessInstanceController {
     }
 
 
+    /**
+     * view-variables
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceId
+     * @return
+     * @throws Exception
+     */
     @GetMapping(value = "/view-variables")
     public ApiResult viewVariables(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                    @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -176,6 +256,14 @@ public class ProcessInstanceController {
         return ApiResult.error("未开发");
     }
 
+    /**
+     * 批量删除
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceIds 9,1,3,2
+     * @return
+     */
     @GetMapping(value = "/batch-delete")
     public ApiResult batchDeleteProcessInstanceByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                      @RequestHeader(HttpHeadersParam.TOKEN) String token,

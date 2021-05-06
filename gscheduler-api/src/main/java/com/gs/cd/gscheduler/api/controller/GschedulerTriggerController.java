@@ -26,7 +26,6 @@ public class GschedulerTriggerController {
     @Autowired
     private GschedulerTriggerService gschedulerTriggerService;
 
-
     @GetMapping(value = "/{id}")
     public ApiResult getById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                              @PathVariable("id") String id) {

@@ -48,6 +48,28 @@ public class ExecutorController {
     @Autowired
     private ExecutorService executorService;
 
+    /**
+     * 开始工作实例
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processDefinitionId
+     * @param scheduleTime
+     * @param failureStrategy
+     * @param startNodeList
+     * @param taskDependType
+     * @param execType
+     * @param warningType
+     * @param warningGroupId
+     * @param receivers
+     * @param receiversCc
+     * @param runMode
+     * @param processInstancePriority
+     * @param workerGroup
+     * @param timeout
+     * @return
+     * @throws Exception
+     */
     @PostMapping(value = "start-process-instance")
     public ApiResult startProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -73,7 +95,6 @@ public class ExecutorController {
                 loginUser.getUserName(), projectName, processDefinitionId, scheduleTime,
                 failureStrategy, startNodeList, taskDependType, warningType, workerGroup, receivers, receiversCc, runMode, processInstancePriority,
                 workerGroup, timeout);
-
         if (timeout == null) {
             timeout = Constants.MAX_TASK_TIMEOUT;
         }
@@ -85,15 +106,14 @@ public class ExecutorController {
 
 
     /**
-     * do action to process instance：pause, stop, repeat, recover from pause, recover from stop
-     *
-     * @param projectName       project name
-     * @param processInstanceId process instance id
-     * @param executeType       execute type
-     * @return execute ApiResult code
+     * 执行
+     * @param tenantCode
+     * @param token
+     * @param projectName
+     * @param processInstanceId
+     * @param executeType
+     * @return
      */
-
-
     @PostMapping(value = "/execute")
     public ApiResult execute(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -109,13 +129,12 @@ public class ExecutorController {
     }
 
     /**
-     * check process definition and all of the son process definitions is on line.
-     *
-     * @param processDefinitionId process definition id
-     * @return check ApiResult code
+     * 执行前check
+     * @param tenantCode
+     * @param token
+     * @param processDefinitionId
+     * @return
      */
-
-
     @PostMapping(value = "/start-check")
     public ApiResult startCheckProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,

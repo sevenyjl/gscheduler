@@ -26,6 +26,7 @@ import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.TaskInstanceService;
+import com.gs.cd.gscheduler.api.utils.PageInfo;
 import com.gs.cd.gscheduler.common.Constants;
 import com.gs.cd.gscheduler.common.entity.TaskInstance;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
@@ -111,7 +112,7 @@ public class TaskInstanceController {
             taskInstanceQueryWrapper.lambda().le(TaskInstance::getStartTime, DateUtil.parse(endTime, Constants.YYYY_MM_DD_HH_MM_SS));
         }
         IPage<TaskInstance> page = taskInstanceService.page(new Page<>(pageNo, pageSize), taskInstanceQueryWrapper);
-        return ApiResult.success(page);
+        return ApiResult.success(PageInfo.pageInfoTrans(page));
     }
 
 }
