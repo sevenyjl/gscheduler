@@ -23,4 +23,6 @@ public interface SchedulesService extends IService<Schedule> {
     List<Schedule> queryByProcessDefinitionId(Integer processDefinitionId);
 
     void deleteByDefinitionId(String tenantCode, Integer projectId, Integer processDefinitionId);
+
+    List<Schedule> queryReleaseSchedulerListByProcessDefinitionId(int processDefineId);
 }

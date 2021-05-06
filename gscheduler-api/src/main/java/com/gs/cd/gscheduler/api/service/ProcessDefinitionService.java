@@ -52,5 +52,6 @@ public interface ProcessDefinitionService extends IService<ProcessDefinition> {
 
     boolean deleteProcessDefinitionById(String tenantCode, Integer processDefinitionId);
 
+    void recurseFindSubProcessId(int parentId, List<Integer> ids);
 }
 

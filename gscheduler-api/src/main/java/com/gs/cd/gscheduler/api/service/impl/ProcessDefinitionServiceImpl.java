@@ -29,6 +29,7 @@ import com.gs.cd.gscheduler.common.model.TaskNode;
 import com.gs.cd.gscheduler.common.process.Property;
 import com.gs.cd.gscheduler.common.process.ResourceInfo;
 import com.gs.cd.gscheduler.common.task.AbstractParameters;
+import com.gs.cd.gscheduler.common.task.subprocess.SubProcessParameters;
 import com.gs.cd.gscheduler.common.utils.TaskParametersUtils;
 import com.gs.cd.gscheduler.dao.mapper.ProcessDefinitionMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.gs.cd.gscheduler.common.Constants.CMDPARAM_SUB_PROCESS_DEFINE_ID;
 
 /**
  * <p>
@@ -436,6 +439,30 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
         schedulesService.deleteByDefinitionId(tenantCode, byId.getProjectId(), processDefinitionId);
         //2.删除工作流定义表
         return removeById(processDefinitionId);
+    }
+
+    @Override
+    public void recurseFindSubProcessId(int parentId, List<Integer> ids){
+        ProcessDefinition processDefinition = getById(parentId);
+        String processDefinitionJson = processDefinition.getProcessDefinitionJson();
+
+        ProcessData processData = JSONUtil.toBean(processDefinitionJson, ProcessData.class);
+
+        List<TaskNode> taskNodeList = processData.getTasks();
+
+        if (taskNodeList != null && taskNodeList.size() > 0){
+
+            for (TaskNode taskNode : taskNodeList){
+                String parameter = taskNode.getParams();
+                com.alibaba.fastjson.JSONObject parameterJson = com.alibaba.fastjson.JSONObject.parseObject(parameter);
+                if (parameterJson.getInteger(CMDPARAM_SUB_PROCESS_DEFINE_ID) != null){
+                    SubProcessParameters subProcessParam = JSON.parseObject(parameter, SubProcessParameters.class);
+                    ids.add(subProcessParam.getProcessDefinitionId());
+                    recurseFindSubProcessId(subProcessParam.getProcessDefinitionId(),ids);
+                }
+
+            }
+        }
     }
 
     private boolean graphHasCycle(List<TaskNode> taskNodeResponseList) {

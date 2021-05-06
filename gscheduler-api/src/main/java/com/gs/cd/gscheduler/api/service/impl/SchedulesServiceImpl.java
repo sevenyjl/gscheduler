@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gs.cd.gscheduler.api.service.SchedulesService;
 import com.gs.cd.gscheduler.common.entity.Schedule;
+import com.gs.cd.gscheduler.common.enums.ReleaseState;
 import com.gs.cd.gscheduler.dao.mapper.ScheduleMapper;
 import com.gs.cd.gscheduler.quartz.QuartzExecutors;
 import lombok.extern.log4j.Log4j2;
@@ -49,6 +50,11 @@ public class SchedulesServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> 
     public void deleteByDefinitionId(String tenantCode, Integer projectId, Integer processDefinitionId) {
         List<Schedule> schedules = listByDefinitionId(processDefinitionId);
         schedules.forEach(schedule -> deleteSchedule(tenantCode, projectId, schedule.getId()));
+    }
+
+    @Override
+    public List<Schedule> queryReleaseSchedulerListByProcessDefinitionId(int processDefineId) {
+        return list(new QueryWrapper<Schedule>().lambda().eq(Schedule::getProcessDefinitionId, processDefineId).eq(Schedule::getReleaseState, ReleaseState.ONLINE));
     }
 
     public List<Schedule> listByDefinitionId(Integer processDefinitionId) {

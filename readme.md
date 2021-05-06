@@ -214,6 +214,29 @@ create table "developer_gs"."t_ds_schedules"
 );
 
 
+DROP TABLE IF EXISTS "developer_gs"."t_ds_schedules";
+create table "developer_gs"."t_ds_command"
+(
+    id                        integer      default nextval('"developer_gs".g_scheduler_all_seq'::regclass) not null
+        constraint t_ds_command_pkey
+            primary key,
+    command_type              integer,
+    process_definition_id     integer,
+    command_param             text,
+    task_depend_type          integer,
+    failure_strategy          integer      default 0,
+    warning_type              integer      default 0,
+    warning_group_id          integer,
+    schedule_time             timestamp(6),
+    start_time                timestamp(6),
+    executor_id               varchar(255) default NULL::character varying,
+    dependence                varchar(255) default NULL::character varying,
+    update_time               timestamp(6),
+    process_instance_priority integer,
+    worker_group              varchar(64)  default '-1'::integer
+);
+
+
 
 
 ```
