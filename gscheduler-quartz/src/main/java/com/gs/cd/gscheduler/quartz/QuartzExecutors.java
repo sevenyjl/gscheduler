@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import static org.quartz.JobBuilder.newJob;
 @Component
 @Slf4j
 public class QuartzExecutors {
+    @Autowired
     Scheduler scheduler;
 
     public QuartzExecutors() throws SchedulerException {

@@ -7,6 +7,8 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.utils.DateUtils;
@@ -393,7 +395,6 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
 
     @Override
     public void checkProcessNodeList(ProcessData processData, String processDefinitionJson) {
-
         try {
             if (processData == null) {
                 log.error("process data is null");
@@ -442,7 +443,7 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
     }
 
     @Override
-    public void recurseFindSubProcessId(int parentId, List<Integer> ids){
+    public void recurseFindSubProcessId(int parentId, List<Integer> ids) {
         ProcessDefinition processDefinition = getById(parentId);
         String processDefinitionJson = processDefinition.getProcessDefinitionJson();
 
@@ -450,19 +451,29 @@ public class ProcessDefinitionServiceImpl extends ServiceImpl<ProcessDefinitionM
 
         List<TaskNode> taskNodeList = processData.getTasks();
 
-        if (taskNodeList != null && taskNodeList.size() > 0){
+        if (taskNodeList != null && taskNodeList.size() > 0) {
 
-            for (TaskNode taskNode : taskNodeList){
+            for (TaskNode taskNode : taskNodeList) {
                 String parameter = taskNode.getParams();
                 com.alibaba.fastjson.JSONObject parameterJson = com.alibaba.fastjson.JSONObject.parseObject(parameter);
-                if (parameterJson.getInteger(CMDPARAM_SUB_PROCESS_DEFINE_ID) != null){
+                if (parameterJson.getInteger(CMDPARAM_SUB_PROCESS_DEFINE_ID) != null) {
                     SubProcessParameters subProcessParam = JSON.parseObject(parameter, SubProcessParameters.class);
                     ids.add(subProcessParam.getProcessDefinitionId());
-                    recurseFindSubProcessId(subProcessParam.getProcessDefinitionId(),ids);
+                    recurseFindSubProcessId(subProcessParam.getProcessDefinitionId(), ids);
                 }
 
             }
         }
+    }
+
+    @Override
+    public IPage<ProcessDefinition> pageByProjectName(Page<ProcessDefinition> tPage, String projectName, QueryWrapper<ProcessDefinition> queryWrapper) {
+        Project project = projectService.queryByName(projectName);
+        if (project == null) {
+            throw new RuntimeException(String.format("不存在名称=%s的项目", projectName));
+        }
+        queryWrapper.lambda().eq(ProcessDefinition::getProjectId, project.getId());
+        return page(tPage, queryWrapper);
     }
 
     private boolean graphHasCycle(List<TaskNode> taskNodeResponseList) {

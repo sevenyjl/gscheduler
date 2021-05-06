@@ -3,6 +3,7 @@ package com.gs.cd.gscheduler.api.controller;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gs.cd.cloud.common.ApiResult;
@@ -10,6 +11,7 @@ import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.ProcessDefinitionService;
+import com.gs.cd.gscheduler.api.utils.PageInfo;
 import com.gs.cd.gscheduler.common.entity.ProcessDefinition;
 import com.gs.cd.gscheduler.common.enums.ReleaseState;
 import com.gs.cd.gscheduler.common.model.TaskNode;
@@ -237,12 +239,12 @@ public class ProcessDefinitionController {
                                                       @RequestParam("pageSize") Integer pageSize) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         log.info("query process definition list paging, login user:{}, project name:{}", loginUser.getUserName(), projectName);
-        LambdaQueryWrapper<ProcessDefinition> eq = new QueryWrapper<ProcessDefinition>().lambda()
-                .eq(ProcessDefinition::getProjectName, projectName);
+        QueryWrapper<ProcessDefinition> eq = new QueryWrapper<ProcessDefinition>();
         if (StrUtil.isNotEmpty(searchVal)) {
-            eq.like(ProcessDefinition::getName, "%" + searchVal + "%");
+            eq.lambda().like(ProcessDefinition::getName, "%" + searchVal + "%");
         }
-        return ApiResult.success(processDefinitionService.page(new Page<>(pageNo, pageSize), eq));
+        IPage<ProcessDefinition> page = processDefinitionService.pageByProjectName(new Page<>(pageNo, pageSize), projectName, eq);
+        return ApiResult.success(PageInfo.pageInfoTrans(page));
     }
 
     /**

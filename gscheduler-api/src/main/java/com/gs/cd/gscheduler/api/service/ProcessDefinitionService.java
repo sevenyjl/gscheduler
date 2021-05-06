@@ -1,6 +1,9 @@
 package com.gs.cd.gscheduler.api.service;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gs.cd.cloud.common.ApiResult;
@@ -53,5 +56,8 @@ public interface ProcessDefinitionService extends IService<ProcessDefinition> {
     boolean deleteProcessDefinitionById(String tenantCode, Integer processDefinitionId);
 
     void recurseFindSubProcessId(int parentId, List<Integer> ids);
+
+
+    IPage<ProcessDefinition> pageByProjectName(Page<ProcessDefinition> tPage, String projectName, QueryWrapper<ProcessDefinition> queryWrapper);
 }
 

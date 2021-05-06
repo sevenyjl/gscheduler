@@ -1,5 +1,6 @@
 package com.gs.cd.gscheduler.api.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -115,7 +116,7 @@ public class ProjectController {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         log.info("login user {}, query project list paging", jwtUserInfo.getUserName());
         QueryWrapper<Project> tDsProjectQueryWrapper = new QueryWrapper<>();
-        if (searchVal != null) {
+        if (StrUtil.isNotEmpty(searchVal)) {
             tDsProjectQueryWrapper.lambda().like(Project::getName, "%" + searchVal + "%");
         }
         IPage<Project> page = projectService.page(new Page<>(pageNo, pageSize), tDsProjectQueryWrapper);

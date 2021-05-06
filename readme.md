@@ -27,7 +27,6 @@ spring:
 -- yijialuo 2021年4月28日 10:23:38                 --
 -- gscheduler 调度触发器建模                        --
 -----------------------------------------------------
-DROP TABLE IF EXISTS "developer_gs"."gscheduler_trigger";
 DROP SEQUENCE IF EXISTS "developer_gs"."g_scheduler_all_seq";
 CREATE SEQUENCE "developer_gs"."g_scheduler_all_seq"
     INCREMENT 1
@@ -39,6 +38,7 @@ CYCLE;
 -- ----------------------------
 -- Table structure for gscheduler_trigger
 -- ----------------------------
+DROP TABLE IF EXISTS "developer_gs"."gscheduler_trigger";
 CREATE TABLE "developer_gs"."gscheduler_trigger"
 (
     "id"          int4 NOT NULL DEFAULT nextval('"developer_gs".g_scheduler_all_seq'::regclass),

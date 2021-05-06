@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: 2021/5/6 跳转 
 @Component
 @Slf4j
 public class GSchedulerServerInit implements ApplicationRunner {
@@ -65,7 +66,6 @@ public class GSchedulerServerInit implements ApplicationRunner {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(-1);
         }
     }
 
