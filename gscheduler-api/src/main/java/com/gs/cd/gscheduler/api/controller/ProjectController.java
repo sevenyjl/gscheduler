@@ -1,220 +1,230 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.gs.cd.gscheduler.api.controller;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gs.cd.cloud.common.ApiResult;
+
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
+import com.gs.cd.gscheduler.api.exceptions.ApiException;
+import com.gs.cd.gscheduler.api.service.ProcessDefinitionService;
 import com.gs.cd.gscheduler.api.service.ProjectService;
-import com.gs.cd.gscheduler.api.utils.PageInfo;
-import com.gs.cd.gscheduler.common.entity.Project;
-import lombok.extern.log4j.Log4j2;
+import com.gs.cd.gscheduler.api.utils.Result;
+import com.gs.cd.gscheduler.common.utils.ParameterUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
+import static com.gs.cd.gscheduler.api.enums.Status.*;
 
 /**
- * 项目管理接口
- *
- * @Author seven
- * @Date 2021/4/23 15:08
- * @Description
- * @Version 1.0
+ * project controller
  */
+@Api(tags = "PROJECT_TAG", position = 1)
 @RestController
-@RequestMapping("/gscheduler/projects")
-@Log4j2
-public class ProjectController {
+@RequestMapping("projects")
+public class ProjectController extends BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
     @Autowired
-    ProjectService projectService;
+    private ProjectService projectService;
 
+    @Autowired
+    private ProcessDefinitionService processDefinitionService;
 
     /**
-     * 创建项目
+     * create project
      *
-     * @param tenantCode  租户code
-     * @param token       用户token
-     * @param projectName 项目名称
-     * @param description 项目描述
-     * @return
+     * @param projectName project name
+     * @param description description
+     * @return returns an error if it exists
      */
     @PostMapping(value = "/create")
-    public ApiResult createProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                   @RequestParam("projectName") String projectName,
-                                   @RequestParam(value = "description", required = false) String description) {
-        log.info("create project name: {}, desc: {}", projectName, description);
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        return projectService.createProject(jwtUserInfo, projectName, description) ? ApiResult.success() : ApiResult.error();
+    public Result createProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                @RequestParam("projectName") String projectName,
+                                @RequestParam(value = "description", required = false) String description) {
+
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, create project name: {}, desc: {}", loginUser.getUserName(), projectName, description);
+        Map<String, Object> result = projectService.createProject(loginUser, projectName, description);
+        return returnDataList(result);
     }
 
     /**
-     * 通过id更新项目
+     * updateProcessInstance project
      *
-     * @param tenantCode  租户code
-     * @param token       用户token
-     * @param projectId   项目id
-     * @param projectName 项目名称
-     * @param description 项目描述
-     * @return
+     * @param projectId   project id
+     * @param projectName project name
+     * @param description description
+     * @return update result code
      */
     @PostMapping(value = "/update")
-    public ApiResult updateProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                   @RequestParam("projectId") Integer projectId,
-                                   @RequestParam("projectName") String projectName,
-                                   @RequestParam(value = "description", required = false) String description) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {} , updateProcessInstance project name: {}, desc: {}", jwtUserInfo.getUserName(), projectName, description);
-
-        return projectService.updateProject(jwtUserInfo, projectId, projectName, description) ? ApiResult.success() : ApiResult.error();
+    public Result updateProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                @RequestParam("projectId") Integer projectId,
+                                @RequestParam("projectName") String projectName,
+                                @RequestParam(value = "description", required = false) String description) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {} , updateProcessInstance project name: {}, desc: {}", loginUser.getUserName(), projectName, description);
+        Map<String, Object> result = projectService.update(loginUser, projectId, projectName, description);
+        return returnDataList(result);
     }
 
-
     /**
-     * 通过id查询项目
+     * query project details by id
      *
-     * @param tenantCode
-     * @param token
-     * @param projectId
-     * @return
+     * @param projectId project id
+     * @return project detail information
      */
+
     @GetMapping(value = "/query-by-id")
-    public ApiResult queryProjectById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                      @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                      @RequestParam("projectId") Integer projectId) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, query project by id: {}", jwtUserInfo.getUserName(), projectId);
-        return ApiResult.success(projectService.getById(projectId));
+    public Result queryProjectById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                   @RequestParam("projectId") Integer projectId) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, query project by id: {}", loginUser.getUserName(), projectId);
+
+        Map<String, Object> result = projectService.queryById(projectId);
+        return returnDataList(result);
     }
 
     /**
-     * 分页模糊查询
-     * todo 工作流定义数 正在运行的流程数
+     * query project list paging
      *
-     * @param tenantCode
-     * @param token
-     * @param searchVal  模糊项目名称
-     * @param pageSize
-     * @param pageNo
-     * @return
+     * @param searchVal search value
+     * @param pageSize  page size
+     * @param pageNo    page number
+     * @return project list which the login user have permission to see
      */
+
     @GetMapping(value = "/list-paging")
-    public ApiResult queryProjectListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+    public Result queryProjectListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                            @RequestParam(value = "searchVal", required = false) String searchVal,
-                                            @RequestParam("pageSize") Integer pageSize,
-                                            @RequestParam("pageNo") Integer pageNo
+                                         @RequestParam(value = "searchVal", required = false) String searchVal,
+                                         @RequestParam("pageSize") Integer pageSize,
+                                         @RequestParam("pageNo") Integer pageNo
     ) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, query project list paging", jwtUserInfo.getUserName());
-        QueryWrapper<Project> tDsProjectQueryWrapper = new QueryWrapper<>();
-        if (StrUtil.isNotEmpty(searchVal)) {
-            tDsProjectQueryWrapper.lambda().like(Project::getName, "%" + searchVal + "%");
-        }
-        IPage<Project> page = projectService.page(new Page<>(pageNo, pageSize), tDsProjectQueryWrapper);
-        return ApiResult.success(PageInfo.pageInfoTrans(page));
+
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, query project list paging", loginUser.getUserName());
+        searchVal = ParameterUtils.handleEscapes(searchVal);
+        Map<String, Object> result = projectService.queryProjectListPaging(loginUser, pageSize, pageNo, searchVal);
+        return returnDataListPaging(result);
     }
 
     /**
-     * 通过id删除项目
+     * delete project by id
      *
-     * @param tenantCode
-     * @param token
-     * @param projectId
-     * @return
+     * @param projectId project id
+     * @return delete result code
      */
+
     @GetMapping(value = "/delete")
-    public ApiResult deleteProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                   @RequestParam("projectId") Integer projectId
-    ) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, delete project: {}.", jwtUserInfo.getUserName(), projectId);
-        return projectService.removeById(projectId) ? ApiResult.success() : ApiResult.error();
-    }
-
-    /**
-     * 没有授权的项目
-     *
-     * @param tenantCode
-     * @param token
-     * @param userId
-     * @return
-     */
-    @GetMapping(value = "/unauth-project")
-    public ApiResult queryUnauthorizedProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @RequestParam("userId") Integer userId) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, query unauthorized project by user id: {}.", jwtUserInfo.getUserName(), userId);
-        // TODO: 2021/4/23 查询当前用户不被授权的project
-        return ApiResult.error("未完成");
-    }
-
-    /**
-     * 授权的项目
-     *
-     * @param tenantCode
-     * @param token
-     * @param userId
-     * @return
-     */
-    @GetMapping(value = "/authed-project")
-    public ApiResult queryAuthorizedProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+    public Result deleteProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                            @RequestParam("userId") Integer userId) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, query authorized project by user id: {}.", jwtUserInfo.getUserName(), userId);
-        // TODO: 2021/4/23 查询当前用户被授权的project
-        return ApiResult.error("未完成");
+                                @RequestParam("projectId") Integer projectId
+    ) {
+
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, delete project: {}.", loginUser.getUserName(), projectId);
+        Map<String, Object> result = projectService.deleteProject(loginUser, projectId);
+        return returnDataList(result);
     }
 
     /**
-     * 导入工作流
+     * query unauthorized project
      *
-     * @param tenantCode
-     * @param token
-     * @param file
-     * @param projectName
-     * @return
+     * @param userId    user id
+     * @return the projects which user have not permission to see
      */
-    @PostMapping(value = "/import-definition")
-    public ApiResult importProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                             @RequestParam("file") MultipartFile file,
-                                             @RequestParam("projectName") String projectName) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("import process definition by id, login user:{}, project: {}",
-                jwtUserInfo.getUserName(), projectName);
-        // TODO: 2021/4/23 导入工作流定义
-        return ApiResult.error("未完成");
+
+    @GetMapping(value = "/unauth-project")
+    public Result queryUnauthorizedProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                           @RequestParam("userId") Integer userId) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, query unauthorized project by user id: {}.", loginUser.getUserName(), userId);
+        Map<String, Object> result = projectService.queryUnauthorizedProject(loginUser, userId);
+        return returnDataList(result);
+    }
+
+
+    /**
+     * query authorized project
+     *
+     * @param userId    user id
+     * @return projects which the user have permission to see, Except for items created by this user
+     */
+
+    @GetMapping(value = "/authed-project")
+    public Result queryAuthorizedProject(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                         @RequestParam("userId") Integer userId) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, query authorized project by user id: {}.", loginUser.getUserName(), userId);
+        Map<String, Object> result = projectService.queryAuthorizedProject(loginUser, userId);
+        return returnDataList(result);
     }
 
     /**
-     * 获取所有项目列表
+     * import process definition
      *
-     * @param tenantCode
-     * @param token
-     * @return
+     * @param file        resource file
+     * @param projectName project name
+     * @return import result code
+     */
+
+
+    @PostMapping(value = "/import-definition")
+    public Result importProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                          @RequestParam("file") MultipartFile file,
+                                          @RequestParam("projectName") String projectName) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("import process definition by id, login user:{}, project: {}",
+                loginUser.getUserName(), projectName);
+        Map<String, Object> result = processDefinitionService.importProcessDefinition(loginUser, file, projectName);
+        return returnDataList(result);
+    }
+
+    /**
+     * query all project list
+     *
+     * @return all project list
      */
     @GetMapping(value = "/query-project-list")
-    public ApiResult queryAllProjectList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                         @RequestHeader(HttpHeadersParam.TOKEN) String token) {
-        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        log.info("login user {}, query all project list", jwtUserInfo.getUserName());
-        List<Project> list = projectService.list();
-        return ApiResult.success(list);
+    public Result queryAllProjectList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        logger.info("login user {}, query all project list", loginUser.getUserName());
+        Map<String, Object> result = projectService.queryAllProjectList();
+        return returnDataList(result);
     }
 
-
-    // TODO: 2021/4/23 配置权限接口
 
 }

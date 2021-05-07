@@ -16,7 +16,7 @@
  */
 package com.gs.cd.gscheduler.common.graph;
 
-import cn.hutool.core.collection.CollectionUtil;
+import com.gs.cd.gscheduler.common.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -236,7 +236,7 @@ public class DAG<Node, NodeInfo, EdgeInfo> {
     lock.readLock().lock();
 
     try{
-      return CollectionUtil.subtract(nodesMap.keySet(), reverseEdgesMap.keySet());
+      return CollectionUtils.subtract(nodesMap.keySet(), reverseEdgesMap.keySet());
     }finally {
       lock.readLock().unlock();
     }
@@ -254,7 +254,7 @@ public class DAG<Node, NodeInfo, EdgeInfo> {
     lock.readLock().lock();
 
     try{
-      return CollectionUtil.subtract(nodesMap.keySet(), edgesMap.keySet());
+      return CollectionUtils.subtract(nodesMap.keySet(), edgesMap.keySet());
     }finally {
       lock.readLock().unlock();
     }

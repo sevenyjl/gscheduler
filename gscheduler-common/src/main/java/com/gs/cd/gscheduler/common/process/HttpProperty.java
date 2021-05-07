@@ -16,7 +16,6 @@
  */
 package com.gs.cd.gscheduler.common.process;
 
-
 import com.gs.cd.gscheduler.common.enums.HttpParametersType;
 
 import java.util.Objects;

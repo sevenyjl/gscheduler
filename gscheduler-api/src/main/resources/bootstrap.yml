@@ -7,7 +7,13 @@ spring:
       config:
         file-extension: yml
         shared-dataids: environment.yml,common.yml
-        refreshable-dataids:  environment.yml,common.yml
+        refreshable-dataids: environment.yml,common.yml
+        server-addr: 10.201.83.180:8840
+      discovery:
+        server-addr: 10.201.83.180:8840
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
 mybatis-plus:
   configuration:
     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
@@ -16,3 +22,7 @@ cloud:
     jackson:
       property-naming-strategy:
         use-snake-case: false
+server:
+  servlet:
+    context-path: /gscheduler/
+

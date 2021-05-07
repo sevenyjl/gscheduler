@@ -16,7 +16,6 @@
  */
 package com.gs.cd.gscheduler.common.model;
 
-
 import com.gs.cd.gscheduler.common.enums.DependResult;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
 

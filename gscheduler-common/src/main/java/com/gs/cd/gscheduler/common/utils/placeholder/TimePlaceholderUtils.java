@@ -17,16 +17,13 @@
 
 package com.gs.cd.gscheduler.common.utils.placeholder;
 
-import cn.hutool.core.io.unit.DataUnit;
-import cn.hutool.core.util.StrUtil;
 import com.gs.cd.gscheduler.common.Constants;
-import cn.hutool.core.date.DateUtil;
+import com.gs.cd.gscheduler.common.utils.DateUtils;
+import com.gs.cd.gscheduler.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import static com.gs.cd.gscheduler.common.Constants.*;
 
 /**
  * time place holder utils
@@ -78,7 +75,7 @@ public class TimePlaceholderUtils {
      * @return expression's value
      */
     public static Integer calculate(String expression) {
-        expression = StrUtil.trim(expression);
+        expression = StringUtils.trim(expression);
         expression = convert(expression);
 
         List<String> result = string2List(expression);
@@ -97,22 +94,22 @@ public class TimePlaceholderUtils {
         char[] arr = expression.toCharArray();
 
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == SUBTRACT_CHAR) {
+            if (arr[i] == Constants.SUBTRACT_CHAR) {
                 if (i == 0) {
-                    arr[i] = N;
+                    arr[i] = Constants.N;
                 } else {
                     char c = arr[i - 1];
-                    if (c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR || c == DIVISION_CHAR || c == LEFT_BRACE_CHAR) {
-                        arr[i] = N;
+                    if (c == Constants.ADD_CHAR || c == Constants.SUBTRACT_CHAR || c == Constants.MULTIPLY_CHAR || c == Constants.DIVISION_CHAR || c == Constants.LEFT_BRACE_CHAR) {
+                        arr[i] = Constants.N;
                     }
                 }
-            } else if (arr[i] == ADD_CHAR) {
+            } else if (arr[i] == Constants.ADD_CHAR) {
                 if (i == 0) {
-                    arr[i] = P;
+                    arr[i] = Constants.P;
                 } else {
                     char c = arr[i - 1];
-                    if (c == ADD_CHAR || c == SUBTRACT_CHAR || c == MULTIPLY_CHAR || c == DIVISION_CHAR || c == LEFT_BRACE_CHAR) {
-                        arr[i] = P;
+                    if (c == Constants.ADD_CHAR || c == Constants.SUBTRACT_CHAR || c == Constants.MULTIPLY_CHAR || c == Constants.DIVISION_CHAR || c == Constants.LEFT_BRACE_CHAR) {
+                        arr[i] = Constants.P;
                     }
                 }
             }
@@ -136,11 +133,11 @@ public class TimePlaceholderUtils {
                 result.add(srcList.get(i));
             } else {
                 switch (srcList.get(i).charAt(0)) {
-                    case LEFT_BRACE_CHAR:
+                    case Constants.LEFT_BRACE_CHAR:
                         stack.push(srcList.get(i));
                         break;
-                    case RIGHT_BRACE_CHAR:
-                        while (!LEFT_BRACE_STRING.equals(stack.peek())) {
+                    case Constants.RIGHT_BRACE_CHAR:
+                        while (!Constants.LEFT_BRACE_STRING.equals(stack.peek())) {
                             result.add(stack.pop());
                         }
                         stack.pop();
@@ -178,28 +175,28 @@ public class TimePlaceholderUtils {
                 Integer frontInt = 0;
                 char op = result.get(i).charAt(0);
 
-                if (!(op == P || op == N)) {
+                if (!(op == Constants.P || op == Constants.N)) {
                     frontInt = stack.pop();
                 }
 
                 Integer res = 0;
                 switch (result.get(i).charAt(0)) {
-                    case P:
+                    case Constants.P:
                         res = frontInt + backInt;
                         break;
-                    case N:
+                    case Constants.N:
                         res = frontInt - backInt;
                         break;
-                    case ADD_CHAR:
+                    case Constants.ADD_CHAR:
                         res = frontInt + backInt;
                         break;
-                    case SUBTRACT_CHAR:
+                    case Constants.SUBTRACT_CHAR:
                         res = frontInt - backInt;
                         break;
-                    case MULTIPLY_CHAR:
+                    case Constants.MULTIPLY_CHAR:
                         res = frontInt * backInt;
                         break;
-                    case DIVISION_CHAR:
+                    case Constants.DIVISION_CHAR:
                         res = frontInt / backInt;
                         break;
                     default:
@@ -248,14 +245,14 @@ public class TimePlaceholderUtils {
      * @return true or false
      */
     private static boolean compare(String peek, String cur) {
-        if (MULTIPLY_STRING.equals(peek) && (DIVISION_STRING.equals(cur) || MULTIPLY_STRING.equals(cur) || ADD_STRING.equals(cur) || SUBTRACT_STRING.equals(cur))) {
+        if (Constants.MULTIPLY_STRING.equals(peek) && (Constants.DIVISION_STRING.equals(cur) || Constants.MULTIPLY_STRING.equals(cur) || Constants.ADD_STRING.equals(cur) || Constants.SUBTRACT_STRING.equals(cur))) {
             return true;
-        } else if (DIVISION_STRING.equals(peek) && (DIVISION_STRING.equals(cur) || MULTIPLY_STRING.equals(cur) || ADD_STRING.equals(cur) || SUBTRACT_STRING.equals(cur))) {
+        } else if (Constants.DIVISION_STRING.equals(peek) && (Constants.DIVISION_STRING.equals(cur) || Constants.MULTIPLY_STRING.equals(cur) || Constants.ADD_STRING.equals(cur) || Constants.SUBTRACT_STRING.equals(cur))) {
             return true;
-        } else if (ADD_STRING.equals(peek) && (ADD_STRING.equals(cur) || SUBTRACT_STRING.equals(cur))) {
+        } else if (Constants.ADD_STRING.equals(peek) && (Constants.ADD_STRING.equals(cur) || Constants.SUBTRACT_STRING.equals(cur))) {
             return true;
         } else {
-            return SUBTRACT_STRING.equals(peek) && (ADD_STRING.equals(cur) || SUBTRACT_STRING.equals(cur));
+            return Constants.SUBTRACT_STRING.equals(peek) && (Constants.ADD_STRING.equals(cur) || Constants.SUBTRACT_STRING.equals(cur));
         }
 
     }
@@ -264,7 +261,7 @@ public class TimePlaceholderUtils {
      * Placeholder replacement resolver
      */
     private static class TimePlaceholderResolver implements
-            PropertyPlaceholderHelper.PlaceholderResolver {
+        PropertyPlaceholderHelper.PlaceholderResolver {
 
         private final String value;
 
@@ -294,7 +291,7 @@ public class TimePlaceholderUtils {
      * @return reformat date
      */
     public static String getPlaceHolderTime(String expression, Date date) {
-        if (StrUtil.isBlank(expression)) {
+        if (StringUtils.isBlank(expression)) {
             return null;
         }
         if (null == date) {
@@ -319,14 +316,14 @@ public class TimePlaceholderUtils {
 
                 Map.Entry<Date, String> entry = calcTimeExpression(timeExpression, date);
 
-                String dateStr = DateUtil.format(entry.getKey(), entry.getValue());
+                String dateStr = DateUtils.format(entry.getKey(), entry.getValue());
 
-                Date timestamp = DateUtil.parse(dateStr, Constants.PARAMETER_FORMAT_TIME);
+                Date timestamp = DateUtils.parse(dateStr, Constants.PARAMETER_FORMAT_TIME);
 
                 value = String.valueOf(timestamp.getTime() / 1000);
             } else {
                 Map.Entry<Date, String> entry = calcTimeExpression(expression, date);
-                value = DateUtil.format(entry.getKey(), entry.getValue());
+                value = DateUtils.format(entry.getKey(), entry.getValue());
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -378,8 +375,9 @@ public class TimePlaceholderUtils {
             String dateFormat = params[0];
             String dayExpr = params[1];
             Integer day = calculate(dayExpr);
-            Date targetDate = DateUtil.beginOfMonth(date);
-            targetDate = DateUtil.offsetDay(targetDate, day);
+            Date targetDate = DateUtils.getFirstDayOfMonth(date);
+            targetDate = org.apache.commons.lang.time.DateUtils.addDays(targetDate, day);
+
             return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
         }
 
@@ -401,8 +399,8 @@ public class TimePlaceholderUtils {
             String dateFormat = params[0];
             String dayExpr = params[1];
             Integer day = calculate(dayExpr);
-            Date targetDate = DateUtil.endOfMonth(date);
-            targetDate = DateUtil.offsetDay(targetDate, day);
+            Date targetDate = DateUtils.getLastDayOfMonth(date);
+            targetDate = org.apache.commons.lang.time.DateUtils.addDays(targetDate, day);
 
             return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
         }
@@ -425,12 +423,8 @@ public class TimePlaceholderUtils {
             String dateFormat = params[0];
             String dayExpr = params[1];
             Integer day = calculate(dayExpr);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            cal.setFirstDayOfWeek(Calendar.MONDAY);
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            Date targetDate = cal.getTime();
-            targetDate = DateUtil.offsetDay(targetDate, day);
+            Date targetDate = DateUtils.getMonday(date);
+            targetDate = org.apache.commons.lang.time.DateUtils.addDays(targetDate, day);
             return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
         }
 
@@ -452,12 +446,8 @@ public class TimePlaceholderUtils {
             String dateFormat = params[0];
             String dayExpr = params[1];
             Integer day = calculate(dayExpr);
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-            cal.setFirstDayOfWeek(Calendar.MONDAY);
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-            Date targetDate = cal.getTime();
-            targetDate = DateUtil.offsetDay(targetDate, day);
+            Date targetDate = DateUtils.getSunday(date);
+            targetDate = org.apache.commons.lang.time.DateUtils.addDays(targetDate, day);
 
             return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
         }
@@ -480,7 +470,8 @@ public class TimePlaceholderUtils {
             String dateFormat = params[0];
             String monthExpr = params[1];
             Integer addMonth = calculate(monthExpr);
-            Date targetDate = DateUtil.offsetWeek(date, addMonth);
+            Date targetDate = org.apache.commons.lang.time.DateUtils.addMonths(date, addMonth);
+
             return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
         }
 
@@ -500,7 +491,8 @@ public class TimePlaceholderUtils {
 
             if (Character.isDigit(expression.charAt(index + 1))) {
                 String addMinuteExpr = expression.substring(index + 1);
-                Date targetDate = DateUtil.offsetMinute(date, calcMinutes(addMinuteExpr));
+                Date targetDate = org.apache.commons.lang.time.DateUtils
+                    .addMinutes(date, calcMinutes(addMinuteExpr));
                 String dateFormat = expression.substring(0, index);
 
                 return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
@@ -510,7 +502,8 @@ public class TimePlaceholderUtils {
 
             if (Character.isDigit(expression.charAt(index + 1))) {
                 String addMinuteExpr = expression.substring(index + 1);
-                Date targetDate = DateUtil.offsetMinute(date, calcMinutes(addMinuteExpr));
+                Date targetDate = org.apache.commons.lang.time.DateUtils
+                    .addMinutes(date, 0 - calcMinutes(addMinuteExpr));
                 String dateFormat = expression.substring(0, index);
 
                 return new AbstractMap.SimpleImmutableEntry<>(targetDate, dateFormat);
@@ -540,7 +533,7 @@ public class TimePlaceholderUtils {
         } else {
 
             calcExpression = String.format("60*24*(%s)%s", minuteExpression.substring(0, index),
-                    minuteExpression.substring(index));
+                minuteExpression.substring(index));
         }
 
         return calculate(calcExpression);

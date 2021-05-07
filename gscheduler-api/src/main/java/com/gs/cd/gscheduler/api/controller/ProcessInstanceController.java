@@ -1,22 +1,36 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.gs.cd.gscheduler.api.controller;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
+import com.gs.cd.gscheduler.api.enums.Status;
+import com.gs.cd.gscheduler.api.exceptions.ApiException;
 import com.gs.cd.gscheduler.api.service.ProcessInstanceService;
-import com.gs.cd.gscheduler.api.utils.PageInfo;
+import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.Constants;
-import com.gs.cd.gscheduler.common.entity.ProcessInstance;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
 import com.gs.cd.gscheduler.common.enums.Flag;
-import lombok.extern.log4j.Log4j2;
+import com.gs.cd.gscheduler.common.utils.ParameterUtils;
+import com.gs.cd.gscheduler.common.utils.StringUtils;
+import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,260 +42,335 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.gs.cd.gscheduler.api.enums.Status.*;
+
 /**
- * 工作流实例管理
- *
- * @Author seven
- * @Date 2021/4/29 14:45
- * @Description
- * @Version 1.0
+ * process instance controller
  */
+@Api(tags = "PROCESS_INSTANCE_TAG", position = 10)
 @RestController
-@RequestMapping("/gscheduler/projects/{projectName}/instance")
-@Log4j2
-public class ProcessInstanceController {
+@RequestMapping("projects/{projectName}/instance")
+public class ProcessInstanceController extends BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceController.class);
+
 
     @Autowired
     ProcessInstanceService processInstanceService;
 
     /**
-     * 分页查询
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processDefinitionId
-     * @param searchVal
-     * @param executorName
-     * @param stateType
-     * @param host
-     * @param startTime
-     * @param endTime
-     * @param pageNo
-     * @param pageSize
-     * @return
+     * query process instance list paging
+     *
+     * @param projectName         project name
+     * @param pageNo              page number
+     * @param pageSize            page size
+     * @param processDefinitionId process definition id
+     * @param searchVal           search value
+     * @param stateType           state type
+     * @param host                host
+     * @param startTime           start time
+     * @param endTime             end time
+     * @return process instance list
      */
+    @ApiOperation(value = "queryProcessInstanceList", notes = "QUERY_PROCESS_INSTANCE_LIST_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", dataType = "Int", example = "100"),
+            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", type = "String"),
+            @ApiImplicitParam(name = "executorName", value = "EXECUTOR_NAME", type = "String"),
+            @ApiImplicitParam(name = "stateType", value = "EXECUTION_STATUS", type = "ExecutionStatus"),
+            @ApiImplicitParam(name = "host", value = "HOST", type = "String"),
+            @ApiImplicitParam(name = "startDate", value = "START_DATE", type = "String"),
+            @ApiImplicitParam(name = "endDate", value = "END_DATE", type = "String"),
+            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "100"),
+            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "list-paging")
-    public ApiResult queryProcessInstanceList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @PathVariable String projectName,
-                                              @RequestParam(value = "processDefinitionId", required = false, defaultValue = "0") Integer processDefinitionId,
-                                              @RequestParam(value = "searchVal", required = false) String searchVal,
-                                              @RequestParam(value = "executorName", required = false) String executorName,
-                                              @RequestParam(value = "stateType", required = false) ExecutionStatus stateType,
-                                              @RequestParam(value = "host", required = false) String host,
-                                              @RequestParam(value = "startDate", required = false) String startTime,
-                                              @RequestParam(value = "endDate", required = false) String endTime,
-                                              @RequestParam("pageNo") Integer pageNo,
-                                              @RequestParam("pageSize") Integer pageSize) {
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_PROCESS_INSTANCE_LIST_PAGING_ERROR)
+    public Result queryProcessInstanceList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @RequestParam(value = "processDefinitionId", required = false, defaultValue = "0") Integer processDefinitionId,
+                                           @RequestParam(value = "searchVal", required = false) String searchVal,
+                                           @RequestParam(value = "executorName", required = false) String executorName,
+                                           @RequestParam(value = "stateType", required = false) ExecutionStatus stateType,
+                                           @RequestParam(value = "host", required = false) String host,
+                                           @RequestParam(value = "startDate", required = false) String startTime,
+                                           @RequestParam(value = "endDate", required = false) String endTime,
+                                           @RequestParam("pageNo") Integer pageNo,
+                                           @RequestParam("pageSize") Integer pageSize) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("query all process instance list, login user:{},project name:{}, define id:{}," +
+        logger.info("query all process instance list, login user:{},project name:{}, define id:{}," +
                         "search value:{},executor name:{},state type:{},host:{},start time:{}, end time:{},page number:{}, page size:{}",
                 loginUser.getUserName(), projectName, processDefinitionId, searchVal, executorName, stateType, host,
                 startTime, endTime, pageNo, pageSize);
-        QueryWrapper<ProcessInstance> processInstanceQueryWrapper = new QueryWrapper<>();
-        if (StrUtil.isNotEmpty(searchVal)) {
-            processInstanceQueryWrapper.lambda().like(ProcessInstance::getName, "%" + searchVal + "%");
-        }
-        if (StrUtil.isNotEmpty(executorName)) {
-            processInstanceQueryWrapper.lambda().eq(ProcessInstance::getExecutorName, executorName);
-        }
-        if (stateType != null) {
-            processInstanceQueryWrapper.lambda().eq(ProcessInstance::getState, stateType);
-        }
-        if (StrUtil.isNotEmpty(host)) {
-            processInstanceQueryWrapper.lambda().eq(ProcessInstance::getHost, host);
-        }
-        if (StrUtil.isNotEmpty(startTime)) {
-            DateTime startime = DateUtil.parse(startTime, Constants.YYYY_MM_DD_HH_MM_SS);
-            processInstanceQueryWrapper.lambda().ge(ProcessInstance::getStartTime, startime);
-        }
-        if (StrUtil.isNotEmpty(endTime)) {
-            DateTime endtime = DateUtil.parse(endTime, Constants.YYYY_MM_DD_HH_MM_SS);
-            processInstanceQueryWrapper.lambda().le(ProcessInstance::getStartTime, endtime);
-        }
-        IPage<ProcessInstance> page = processInstanceService.page(new Page<>(pageNo, pageSize), processInstanceQueryWrapper);
-        return ApiResult.success(PageInfo.pageInfoTrans(page));
+        searchVal = ParameterUtils.handleEscapes(searchVal);
+        Map<String, Object> result = processInstanceService.queryProcessInstanceList(
+                loginUser, projectName, processDefinitionId, startTime, endTime, searchVal, executorName, stateType, host, pageNo, pageSize);
+        return returnDataListPaging(result);
     }
 
     /**
-     * 通过实例id获取
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceId
-     * @return
-     * @throws IOException
+     * query task list by process instance id
+     *
+     * @param projectName       project name
+     * @param processInstanceId process instance id
+     * @return task list for the process instance
      */
+    @ApiOperation(value = "queryTaskListByProcessId", notes = "QUERY_TASK_LIST_BY_PROCESS_INSTANCE_ID_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/task-list-by-process-id")
-    public ApiResult queryTaskListByProcessId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @PathVariable String projectName,
-                                              @RequestParam("processInstanceId") Integer processInstanceId
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_TASK_LIST_BY_PROCESS_INSTANCE_ID_ERROR)
+    public Result queryTaskListByProcessId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @RequestParam("processInstanceId") Integer processInstanceId
     ) throws IOException {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("query task instance list by process instance id, login user:{}, project name:{}, process instance id:{}",
+        logger.info("query task instance list by process instance id, login user:{}, project name:{}, process instance id:{}",
                 loginUser.getUserName(), projectName, processInstanceId);
-        Map<String, Object> result = processInstanceService.queryTaskListByProcessId(projectName, processInstanceId);
-        return ApiResult.success(result);
+        Map<String, Object> result = processInstanceService.queryTaskListByProcessId(loginUser, projectName, processInstanceId);
+        return returnDataList(result);
     }
 
     /**
-     * 更新
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceJson
-     * @param processInstanceId
-     * @param scheduleTime
-     * @param syncDefine
-     * @param locations
-     * @param connects
-     * @param flag
-     * @return
-     * @throws ParseException
+     * update process instance
+     *
+     * @param projectName         project name
+     * @param processInstanceJson process instance json
+     * @param processInstanceId   process instance id
+     * @param scheduleTime        schedule time
+     * @param syncDefine          sync define
+     * @param flag                flag
+     * @param locations           locations
+     * @param connects            connects
+     * @return update result code
      */
+    @ApiOperation(value = "updateProcessInstance", notes = "UPDATE_PROCESS_INSTANCE_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceJson", value = "PROCESS_INSTANCE_JSON", type = "String"),
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100"),
+            @ApiImplicitParam(name = "scheduleTime", value = "SCHEDULE_TIME", type = "String"),
+            @ApiImplicitParam(name = "syncDefine", value = "SYNC_DEFINE", type = "Boolean"),
+            @ApiImplicitParam(name = "locations", value = "PROCESS_INSTANCE_LOCATIONS", type = "String"),
+            @ApiImplicitParam(name = "connects", value = "PROCESS_INSTANCE_CONNECTS", type = "String"),
+            @ApiImplicitParam(name = "flag", value = "RECOVERY_PROCESS_INSTANCE_FLAG", type = "Flag"),
+    })
     @PostMapping(value = "/update")
-    public ApiResult updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                           @PathVariable String projectName,
-                                           @RequestParam(value = "processInstanceJson", required = false) String processInstanceJson,
-                                           @RequestParam(value = "processInstanceId") Integer processInstanceId,
-                                           @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
-                                           @RequestParam(value = "syncDefine", required = true) Boolean syncDefine,
-                                           @RequestParam(value = "locations", required = false) String locations,
-                                           @RequestParam(value = "connects", required = false) String connects,
-                                           @RequestParam(value = "flag", required = false) Flag flag
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(UPDATE_PROCESS_INSTANCE_ERROR)
+    public Result updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                        @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                        @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                        @RequestParam(value = "processInstanceJson", required = false) String processInstanceJson,
+                                        @RequestParam(value = "processInstanceId") Integer processInstanceId,
+                                        @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
+                                        @RequestParam(value = "syncDefine", required = true) Boolean syncDefine,
+                                        @RequestParam(value = "locations", required = false) String locations,
+                                        @RequestParam(value = "connects", required = false) String connects,
+                                        @RequestParam(value = "flag", required = false) Flag flag
     ) throws ParseException {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("updateProcessInstance process instance, login user:{}, project name:{}, process instance json:{}," +
+        logger.info("updateProcessInstance process instance, login user:{}, project name:{}, process instance json:{}," +
                         "process instance id:{}, schedule time:{}, sync define:{}, flag:{}, locations:{}, connects:{}",
                 loginUser.getUserName(), projectName, processInstanceJson, processInstanceId, scheduleTime,
                 syncDefine, flag, locations, connects);
-        boolean b = processInstanceService.updateProcessInstance(loginUser, projectName,
+        Map<String, Object> result = processInstanceService.updateProcessInstance(loginUser, projectName,
                 processInstanceId, processInstanceJson, scheduleTime, syncDefine, flag, locations, connects);
-        return b ? ApiResult.success() : ApiResult.error();
+        return returnDataList(result);
     }
 
     /**
-     * 通过id选择
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceId
-     * @return
+     * query process instance by id
+     *
+     * @param projectName       project name
+     * @param processInstanceId process instance id
+     * @return process instance detail
      */
+    @ApiOperation(value = "queryProcessInstanceById", notes = "QUERY_PROCESS_INSTANCE_BY_ID_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/select-by-id")
-    public ApiResult queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @PathVariable String projectName,
-                                              @RequestParam("processInstanceId") Integer processInstanceId
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_PROCESS_INSTANCE_BY_ID_ERROR)
+    public Result queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @RequestParam("processInstanceId") Integer processInstanceId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("query process instance detail by id, login user:{},project name:{}, process instance id:{}",
+        logger.info("query process instance detail by id, login user:{},project name:{}, process instance id:{}",
                 loginUser.getUserName(), projectName, processInstanceId);
-        ProcessInstance processInstance = processInstanceService.getById(processInstanceId);
-        return ApiResult.success(processInstance);
+        Map<String, Object> result = processInstanceService.queryProcessInstanceById(loginUser, projectName, processInstanceId);
+        return returnDataList(result);
     }
 
-
     /**
-     * 删除
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceId
-     * @return
+     * delete process instance by id, at the same time,
+     * delete task instance and their mapping relation data
+     *
+     * @param projectName       project name
+     * @param processInstanceId process instance id
+     * @return delete result code
      */
+    @ApiOperation(value = "deleteProcessInstanceById", notes = "DELETE_PROCESS_INSTANCE_BY_ID_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/delete")
-    public ApiResult deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                               @PathVariable String projectName,
-                                               @RequestParam("processInstanceId") Integer processInstanceId
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(DELETE_PROCESS_INSTANCE_BY_ID_ERROR)
+    public Result deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                            @RequestParam("processInstanceId") Integer processInstanceId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("delete process instance by id, login user:{}, project name:{}, process instance id:{}",
+        logger.info("delete process instance by id, login user:{}, project name:{}, process instance id:{}",
                 loginUser.getUserName(), projectName, processInstanceId);
         // task queue
-        boolean b = processInstanceService.removeById(processInstanceId);
-        return b ? ApiResult.success() : ApiResult.error();
+        Map<String, Object> result = processInstanceService.deleteProcessInstanceById(loginUser, projectName, processInstanceId);
+        return returnDataList(result);
     }
 
     /**
-     * select-sub-process
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param taskId
-     * @return
+     * query sub process instance detail info by task id
+     *
+     * @param projectName project name
+     * @param taskId      task id
+     * @return sub process instance detail
      */
+    @ApiOperation(value = "querySubProcessInstanceByTaskId", notes = "QUERY_SUBPROCESS_INSTANCE_BY_TASK_ID_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "taskId", value = "TASK_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/select-sub-process")
-    public ApiResult querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                     @PathVariable String projectName,
-                                                     @RequestParam("taskId") Integer taskId) {
-        return ApiResult.error("未开发");
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_SUB_PROCESS_INSTANCE_DETAIL_INFO_BY_TASK_ID_ERROR)
+    public Result querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                                  @RequestParam("taskId") Integer taskId) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        Map<String, Object> result = processInstanceService.querySubProcessInstanceByTaskId(loginUser, projectName, taskId);
+        return returnDataList(result);
     }
 
     /**
-     * select-parent-process
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param subId
-     * @return
+     * query parent process instance detail info by sub process instance id
+     *
+     * @param projectName project name
+     * @param subId       sub process id
+     * @return parent instance detail
      */
+    @ApiOperation(value = "queryParentInstanceBySubId", notes = "QUERY_PARENT_PROCESS_INSTANCE_BY_SUB_PROCESS_INSTANCE_ID_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "subId", value = "SUB_PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/select-parent-process")
-    public ApiResult queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                                @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                @PathVariable String projectName,
-                                                @RequestParam("subId") Integer subId) {
-        return ApiResult.error("未开发");
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_PARENT_PROCESS_INSTANCE_DETAIL_INFO_BY_SUB_PROCESS_INSTANCE_ID_ERROR)
+    public Result queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                             @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                             @RequestParam("subId") Integer subId) {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        Map<String, Object> result = processInstanceService.queryParentInstanceBySubId(loginUser, projectName, subId);
+        return returnDataList(result);
     }
 
-
     /**
-     * view-variables
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceId
-     * @return
-     * @throws Exception
+     * query process instance global variables and local variables
+     *
+     * @param processInstanceId process instance id
+     * @return variables data
      */
+    @ApiOperation(value = "viewVariables", notes = "QUERY_PROCESS_INSTANCE_GLOBAL_VARIABLES_AND_LOCAL_VARIABLES_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
     @GetMapping(value = "/view-variables")
-    public ApiResult viewVariables(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                   @PathVariable String projectName,
-                                   @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
-        return ApiResult.error("未开发");
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_PROCESS_INSTANCE_ALL_VARIABLES_ERROR)
+    public Result viewVariables(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        Map<String, Object> result = processInstanceService.viewVariables(processInstanceId);
+        return returnDataList(result);
     }
 
     /**
-     * 批量删除
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceIds 9,1,3,2
-     * @return
+     * encapsulation gantt structure
+     *
+     * @param projectName       project name
+     * @param processInstanceId process instance id
+     * @return gantt tree data
+     */
+    @ApiOperation(value = "vieGanttTree", notes = "VIEW_GANTT_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
+    })
+    @GetMapping(value = "/view-gantt")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(ENCAPSULATION_PROCESS_INSTANCE_GANTT_STRUCTURE_ERROR)
+    public Result viewTree(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                           @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
+        JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
+        Map<String, Object> result = processInstanceService.viewGantt(processInstanceId);
+        return returnDataList(result);
+    }
+
+    /**
+     * batch delete process instance by ids, at the same time,
+     * delete task instance and their mapping relation data
+     *
+     * @param projectName        project name
+     * @param processInstanceIds process instance id
+     * @return delete result code
      */
     @GetMapping(value = "/batch-delete")
-    public ApiResult batchDeleteProcessInstanceByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                     @PathVariable String projectName,
-                                                     @RequestParam("processInstanceIds") String processInstanceIds
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(BATCH_DELETE_PROCESS_INSTANCE_BY_IDS_ERROR)
+    public Result batchDeleteProcessInstanceByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                                  @PathVariable String projectName,
+                                                  @RequestParam("processInstanceIds") String processInstanceIds
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("delete process instance by ids, login user:{}, project name:{}, process instance ids :{}",
+        logger.info("delete process instance by ids, login user:{}, project name:{}, process instance ids :{}",
                 loginUser.getUserName(), projectName, processInstanceIds);
-        if (StrUtil.isNotEmpty(processInstanceIds)) {
+        // task queue
+        Map<String, Object> result = new HashMap<>(5);
+        List<String> deleteFailedIdList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(processInstanceIds)) {
             String[] processInstanceIdArray = processInstanceIds.split(",");
+
             for (String strProcessInstanceId : processInstanceIdArray) {
                 int processInstanceId = Integer.parseInt(strProcessInstanceId);
-                processInstanceService.removeById(processInstanceId);
+                try {
+                    Map<String, Object> deleteResult = processInstanceService.deleteProcessInstanceById(loginUser, projectName, processInstanceId);
+                    if (!Status.SUCCESS.equals(deleteResult.get(Constants.STATUS))) {
+                        deleteFailedIdList.add(strProcessInstanceId);
+                        logger.error((String) deleteResult.get(Constants.MSG));
+                    }
+                } catch (Exception e) {
+                    deleteFailedIdList.add(strProcessInstanceId);
+                }
             }
         }
-        return ApiResult.success();
+        if (!deleteFailedIdList.isEmpty()) {
+            putMsg(result, Status.BATCH_DELETE_PROCESS_INSTANCE_BY_IDS_ERROR, String.join(",", deleteFailedIdList));
+        } else {
+            putMsg(result, Status.SUCCESS);
+        }
+
+        return returnDataList(result);
     }
-
-
 }

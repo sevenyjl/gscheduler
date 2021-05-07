@@ -17,21 +17,15 @@
 package com.gs.cd.gscheduler.api.controller;
 
 
-import cn.hutool.core.date.DateUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.service.TaskInstanceService;
-import com.gs.cd.gscheduler.api.utils.PageInfo;
-import com.gs.cd.gscheduler.common.Constants;
-import com.gs.cd.gscheduler.common.entity.TaskInstance;
+import com.gs.cd.gscheduler.api.exceptions.ApiException;
+import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
-import lombok.extern.slf4j.Slf4j;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,79 +34,75 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/**
- * 任务实例管理
- */
+import static com.gs.cd.gscheduler.api.enums.Status.QUERY_TASK_LIST_PAGING_ERROR;
 
+/**
+ * task instance controller
+ */
+@Api(tags = "TASK_INSTANCE_TAG", position = 11)
 @RestController
-@Slf4j
-@RequestMapping("/gscheduler/projects/{projectName}/task-instance")
-public class TaskInstanceController {
+@RequestMapping("/projects/{projectName}/task-instance")
+public class TaskInstanceController extends BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskInstanceController.class);
+
     @Autowired
     TaskInstanceService taskInstanceService;
 
+
     /**
-     * 分页查询
+     * query task list paging
      *
-     * @param tenantCode
-     * @param token
-     * @param projectName
-     * @param processInstanceId
-     * @param searchVal
-     * @param taskName
-     * @param executorName
-     * @param stateType
-     * @param host
-     * @param startTime
-     * @param endTime
-     * @param pageNo
-     * @param pageSize
-     * @return
+     * @param loginUser         login user
+     * @param projectName       project name
+     * @param processInstanceId process instance id
+     * @param searchVal         search value
+     * @param taskName          task name
+     * @param stateType         state type
+     * @param host              host
+     * @param startTime         start time
+     * @param endTime           end time
+     * @param pageNo            page number
+     * @param pageSize          page size
+     * @return task list page
      */
+    @ApiOperation(value = "queryTaskListPaging", notes = "QUERY_TASK_INSTANCE_LIST_PAGING_NOTES")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", required = false, dataType = "Int", example = "100"),
+            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", type = "String"),
+            @ApiImplicitParam(name = "taskName", value = "TASK_NAME", type = "String"),
+            @ApiImplicitParam(name = "executorName", value = "EXECUTOR_NAME", type = "String"),
+            @ApiImplicitParam(name = "stateType", value = "EXECUTION_STATUS", type = "ExecutionStatus"),
+            @ApiImplicitParam(name = "host", value = "HOST", type = "String"),
+            @ApiImplicitParam(name = "startDate", value = "START_DATE", type = "String"),
+            @ApiImplicitParam(name = "endDate", value = "END_DATE", type = "String"),
+            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "20")
+    })
     @GetMapping("/list-paging")
-    public ApiResult queryTaskListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
-                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                         @PathVariable String projectName,
-                                         @RequestParam(value = "processInstanceId", required = false) Integer processInstanceId,
-                                         @RequestParam(value = "searchVal", required = false) String searchVal,
-                                         @RequestParam(value = "taskName", required = false) String taskName,
-                                         @RequestParam(value = "executorName", required = false) String executorName,
-                                         @RequestParam(value = "stateType", required = false) ExecutionStatus stateType,
-                                         @RequestParam(value = "host", required = false) String host,
-                                         @RequestParam(value = "startDate", required = false) String startTime,
-                                         @RequestParam(value = "endDate", required = false) String endTime,
-                                         @RequestParam("pageNo") Integer pageNo,
-                                         @RequestParam("pageSize") Integer pageSize) {
+    @ResponseStatus(HttpStatus.OK)
+    @ApiException(QUERY_TASK_LIST_PAGING_ERROR)
+    public Result queryTaskListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                      @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                      @RequestParam(value = "processInstanceId", required = false, defaultValue = "0") Integer processInstanceId,
+                                      @RequestParam(value = "searchVal", required = false) String searchVal,
+                                      @RequestParam(value = "taskName", required = false) String taskName,
+                                      @RequestParam(value = "executorName", required = false) String executorName,
+                                      @RequestParam(value = "stateType", required = false) ExecutionStatus stateType,
+                                      @RequestParam(value = "host", required = false) String host,
+                                      @RequestParam(value = "startDate", required = false) String startTime,
+                                      @RequestParam(value = "endDate", required = false) String endTime,
+                                      @RequestParam("pageNo") Integer pageNo,
+                                      @RequestParam("pageSize") Integer pageSize) {
+
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
-        log.info("query task instance list, project name:{},process instance:{}, search value:{},task name:{}, executor name: {},state type:{}, host:{}, start:{}, end:{}",
+        logger.info("query task instance list, project name:{},process instance:{}, search value:{},task name:{}, executor name: {},state type:{}, host:{}, start:{}, end:{}",
                 projectName, processInstanceId, searchVal, taskName, executorName, stateType, host, startTime, endTime);
-        QueryWrapper<TaskInstance> taskInstanceQueryWrapper = new QueryWrapper<>();
-        if (processInstanceId != null) {
-            taskInstanceQueryWrapper.lambda().eq(TaskInstance::getProcessInstanceId, processInstanceId);
-        }
-        if (searchVal != null) {
-            taskInstanceQueryWrapper.lambda().like(TaskInstance::getName, "%" + searchVal + "%");
-        }
-        if (taskName != null) {
-            taskInstanceQueryWrapper.lambda().eq(TaskInstance::getName, taskName);
-        }
-        if (executorName != null) {
-            taskInstanceQueryWrapper.lambda().eq(TaskInstance::getExecutorName, executorName);
-        }
-        if (stateType != null) {
-            taskInstanceQueryWrapper.lambda().eq(TaskInstance::getState, stateType);
-        }
-        if (host != null) {
-            taskInstanceQueryWrapper.lambda().eq(TaskInstance::getHost, host);
-        }
-        if (startTime != null) {
-            taskInstanceQueryWrapper.lambda().ge(TaskInstance::getStartTime, DateUtil.parse(startTime, Constants.YYYY_MM_DD_HH_MM_SS));
-        }
-        if (endTime != null) {
-            taskInstanceQueryWrapper.lambda().le(TaskInstance::getStartTime, DateUtil.parse(endTime, Constants.YYYY_MM_DD_HH_MM_SS));
-        }
-        IPage<TaskInstance> page = taskInstanceService.page(new Page<>(pageNo, pageSize), taskInstanceQueryWrapper);
-        return ApiResult.success(PageInfo.pageInfoTrans(page));
+        searchVal = ParameterUtils.handleEscapes(searchVal);
+        Map<String, Object> result = taskInstanceService.queryTaskListPaging(
+                loginUser, projectName, processInstanceId, taskName, executorName, startTime, endTime, searchVal, stateType, host, pageNo, pageSize);
+        return returnDataListPaging(result);
     }
 
 }

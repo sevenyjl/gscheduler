@@ -17,10 +17,10 @@
 package com.gs.cd.gscheduler.common.model;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.util.Date;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * server

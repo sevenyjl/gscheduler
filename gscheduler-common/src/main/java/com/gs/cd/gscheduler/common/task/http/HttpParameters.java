@@ -16,12 +16,12 @@
  */
 package com.gs.cd.gscheduler.common.task.http;
 
-import cn.hutool.core.util.StrUtil;
 import com.gs.cd.gscheduler.common.enums.HttpCheckCondition;
 import com.gs.cd.gscheduler.common.enums.HttpMethod;
 import com.gs.cd.gscheduler.common.process.HttpProperty;
 import com.gs.cd.gscheduler.common.process.ResourceInfo;
 import com.gs.cd.gscheduler.common.task.AbstractParameters;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class HttpParameters extends AbstractParameters {
 
     @Override
     public boolean checkParameters() {
-        return  StrUtil.isNotEmpty(url);
+        return  StringUtils.isNotEmpty(url);
     }
 
     @Override

@@ -18,13 +18,14 @@ package com.gs.cd.gscheduler.common.utils.placeholder;
 
 import com.gs.cd.gscheduler.common.Constants;
 import com.gs.cd.gscheduler.common.enums.CommandType;
-import cn.hutool.core.date.DateUtil;
+import com.gs.cd.gscheduler.common.utils.DateUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.time.DateUtils.addDays;
+import static com.gs.cd.gscheduler.common.utils.DateUtils.format;
+import static org.apache.commons.lang.time.DateUtils.addDays;
 
 
 /**
@@ -65,9 +66,9 @@ public class BusinessTimeUtils {
     }
     Date businessCurrentDate = addDays(businessDate, 1);
     Map<String, String> result = new HashMap<>();
-    result.put(Constants.PARAMETER_CURRENT_DATE, DateUtil.format(businessCurrentDate, Constants.PARAMETER_FORMAT_DATE));
-    result.put(Constants.PARAMETER_BUSINESS_DATE, DateUtil.format(businessDate, Constants.PARAMETER_FORMAT_DATE));
-    result.put(Constants.PARAMETER_DATETIME, DateUtil.format(businessCurrentDate, Constants.PARAMETER_FORMAT_TIME));
+    result.put(Constants.PARAMETER_CURRENT_DATE, DateUtils.format(businessCurrentDate, Constants.PARAMETER_FORMAT_DATE));
+    result.put(Constants.PARAMETER_BUSINESS_DATE, DateUtils.format(businessDate, Constants.PARAMETER_FORMAT_DATE));
+    result.put(Constants.PARAMETER_DATETIME, DateUtils.format(businessCurrentDate, Constants.PARAMETER_FORMAT_TIME));
     return result;
   }
 }

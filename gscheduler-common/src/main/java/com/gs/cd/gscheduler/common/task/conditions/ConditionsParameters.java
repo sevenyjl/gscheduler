@@ -16,7 +16,6 @@
  */
 package com.gs.cd.gscheduler.common.task.conditions;
 
-
 import com.gs.cd.gscheduler.common.enums.DependentRelation;
 import com.gs.cd.gscheduler.common.model.DependentTaskModel;
 import com.gs.cd.gscheduler.common.process.ResourceInfo;

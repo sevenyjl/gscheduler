@@ -16,7 +16,6 @@
  */
 package com.gs.cd.gscheduler.common.task;
 
-
 import com.gs.cd.gscheduler.common.process.Property;
 import com.gs.cd.gscheduler.common.process.ResourceInfo;
 

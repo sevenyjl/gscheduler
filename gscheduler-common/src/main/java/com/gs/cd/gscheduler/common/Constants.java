@@ -16,10 +16,8 @@
  */
 package com.gs.cd.gscheduler.common;
 
-import cn.hutool.system.oshi.OshiUtil;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
-import oshi.PlatformEnum;
-import oshi.SystemInfo;
+import com.gs.cd.gscheduler.common.utils.OSUtils;
 
 import java.util.regex.Pattern;
 
@@ -27,8 +25,6 @@ import java.util.regex.Pattern;
  * Constants
  */
 public final class Constants {
-
-    private static final SystemInfo systemInfo = new SystemInfo();
 
     private Constants() {
         throw new IllegalStateException("Constants class");
@@ -125,19 +121,19 @@ public final class Constants {
     public static final String DATA_BASEDIR_PATH = "data.basedir.path";
 
     /**
-     * dolphinscheduler.env.path
+     * gscheduler.env.path
      */
-    public static final String DOLPHINSCHEDULER_ENV_PATH = "dolphinscheduler.env.path";
+    public static final String DOLPHINSCHEDULER_ENV_PATH = "gscheduler.env.path";
 
     /**
      * environment properties default path
      */
-    public static final String ENV_PATH = "env/dolphinscheduler_env.sh";
+    public static final String ENV_PATH = "env/gscheduler_env.sh";
 
     /**
      * python home
      */
-    public static final String PYTHON_HOME = "PYTHON_HOME";
+    public static final String PYTHON_HOME="PYTHON_HOME";
 
     /**
      * resource.view.suffixs
@@ -366,7 +362,7 @@ public final class Constants {
     /**
      * master reserved memory
      */
-//    public static final double DEFAULT_MASTER_RESERVED_MEMORY = OshiUtil.getMemory().getTotal() / 10;
+    public static final double DEFAULT_MASTER_RESERVED_MEMORY = OSUtils.totalMemorySize() / 10;
 
     /**
      * worker cpu load
@@ -376,7 +372,8 @@ public final class Constants {
     /**
      * worker reserved memory
      */
-//    public static final double DEFAULT_WORKER_RESERVED_MEMORY = OSUtils.totalMemorySize() / 10;
+    public static final double DEFAULT_WORKER_RESERVED_MEMORY = OSUtils.totalMemorySize() / 10;
+
 
 
     /**
@@ -706,7 +703,7 @@ public final class Constants {
      * application regex
      */
     public static final String APPLICATION_REGEX = "application_\\d+_\\d+";
-    public static final String PID = SystemInfo.getCurrentPlatformEnum() == PlatformEnum.WINDOWS ? "handle" : "pid";
+    public static final String PID = OSUtils.isWindows() ? "handle" : "pid";
     /**
      * month_begin
      */
@@ -764,7 +761,7 @@ public final class Constants {
 
 
     /**
-     * preview schedule execute count
+     *  preview schedule execute count
      */
     public static final int PREVIEW_SCHEDULE_EXECUTE_COUNT = 5;
 
@@ -860,17 +857,18 @@ public final class Constants {
     /**
      * data total
      */
-    public static final String COUNT = "count";
+    public  static final String COUNT = "count";
 
     /**
      * page size
      */
-    public static final String PAGE_SIZE = "pageSize";
+    public  static final String PAGE_SIZE = "pageSize";
 
     /**
      * current page no
      */
-    public static final String PAGE_NUMBER = "pageNo";
+    public  static final String PAGE_NUMBER = "pageNo";
+
 
 
     /**
@@ -970,11 +968,11 @@ public final class Constants {
     /**
      * authorize writable perm
      */
-    public static final int AUTHORIZE_WRITABLE_PERM = 7;
+    public static final int AUTHORIZE_WRITABLE_PERM=7;
     /**
      * authorize readable perm
      */
-    public static final int AUTHORIZE_READABLE_PERM = 4;
+    public static final int AUTHORIZE_READABLE_PERM=4;
 
 
     /**

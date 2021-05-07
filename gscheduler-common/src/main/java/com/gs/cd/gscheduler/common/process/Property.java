@@ -17,7 +17,6 @@
 package com.gs.cd.gscheduler.common.process;
 
 
-
 import com.gs.cd.gscheduler.common.enums.DataType;
 import com.gs.cd.gscheduler.common.enums.Direct;
 

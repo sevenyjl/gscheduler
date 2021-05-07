@@ -1,5 +1,0 @@
-gscheduler:
-  server: localhost:18077
-spring:
-  application:
-    name: test-spring

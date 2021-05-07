@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package com.gs.cd.gscheduler.common.task.subprocess;
-
 import com.gs.cd.gscheduler.common.process.ResourceInfo;
 import com.gs.cd.gscheduler.common.task.AbstractParameters;
 
