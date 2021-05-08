@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Map;
 
@@ -37,7 +36,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * data quality controller
  */
-@ApiIgnore
+
 @RestController
 @RequestMapping("/projects/task-record")
 public class TaskRecordController extends BaseController {
@@ -52,7 +51,6 @@ public class TaskRecordController extends BaseController {
     /**
      * query task record list page
      *
-     * @param loginUser   login user
      * @param taskName    task name
      * @param state       state
      * @param sourceTable source table

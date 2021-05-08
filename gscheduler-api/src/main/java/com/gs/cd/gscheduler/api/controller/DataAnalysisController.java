@@ -23,10 +23,10 @@ import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.exceptions.ApiException;
 import com.gs.cd.gscheduler.api.service.DataAnalysisService;
 import com.gs.cd.gscheduler.api.utils.Result;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+
+
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * data analysis controller
  */
-@Api(tags = "DATA_ANALYSIS_TAG", position = 1)
+
 @RestController
 @RequestMapping("projects/analysis")
 public class DataAnalysisController extends BaseController {

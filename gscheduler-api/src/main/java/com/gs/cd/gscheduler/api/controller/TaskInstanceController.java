@@ -25,7 +25,7 @@ import com.gs.cd.gscheduler.api.exceptions.ApiException;
 import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
-import io.swagger.annotations.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.QUERY_TASK_LIST_PAGING_ERROR
 /**
  * task instance controller
  */
-@Api(tags = "TASK_INSTANCE_TAG", position = 11)
+
 @RestController
 @RequestMapping("/projects/{projectName}/task-instance")
 public class TaskInstanceController extends BaseController {
@@ -73,7 +73,7 @@ public class TaskInstanceController extends BaseController {
 
     public Result queryTaskListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                      @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                       @PathVariable String projectName,
                                       @RequestParam(value = "processInstanceId", required = false, defaultValue = "0") Integer processInstanceId,
                                       @RequestParam(value = "searchVal", required = false) String searchVal,
                                       @RequestParam(value = "taskName", required = false) String taskName,

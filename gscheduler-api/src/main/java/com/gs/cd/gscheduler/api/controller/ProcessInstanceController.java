@@ -28,7 +28,7 @@ import com.gs.cd.gscheduler.common.enums.ExecutionStatus;
 import com.gs.cd.gscheduler.common.enums.Flag;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
 import com.gs.cd.gscheduler.common.utils.StringUtils;
-import io.swagger.annotations.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * process instance controller
  */
-@Api(tags = "PROCESS_INSTANCE_TAG", position = 10)
+
 @RestController
 @RequestMapping("projects/{projectName}/instance")
 public class ProcessInstanceController extends BaseController {
@@ -79,7 +79,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result queryProcessInstanceList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                            @RequestParam(value = "processDefinitionId", required = false, defaultValue = "0") Integer processDefinitionId,
                                            @RequestParam(value = "searchVal", required = false) String searchVal,
                                            @RequestParam(value = "executorName", required = false) String executorName,
@@ -114,7 +114,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result queryTaskListByProcessId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                            @RequestParam("processInstanceId") Integer processInstanceId
     ) throws IOException {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -144,7 +144,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                        @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                        @PathVariable String projectName,
                                         @RequestParam(value = "processInstanceJson", required = false) String processInstanceJson,
                                         @RequestParam(value = "processInstanceId") Integer processInstanceId,
                                         @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
@@ -177,7 +177,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                            @RequestParam("processInstanceId") Integer processInstanceId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -202,7 +202,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                            @PathVariable String projectName,
                                             @RequestParam("processInstanceId") Integer processInstanceId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -227,7 +227,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                                  @PathVariable String projectName,
                                                   @RequestParam("taskId") Integer taskId) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         Map<String, Object> result = processInstanceService.querySubProcessInstanceByTaskId(loginUser, projectName, taskId);
@@ -248,7 +248,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                             @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                             @PathVariable String projectName,
                                              @RequestParam("subId") Integer subId) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         Map<String, Object> result = processInstanceService.queryParentInstanceBySubId(loginUser, projectName, subId);
@@ -288,7 +288,7 @@ public class ProcessInstanceController extends BaseController {
 
     public Result viewTree(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                           @PathVariable String projectName,
                            @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         Map<String, Object> result = processInstanceService.viewGantt(processInstanceId);

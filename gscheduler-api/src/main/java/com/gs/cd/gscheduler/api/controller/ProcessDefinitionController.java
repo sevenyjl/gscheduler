@@ -27,7 +27,7 @@ import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.Constants;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
 import com.gs.cd.gscheduler.common.utils.StringUtils;
-import io.swagger.annotations.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * process definition controller
  */
-@Api(tags = "PROCESS_DEFINITION_TAG", position = 2)
+
 @RestController
 @RequestMapping("projects/{projectName}/process")
 public class ProcessDefinitionController extends BaseController {
@@ -71,7 +71,7 @@ public class ProcessDefinitionController extends BaseController {
     @PostMapping(value = "/save")
     public Result createProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                           @RequestParam(value = "name", required = true) String name,
                                           @RequestParam(value = "processDefinitionJson", required = true) String json,
                                           @RequestParam(value = "locations", required = true) String locations,
@@ -97,7 +97,7 @@ public class ProcessDefinitionController extends BaseController {
     @PostMapping(value = "/copy")
     public Result copyProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                        @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                         @PathVariable String projectName,
                                         @RequestParam(value = "processId", required = true) int processId) throws JsonProcessingException {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("copy process definition, login user:{}, project name:{}, process definition id:{}",
@@ -117,7 +117,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/verify-name")
     public Result verifyProcessDefinitionName(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                               @PathVariable String projectName,
                                               @RequestParam(value = "name", required = true) String name) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("verify process definition name unique, user:{}, project name:{}, process definition name:{}",
@@ -143,7 +143,7 @@ public class ProcessDefinitionController extends BaseController {
     @PostMapping(value = "/update")
     public Result updateProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                           @RequestParam(value = "name", required = true) String name,
                                           @RequestParam(value = "id", required = true) int id,
                                           @RequestParam(value = "processDefinitionJson", required = true) String processDefinitionJson,
@@ -173,7 +173,7 @@ public class ProcessDefinitionController extends BaseController {
     @PostMapping(value = "/release")
     public Result releaseProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                            @PathVariable String projectName,
                                            @RequestParam(value = "processId", required = true) int processId,
                                            @RequestParam(value = "releaseState", required = true) int releaseState) {
 
@@ -195,7 +195,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/select-by-id")
     public Result queryProcessDefinitionById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                             @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                              @PathVariable String projectName,
                                              @RequestParam("processId") Integer processId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -215,7 +215,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/list")
     public Result queryProcessDefinitionList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                             @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName
+                                              @PathVariable String projectName
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("query process definition list, login user:{}, project name:{}",
@@ -238,7 +238,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/list-paging")
     public Result queryProcessDefinitionListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                    @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                   @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                                    @PathVariable String projectName,
                                                    @RequestParam("pageNo") Integer pageNo,
                                                    @RequestParam(value = "searchVal", required = false) String searchVal,
                                                    @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
@@ -266,7 +266,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/view-tree")
     public Result viewTree(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                            @PathVariable String projectName,
                            @RequestParam("processId") Integer id,
                            @RequestParam("limit") Integer limit) throws Exception {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -286,7 +286,7 @@ public class ProcessDefinitionController extends BaseController {
     public Result getNodeListByDefinitionId(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+             @PathVariable String projectName,
             @RequestParam("processDefinitionId") Integer processDefinitionId) throws Exception {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("query task node name list by definitionId, login user:{}, project name:{}, id : {}",
@@ -307,7 +307,7 @@ public class ProcessDefinitionController extends BaseController {
     public Result getNodeListByDefinitionIdList(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestHeader(HttpHeadersParam.TOKEN) String token,
-            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+             @PathVariable String projectName,
             @RequestParam("processDefinitionIdList") String processDefinitionIdList) throws Exception {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
 
@@ -328,7 +328,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/delete")
     public Result deleteProcessDefinitionById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                              @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                               @PathVariable String projectName,
                                               @RequestParam("processDefinitionId") Integer processDefinitionId
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -349,7 +349,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/batch-delete")
     public Result batchDeleteProcessDefinitionByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                    @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                                     @PathVariable String projectName,
                                                     @RequestParam("processDefinitionIds") String processDefinitionIds
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -396,7 +396,7 @@ public class ProcessDefinitionController extends BaseController {
     @GetMapping(value = "/export")
     public void batchExportProcessDefinitionByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                                   @PathVariable String projectName,
                                                   @RequestParam("processDefinitionIds") String processDefinitionIds,
                                                   HttpServletResponse response) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);

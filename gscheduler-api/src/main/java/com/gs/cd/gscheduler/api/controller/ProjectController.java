@@ -25,10 +25,10 @@ import com.gs.cd.gscheduler.api.service.ProcessDefinitionService;
 import com.gs.cd.gscheduler.api.service.ProjectService;
 import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+
+
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * project controller
  */
-@Api(tags = "PROJECT_TAG", position = 1)
+
 @RestController
 @RequestMapping("projects")
 public class ProjectController extends BaseController {

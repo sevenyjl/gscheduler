@@ -26,13 +26,12 @@ import com.gs.cd.gscheduler.api.exceptions.ApiException;
 import com.gs.cd.gscheduler.api.service.ExecutorService;
 import com.gs.cd.gscheduler.api.utils.Result;
 import com.gs.cd.gscheduler.common.Constants;
-import io.swagger.annotations.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.ParseException;
 import java.util.Map;
@@ -43,7 +42,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * execute process controller
  */
-@Api(tags = "PROCESS_INSTANCE_EXECUTOR_TAG", position = 1)
+
 @RestController
 @RequestMapping("projects/{projectName}/executors")
 public class ExecutorController extends BaseController {
@@ -80,7 +79,7 @@ public class ExecutorController extends BaseController {
 
     public Result startProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                        @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                       @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                        @PathVariable String projectName,
                                        @RequestParam(value = "processDefinitionId") int processDefinitionId,
                                        @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
                                        @RequestParam(value = "failureStrategy", required = true) FailureStrategy failureStrategy,
@@ -129,7 +128,7 @@ public class ExecutorController extends BaseController {
 
     public Result execute(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                           @PathVariable String projectName,
                           @RequestParam("processInstanceId") Integer processInstanceId,
                           @RequestParam("executeType") ExecuteType executeType
     ) {
@@ -167,7 +166,7 @@ public class ExecutorController extends BaseController {
      * @param processInstanceId   process instance id
      * @return receivers cc list
      */
-    @ApiIgnore
+
 
 
     @GetMapping(value = "/get-receiver-cc")

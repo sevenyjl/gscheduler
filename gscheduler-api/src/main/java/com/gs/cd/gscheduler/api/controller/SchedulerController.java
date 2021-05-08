@@ -28,7 +28,7 @@ import com.gs.cd.gscheduler.common.enums.Priority;
 import com.gs.cd.gscheduler.common.enums.ReleaseState;
 import com.gs.cd.gscheduler.common.enums.WarningType;
 import com.gs.cd.gscheduler.common.utils.ParameterUtils;
-import io.swagger.annotations.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ import static com.gs.cd.gscheduler.api.enums.Status.*;
 /**
  * schedule controller
  */
-@Api(tags = "SCHEDULER_TAG", position = 13)
+
 @RestController
 @RequestMapping("/projects/{projectName}/schedule")
 public class SchedulerController extends BaseController {
@@ -80,7 +80,7 @@ public class SchedulerController extends BaseController {
 
     public Result createSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                 @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                  @PathVariable String projectName,
                                  @RequestParam(value = "processDefinitionId") Integer processDefinitionId,
                                  @RequestParam(value = "schedule") String schedule,
                                  @RequestParam(value = "warningType", required = false, defaultValue = DEFAULT_WARNING_TYPE) WarningType warningType,
@@ -123,7 +123,7 @@ public class SchedulerController extends BaseController {
 
     public Result updateSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                 @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                  @PathVariable String projectName,
                                  @RequestParam(value = "id") Integer id,
                                  @RequestParam(value = "schedule") String schedule,
                                  @RequestParam(value = "warningType", required = false, defaultValue = DEFAULT_WARNING_TYPE) WarningType warningType,
@@ -158,7 +158,7 @@ public class SchedulerController extends BaseController {
 
     public Result online(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                          @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                         @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable("projectName") String projectName,
+                          @PathVariable("projectName") String projectName,
                          @RequestParam("id") Integer id) {
 
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -181,7 +181,7 @@ public class SchedulerController extends BaseController {
 
     public Result offline(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable("projectName") String projectName,
+                           @PathVariable("projectName") String projectName,
                           @RequestParam("id") Integer id) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("login user {}, schedule offline, project name: {}, process definition id: {}",
@@ -207,7 +207,7 @@ public class SchedulerController extends BaseController {
 
     public Result queryScheduleListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                           @PathVariable String projectName,
                                           @RequestParam Integer processDefinitionId,
                                           @RequestParam(value = "searchVal", required = false) String searchVal,
                                           @RequestParam("pageNo") Integer pageNo,
@@ -255,7 +255,7 @@ public class SchedulerController extends BaseController {
 
     public Result queryScheduleList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                    @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName) {
+                                     @PathVariable String projectName) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
         logger.info("login user {}, query schedule list, project name: {}",
                 loginUser.getUserName(), projectName);
@@ -277,7 +277,7 @@ public class SchedulerController extends BaseController {
 
     public Result previewSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
-                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
+                                   @PathVariable String projectName,
                                   @RequestParam(value = "schedule") String schedule
     ) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
