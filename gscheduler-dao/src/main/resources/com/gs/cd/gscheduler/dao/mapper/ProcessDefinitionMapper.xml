@@ -22,25 +22,27 @@
         select pd.*
         from t_ds_process_definition pd
         WHERE pd.project_id = #{projectId}
-        and pd.name = #{processDefinitionName}
+          and pd.name = #{processDefinitionName}
     </select>
     <select id="queryByDefineName" resultType="com.gs.cd.gscheduler.dao.entity.ProcessDefinition">
-        select pd.*,u.user_name,p.name as project_name,t.tenant_code,t.tenant_name,q.queue,q.queue_name
+        select pd.*, u.user_name, p.name as project_name, t.tenant_code, t.tenant_name, q.queue, q.queue_name
         from t_ds_process_definition pd
-        JOIN t_ds_user u ON pd.user_id = u.id
-        JOIN  t_ds_project p ON pd.project_id = p.id
-        JOIN  t_ds_tenant t ON t.id = u.tenant_id
-        JOIN t_ds_queue q ON t.queue_id = q.id
+                 JOIN t_ds_user u ON pd.user_id = u.id
+                 JOIN t_ds_project p ON pd.project_id = p.id
+                 JOIN t_ds_tenant t ON t.id = u.tenant_id
+                 JOIN t_ds_queue q ON t.queue_id = q.id
         WHERE p.id = #{projectId}
-        and pd.name = #{processDefinitionName}
+          and pd.name = #{processDefinitionName}
     </select>
     <select id="queryDefineListPaging" resultType="com.gs.cd.gscheduler.dao.entity.ProcessDefinition">
-        SELECT td.id, td.name, td.version, td.release_state, td.project_id, td.user_id, td.description, td.global_params,
-               td.flag, td.receivers, td.receivers_cc, td.timeout, td.tenant_id, td.modify_by, td.update_time, td.create_time,
-               sc.schedule_release_state, tu.user_name
+        SELECT td.id, td.name, td.version, td.release_state, td.project_id, td.user_id, td.description,
+        td.global_params,
+        td.flag, td.receivers, td.receivers_cc, td.timeout, td.tenant_id, td.modify_by, td.update_time, td.create_time,
+        sc.schedule_release_state, tu.user_name
         FROM t_ds_process_definition td
-        left join (select process_definition_id,release_state as schedule_release_state from t_ds_schedules group by process_definition_id,release_state) sc on sc.process_definition_id = td.id
-        left join t_ds_user tu on  td.user_id = tu.id
+        left join (select process_definition_id,release_state as schedule_release_state from t_ds_schedules group by
+        process_definition_id,release_state) sc on sc.process_definition_id = td.id
+        left join t_ds_user tu on td.user_id = tu.id
         where td.project_id = #{projectId}
         <if test=" searchVal != null and searchVal != ''">
             and td.name like concat('%', #{searchVal}, '%')
@@ -84,28 +86,38 @@
         group by td.user_id,tu.user_name
     </select>
     <select id="queryByDefineId" resultType="com.gs.cd.gscheduler.dao.entity.ProcessDefinition">
-        SELECT
-            pd.*, u.user_name,
-            p.name AS project_name
-        FROM
-            t_ds_process_definition pd,
-            t_ds_user u,
-            t_ds_project p
-        WHERE
-            pd.user_id = u.id AND pd.project_id = p.id
-        AND pd.id = #{processDefineId}
+        SELECT pd.*,
+               u.user_name,
+               p.name AS project_name
+        FROM t_ds_process_definition pd,
+             t_ds_user u,
+             t_ds_project p
+        WHERE pd.user_id = u.id
+          AND pd.project_id = p.id
+          AND pd.id = #{processDefineId}
     </select>
 
 
     <select id="listResources" resultType="java.util.HashMap">
-        SELECT id,resource_ids
+        SELECT id, resource_ids
         FROM t_ds_process_definition
-        WHERE release_state = 1 and resource_ids is not null and resource_ids != ''
+        WHERE release_state = 1
+          and resource_ids is not null
+          and resource_ids != ''
     </select>
 
     <select id="listResourcesByUser" resultType="java.util.HashMap">
-        SELECT id,resource_ids
+        SELECT id, resource_ids
         FROM t_ds_process_definition
-        WHERE user_id = #{userId} and release_state = 1 and resource_ids is not null and resource_ids != ''
+        WHERE user_id = #{userId}
+          and release_state = 1
+          and resource_ids is not null
+          and resource_ids != ''
+    </select>
+    <select id="selectByNameAndProjectId" resultType="com.gs.cd.gscheduler.dao.entity.ProcessDefinition">
+        select *
+        from t_ds_process_definition
+        where name = #{name}
+          and project_id = #{projectId}
     </select>
 </mapper>

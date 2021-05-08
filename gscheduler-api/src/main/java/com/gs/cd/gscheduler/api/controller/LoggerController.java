@@ -60,15 +60,11 @@ public class LoggerController extends BaseController {
      * @param limit          limit
      * @return task log content
      */
-    @ApiOperation(value = "queryLog", notes = "QUERY_TASK_INSTANCE_LOG_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskInstanceId", value = "TASK_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "skipLineNum", value = "SKIP_LINE_NUM", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "limit", value = "LIMIT", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/detail")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_TASK_INSTANCE_LOG_ERROR)
+
+
     public Result queryLog(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                            @RequestParam(value = "taskInstanceId") int taskInstanceId,
@@ -87,13 +83,11 @@ public class LoggerController extends BaseController {
      * @param taskInstanceId task instance id
      * @return log file content
      */
-    @ApiOperation(value = "downloadTaskLog", notes = "DOWNLOAD_TASK_INSTANCE_LOG_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskInstanceId", value = "TASK_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/download-log")
     @ResponseBody
-    @ApiException(DOWNLOAD_TASK_INSTANCE_LOG_FILE_ERROR)
+
     public ResponseEntity downloadTaskLog(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                           @RequestParam(value = "taskInstanceId") int taskInstanceId) {

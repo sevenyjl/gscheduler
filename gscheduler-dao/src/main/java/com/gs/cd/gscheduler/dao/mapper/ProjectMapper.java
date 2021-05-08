@@ -16,10 +16,12 @@
  */
 package com.gs.cd.gscheduler.dao.mapper;
 
+import com.gs.cd.gscheduler.dao.entity.ProcessDefinition;
 import com.gs.cd.gscheduler.dao.entity.Project;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -74,4 +76,4 @@ public interface ProjectMapper extends BaseMapper<Project> {
      */
     List<Project> queryProjectExceptUserId(@Param("userId") int userId);
 
-}
+    }

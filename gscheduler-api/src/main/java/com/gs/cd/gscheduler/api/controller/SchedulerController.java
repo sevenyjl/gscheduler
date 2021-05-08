@@ -73,21 +73,11 @@ public class SchedulerController extends BaseController {
      * @param workerGroup             worker group
      * @return create result code
      */
-    @ApiOperation(value = "createSchedule", notes = "CREATE_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "schedule", value = "SCHEDULE", dataType = "String", example = "{'startTime':'2019-06-10 00:00:00','endTime':'2019-06-13 00:00:00','crontab':'0 0 3/6 * * ? *'}"),
-            @ApiImplicitParam(name = "warningType", value = "WARNING_TYPE", type = "WarningType"),
-            @ApiImplicitParam(name = "warningGroupId", value = "WARNING_GROUP_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "failureStrategy", value = "FAILURE_STRATEGY", type = "FailureStrategy"),
-            @ApiImplicitParam(name = "receivers", value = "RECEIVERS", type = "String"),
-            @ApiImplicitParam(name = "receiversCc", value = "RECEIVERS_CC", type = "String"),
-            @ApiImplicitParam(name = "workerGroupId", value = "WORKER_GROUP_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "processInstancePriority", value = "PROCESS_INSTANCE_PRIORITY", type = "Priority"),
-    })
+
+
     @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiException(CREATE_SCHEDULE_ERROR)
+
+
     public Result createSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -127,20 +117,10 @@ public class SchedulerController extends BaseController {
      * @param receiversCc             receivers cc
      * @return update result code
      */
-    @ApiOperation(value = "updateSchedule", notes = "UPDATE_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "SCHEDULE_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "schedule", value = "SCHEDULE", dataType = "String", example = "{'startTime':'2019-06-10 00:00:00','endTime':'2019-06-13 00:00:00','crontab':'0 0 3/6 * * ? *'}"),
-            @ApiImplicitParam(name = "warningType", value = "WARNING_TYPE", type = "WarningType"),
-            @ApiImplicitParam(name = "warningGroupId", value = "WARNING_GROUP_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "failureStrategy", value = "FAILURE_STRATEGY", type = "FailureStrategy"),
-            @ApiImplicitParam(name = "receivers", value = "RECEIVERS", type = "String"),
-            @ApiImplicitParam(name = "receiversCc", value = "RECEIVERS_CC", type = "String"),
-            @ApiImplicitParam(name = "workerGroupId", value = "WORKER_GROUP_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "processInstancePriority", value = "PROCESS_INSTANCE_PRIORITY", type = "Priority"),
-    })
+
+
     @PostMapping("/update")
-    @ApiException(UPDATE_SCHEDULE_ERROR)
+
     public Result updateSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                  @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -172,12 +152,10 @@ public class SchedulerController extends BaseController {
      * @param id          scheduler id
      * @return publish result code
      */
-    @ApiOperation(value = "online", notes = "ONLINE_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "SCHEDULE_ID", required = true, dataType = "Int", example = "100")
-    })
+
+
     @PostMapping("/online")
-    @ApiException(PUBLISH_SCHEDULE_ONLINE_ERROR)
+
     public Result online(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                          @RequestHeader(HttpHeadersParam.TOKEN) String token,
                          @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable("projectName") String projectName,
@@ -197,12 +175,10 @@ public class SchedulerController extends BaseController {
      * @param id          schedule id
      * @return operation result code
      */
-    @ApiOperation(value = "offline", notes = "OFFLINE_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "SCHEDULE_ID", required = true, dataType = "Int", example = "100")
-    })
+
+
     @PostMapping("/offline")
-    @ApiException(OFFLINE_SCHEDULE_ERROR)
+
     public Result offline(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable("projectName") String projectName,
@@ -225,16 +201,10 @@ public class SchedulerController extends BaseController {
      * @param searchVal           search value
      * @return schedule list page
      */
-    @ApiOperation(value = "queryScheduleListPaging", notes = "QUERY_SCHEDULE_LIST_PAGING_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", type = "String"),
-            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "100")
 
-    })
+
     @GetMapping("/list-paging")
-    @ApiException(QUERY_SCHEDULE_LIST_PAGING_ERROR)
+
     public Result queryScheduleListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -257,13 +227,11 @@ public class SchedulerController extends BaseController {
      * @param scheduleId  scheule id
      * @return delete result code
      */
-    @ApiOperation(value = "deleteScheduleById", notes = "OFFLINE_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "scheduleId", value = "SCHEDULE_ID", required = true, dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/delete")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(DELETE_SCHEDULE_CRON_BY_ID_ERROR)
+
+
     public Result deleteScheduleById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                      @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                      @PathVariable String projectName,
@@ -282,9 +250,9 @@ public class SchedulerController extends BaseController {
      * @param projectName project name
      * @return schedule list
      */
-    @ApiOperation(value = "queryScheduleList", notes = "QUERY_SCHEDULE_LIST_NOTES")
+
     @PostMapping("/list")
-    @ApiException(QUERY_SCHEDULE_LIST_ERROR)
+
     public Result queryScheduleList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                     @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName) {
@@ -302,13 +270,11 @@ public class SchedulerController extends BaseController {
      * @param schedule    schedule expression
      * @return the next five fire time
      */
-    @ApiOperation(value = "previewSchedule", notes = "PREVIEW_SCHEDULE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "schedule", value = "SCHEDULE", dataType = "String", example = "{'startTime':'2019-06-10 00:00:00','endTime':'2019-06-13 00:00:00','crontab':'0 0 3/6 * * ? *'}"),
-    })
+
+
     @PostMapping("/preview")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiException(PREVIEW_SCHEDULE_ERROR)
+
+
     public Result previewSchedule(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                   @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,

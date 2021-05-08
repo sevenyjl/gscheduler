@@ -59,15 +59,11 @@ public class DataAnalysisController extends BaseController {
      * @param projectId project id
      * @return task instance count data
      */
-    @ApiOperation(value = "countTaskState", notes = "COUNT_TASK_STATE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "START_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "endDate", value = "END_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "projectId", value = "PROJECT_ID", dataType = "Int", example = "100")
-    })
+
+    
     @GetMapping(value = "/task-state-count")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(TASK_INSTANCE_STATE_COUNT_ERROR)
+
+
     public Result countTaskState(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                  @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                  @RequestParam(value = "startDate", required = false) String startDate,
@@ -88,15 +84,11 @@ public class DataAnalysisController extends BaseController {
      * @param projectId project id
      * @return process instance data
      */
-    @ApiOperation(value = "countProcessInstanceState", notes = "COUNT_PROCESS_INSTANCE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "START_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "endDate", value = "END_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "projectId", value = "PROJECT_ID", dataType = "Int", example = "100")
-    })
+
+    
     @GetMapping(value = "/process-state-count")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(COUNT_PROCESS_INSTANCE_STATE_ERROR)
+
+
     public Result countProcessInstanceState(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                             @RequestParam(value = "startDate", required = false) String startDate,
@@ -115,13 +107,11 @@ public class DataAnalysisController extends BaseController {
      * @param projectId project id
      * @return definition count in project id
      */
-    @ApiOperation(value = "countDefinitionByUser", notes = "COUNT_PROCESS_DEFINITION_BY_USER_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectId", value = "PROJECT_ID", dataType = "Int", example = "100")
-    })
+
+    
     @GetMapping(value = "/define-user-count")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(COUNT_PROCESS_DEFINITION_USER_ERROR)
+
+
     public Result countDefinitionByUser(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                         @RequestParam(value = "projectId", required = false, defaultValue = "0") int projectId) {
@@ -141,15 +131,11 @@ public class DataAnalysisController extends BaseController {
      * @param projectId project id
      * @return command state in project id
      */
-    @ApiOperation(value = "countCommandState", notes = "COUNT_COMMAND_STATE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "startDate", value = "START_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "endDate", value = "END_DATE", dataType = "String"),
-            @ApiImplicitParam(name = "projectId", value = "PROJECT_ID", dataType = "Int", example = "100")
-    })
+
+    
     @GetMapping(value = "/command-state-count")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(COMMAND_STATE_COUNT_ERROR)
+
+
     public Result countCommandState(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                     @RequestParam(value = "startDate", required = false) String startDate,
@@ -168,13 +154,11 @@ public class DataAnalysisController extends BaseController {
      * @param projectId project id
      * @return queue state count
      */
-    @ApiOperation(value = "countQueueState", notes = "COUNT_QUEUE_STATE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectId", value = "PROJECT_ID", dataType = "Int", example = "100")
-    })
+
+    
     @GetMapping(value = "/queue-count")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUEUE_COUNT_ERROR)
+
+
     public Result countQueueState(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                   @RequestParam(value = "projectId", required = false, defaultValue = "0") int projectId) {

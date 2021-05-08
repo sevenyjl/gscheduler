@@ -60,10 +60,10 @@ public class QueueController extends BaseController {
      *
      * @return queue list
      */
-    @ApiOperation(value = "queryList", notes = "QUERY_QUEUE_LIST_NOTES")
+
     @GetMapping(value = "/list")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_QUEUE_LIST_ERROR)
+
+
     public Result queryList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                             @RequestHeader(HttpHeadersParam.TOKEN) String token) {
         JwtUserInfo loginUser = JwtUtils.getJwtUserInfo(token);
@@ -80,15 +80,11 @@ public class QueueController extends BaseController {
      * @param pageSize  page size
      * @return queue list
      */
-    @ApiOperation(value = "queryQueueListPaging", notes = "QUERY_QUEUE_LIST_PAGING_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", dataType = "String"),
-            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "1"),
-            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "20")
-    })
+
+
     @GetMapping(value = "/list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_QUEUE_LIST_ERROR)
+
+
     public Result queryQueueListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                        @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                        @RequestParam("pageNo") Integer pageNo,
@@ -113,14 +109,11 @@ public class QueueController extends BaseController {
      * @param queueName queue name
      * @return create result
      */
-    @ApiOperation(value = "createQueue", notes = "CREATE_QUEUE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "queue", value = "YARN_QUEUE_NAME", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "queueName", value = "QUEUE_NAME", required = true, dataType = "String")
-    })
+
+
     @PostMapping(value = "/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiException(CREATE_QUEUE_ERROR)
+
+
     public Result createQueue(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                               @RequestParam(value = "queue") String queue,
@@ -140,15 +133,11 @@ public class QueueController extends BaseController {
      * @param queueName queue name
      * @return update result code
      */
-    @ApiOperation(value = "updateQueue", notes = "UPDATE_QUEUE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "QUEUE_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "queue", value = "YARN_QUEUE_NAME", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "queueName", value = "QUEUE_NAME", required = true, dataType = "String")
-    })
+
+
     @PostMapping(value = "/update")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiException(UPDATE_QUEUE_ERROR)
+
+
     public Result updateQueue(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                               @RequestParam(value = "id") int id,
@@ -168,15 +157,11 @@ public class QueueController extends BaseController {
      * @param queueName queue name
      * @return true if the queue name not exists, otherwise return false
      */
-    @ApiOperation(value = "verifyQueue", notes = "VERIFY_QUEUE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "QUEUE_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "queue", value = "YARN_QUEUE_NAME", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "queueName", value = "QUEUE_NAME", required = true, dataType = "String")
-    })
+
+
     @PostMapping(value = "/verify-queue")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(VERIFY_QUEUE_ERROR)
+
+
     public Result verifyQueue(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                               @RequestParam(value = "queue") String queue,

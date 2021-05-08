@@ -73,26 +73,11 @@ public class ExecutorController extends BaseController {
      * @param timeout                 timeout
      * @return start process result code
      */
-    @ApiOperation(value = "startProcessInstance", notes = "RUN_PROCESS_INSTANCE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "scheduleTime", value = "SCHEDULE_TIME", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "failureStrategy", value = "FAILURE_STRATEGY", required = true, dataType = "FailureStrategy"),
-            @ApiImplicitParam(name = "startNodeList", value = "START_NODE_LIST", dataType = "String"),
-            @ApiImplicitParam(name = "taskDependType", value = "TASK_DEPEND_TYPE", dataType = "TaskDependType"),
-            @ApiImplicitParam(name = "execType", value = "COMMAND_TYPE", dataType = "CommandType"),
-            @ApiImplicitParam(name = "warningType", value = "WARNING_TYPE", required = true, dataType = "WarningType"),
-            @ApiImplicitParam(name = "warningGroupId", value = "WARNING_GROUP_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "receivers", value = "RECEIVERS", dataType = "String"),
-            @ApiImplicitParam(name = "receiversCc", value = "RECEIVERS_CC", dataType = "String"),
-            @ApiImplicitParam(name = "runMode", value = "RUN_MODE", dataType = "RunMode"),
-            @ApiImplicitParam(name = "processInstancePriority", value = "PROCESS_INSTANCE_PRIORITY", required = true, dataType = "Priority"),
-            @ApiImplicitParam(name = "workerGroup", value = "WORKER_GROUP", dataType = "String", example = "default"),
-            @ApiImplicitParam(name = "timeout", value = "TIMEOUT", dataType = "Int", example = "100"),
-    })
+
+
     @PostMapping(value = "start-process-instance")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(START_PROCESS_INSTANCE_ERROR)
+
+
     public Result startProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                        @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                        @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -137,14 +122,11 @@ public class ExecutorController extends BaseController {
      * @param executeType       execute type
      * @return execute result code
      */
-    @ApiOperation(value = "execute", notes = "EXECUTE_ACTION_TO_PROCESS_INSTANCE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "executeType", value = "EXECUTE_TYPE", required = true, dataType = "ExecuteType")
-    })
+
+
     @PostMapping(value = "/execute")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(EXECUTE_PROCESS_INSTANCE_ERROR)
+
+
     public Result execute(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -164,13 +146,11 @@ public class ExecutorController extends BaseController {
      * @param processDefinitionId process definition id
      * @return check result code
      */
-    @ApiOperation(value = "startCheckProcessDefinition", notes = "START_CHECK_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100")
-    })
+
+
     @PostMapping(value = "/start-check")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(CHECK_PROCESS_DEFINITION_ERROR)
+
+
     public Result startCheckProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                               @RequestParam(value = "processDefinitionId") int processDefinitionId) {
@@ -188,15 +168,11 @@ public class ExecutorController extends BaseController {
      * @return receivers cc list
      */
     @ApiIgnore
-    @ApiOperation(value = "getReceiverCc", notes = "GET_RECEIVER_CC_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", required = true, dataType = "Int", example = "100")
 
-    })
+
     @GetMapping(value = "/get-receiver-cc")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_RECIPIENTS_AND_COPYERS_BY_PROCESS_DEFINITION_ERROR)
+
+
     public Result getReceiverCc(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                 @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                 @RequestParam(value = "processDefinitionId", required = false) Integer processDefinitionId,

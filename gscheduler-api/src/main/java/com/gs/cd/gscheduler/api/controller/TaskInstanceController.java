@@ -66,22 +66,11 @@ public class TaskInstanceController extends BaseController {
      * @param pageSize          page size
      * @return task list page
      */
-    @ApiOperation(value = "queryTaskListPaging", notes = "QUERY_TASK_INSTANCE_LIST_PAGING_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", required = false, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", type = "String"),
-            @ApiImplicitParam(name = "taskName", value = "TASK_NAME", type = "String"),
-            @ApiImplicitParam(name = "executorName", value = "EXECUTOR_NAME", type = "String"),
-            @ApiImplicitParam(name = "stateType", value = "EXECUTION_STATUS", type = "ExecutionStatus"),
-            @ApiImplicitParam(name = "host", value = "HOST", type = "String"),
-            @ApiImplicitParam(name = "startDate", value = "START_DATE", type = "String"),
-            @ApiImplicitParam(name = "endDate", value = "END_DATE", type = "String"),
-            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "1"),
-            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "20")
-    })
+
+
     @GetMapping("/list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_TASK_LIST_PAGING_ERROR)
+
+
     public Result queryTaskListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                       @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,

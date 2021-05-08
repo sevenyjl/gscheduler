@@ -65,8 +65,8 @@ public class TaskRecordController extends BaseController {
      * @return task record list
      */
     @GetMapping("/list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_TASK_RECORD_LIST_PAGING_ERROR)
+
+
     public Result queryTaskRecordListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                             @RequestParam(value = "taskName", required = false) String taskName,
@@ -103,8 +103,8 @@ public class TaskRecordController extends BaseController {
      * @return history task record list
      */
     @GetMapping("/history-list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_TASK_RECORD_LIST_PAGING_ERROR)
+
+
     public Result queryHistoryTaskRecordListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                    @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                    @RequestParam(value = "taskName", required = false) String taskName,

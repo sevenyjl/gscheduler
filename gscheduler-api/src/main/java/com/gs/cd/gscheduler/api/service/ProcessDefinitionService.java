@@ -152,6 +152,12 @@ public class ProcessDefinitionService extends BaseDAGService {
 
         Map<String, Object> result = new HashMap<>(5);
         Project project = projectMapper.queryByName(projectName);
+        //查询ProcessDefinition name projectId 是否存在
+        ProcessDefinition processDefinition = processDefineMapper.selectByNameAndProjectId(name, project.getId());
+        if (processDefinition != null) {
+            putMsg(result, Status.NAME_EXIST, name);
+            return result;
+        }
         // check project auth
         Map<String, Object> checkResult = projectService.checkProjectAndAuth(loginUser, project, projectName);
         Status resultStatus = (Status) checkResult.get(Constants.STATUS);
@@ -336,6 +342,10 @@ public class ProcessDefinitionService extends BaseDAGService {
         ProcessDefinition processDefinition = processDefineMapper.selectById(processId);
         if (processDefinition == null) {
             putMsg(result, Status.PROCESS_DEFINE_NOT_EXIST, processId);
+            return result;
+        } else if (processDefinition.getProjectId() != project.getId()) {
+            //检测 当前工作流定义 是否再 projectName的项目中
+            putMsg(result, Status.PROCESS_DEFINE_NOT_EXIST_IN_PROJECT, processId, projectName);
             return result;
         } else {
             return createProcessDefinition(

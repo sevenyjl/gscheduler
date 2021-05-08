@@ -72,21 +72,11 @@ public class ProcessInstanceController extends BaseController {
      * @param endTime             end time
      * @return process instance list
      */
-    @ApiOperation(value = "queryProcessInstanceList", notes = "QUERY_PROCESS_INSTANCE_LIST_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", type = "String"),
-            @ApiImplicitParam(name = "executorName", value = "EXECUTOR_NAME", type = "String"),
-            @ApiImplicitParam(name = "stateType", value = "EXECUTION_STATUS", type = "ExecutionStatus"),
-            @ApiImplicitParam(name = "host", value = "HOST", type = "String"),
-            @ApiImplicitParam(name = "startDate", value = "START_DATE", type = "String"),
-            @ApiImplicitParam(name = "endDate", value = "END_DATE", type = "String"),
-            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_INSTANCE_LIST_PAGING_ERROR)
+
+
     public Result queryProcessInstanceList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -117,13 +107,11 @@ public class ProcessInstanceController extends BaseController {
      * @param processInstanceId process instance id
      * @return task list for the process instance
      */
-    @ApiOperation(value = "queryTaskListByProcessId", notes = "QUERY_TASK_LIST_BY_PROCESS_INSTANCE_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/task-list-by-process-id")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_TASK_LIST_BY_PROCESS_INSTANCE_ID_ERROR)
+
+
     public Result queryTaskListByProcessId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -149,19 +137,11 @@ public class ProcessInstanceController extends BaseController {
      * @param connects            connects
      * @return update result code
      */
-    @ApiOperation(value = "updateProcessInstance", notes = "UPDATE_PROCESS_INSTANCE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceJson", value = "PROCESS_INSTANCE_JSON", type = "String"),
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "scheduleTime", value = "SCHEDULE_TIME", type = "String"),
-            @ApiImplicitParam(name = "syncDefine", value = "SYNC_DEFINE", type = "Boolean"),
-            @ApiImplicitParam(name = "locations", value = "PROCESS_INSTANCE_LOCATIONS", type = "String"),
-            @ApiImplicitParam(name = "connects", value = "PROCESS_INSTANCE_CONNECTS", type = "String"),
-            @ApiImplicitParam(name = "flag", value = "RECOVERY_PROCESS_INSTANCE_FLAG", type = "Flag"),
-    })
+
+
     @PostMapping(value = "/update")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(UPDATE_PROCESS_INSTANCE_ERROR)
+
+
     public Result updateProcessInstance(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                         @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -190,13 +170,11 @@ public class ProcessInstanceController extends BaseController {
      * @param processInstanceId process instance id
      * @return process instance detail
      */
-    @ApiOperation(value = "queryProcessInstanceById", notes = "QUERY_PROCESS_INSTANCE_BY_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/select-by-id")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_INSTANCE_BY_ID_ERROR)
+
+
     public Result queryProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -217,13 +195,11 @@ public class ProcessInstanceController extends BaseController {
      * @param processInstanceId process instance id
      * @return delete result code
      */
-    @ApiOperation(value = "deleteProcessInstanceById", notes = "DELETE_PROCESS_INSTANCE_BY_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/delete")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(DELETE_PROCESS_INSTANCE_BY_ID_ERROR)
+
+
     public Result deleteProcessInstanceById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                             @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -244,13 +220,11 @@ public class ProcessInstanceController extends BaseController {
      * @param taskId      task id
      * @return sub process instance detail
      */
-    @ApiOperation(value = "querySubProcessInstanceByTaskId", notes = "QUERY_SUBPROCESS_INSTANCE_BY_TASK_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskId", value = "TASK_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/select-sub-process")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_SUB_PROCESS_INSTANCE_DETAIL_INFO_BY_TASK_ID_ERROR)
+
+
     public Result querySubProcessInstanceByTaskId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                   @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -267,13 +241,11 @@ public class ProcessInstanceController extends BaseController {
      * @param subId       sub process id
      * @return parent instance detail
      */
-    @ApiOperation(value = "queryParentInstanceBySubId", notes = "QUERY_PARENT_PROCESS_INSTANCE_BY_SUB_PROCESS_INSTANCE_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "subId", value = "SUB_PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/select-parent-process")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PARENT_PROCESS_INSTANCE_DETAIL_INFO_BY_SUB_PROCESS_INSTANCE_ID_ERROR)
+
+
     public Result queryParentInstanceBySubId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                              @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -289,13 +261,11 @@ public class ProcessInstanceController extends BaseController {
      * @param processInstanceId process instance id
      * @return variables data
      */
-    @ApiOperation(value = "viewVariables", notes = "QUERY_PROCESS_INSTANCE_GLOBAL_VARIABLES_AND_LOCAL_VARIABLES_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/view-variables")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_INSTANCE_ALL_VARIABLES_ERROR)
+
+
     public Result viewVariables(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                 @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                 @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
@@ -311,13 +281,11 @@ public class ProcessInstanceController extends BaseController {
      * @param processInstanceId process instance id
      * @return gantt tree data
      */
-    @ApiOperation(value = "vieGanttTree", notes = "VIEW_GANTT_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processInstanceId", value = "PROCESS_INSTANCE_ID", dataType = "Int", example = "100")
-    })
+
+
     @GetMapping(value = "/view-gantt")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(ENCAPSULATION_PROCESS_INSTANCE_GANTT_STRUCTURE_ERROR)
+
+
     public Result viewTree(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -336,8 +304,8 @@ public class ProcessInstanceController extends BaseController {
      * @return delete result code
      */
     @GetMapping(value = "/batch-delete")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(BATCH_DELETE_PROCESS_INSTANCE_BY_IDS_ERROR)
+
+
     public Result batchDeleteProcessInstanceByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                   @PathVariable String projectName,

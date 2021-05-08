@@ -67,17 +67,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param connects    connects for nodes
      * @return create result code
      */
-    @ApiOperation(value = "save", notes = "CREATE_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
-            @ApiImplicitParam(name = "processDefinitionJson", value = "PROCESS_DEFINITION_JSON", required = true, type = "String"),
-            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
-            @ApiImplicitParam(name = "connects", value = "PROCESS_DEFINITION_CONNECTS", required = true, type = "String"),
-            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String"),
-    })
+
     @PostMapping(value = "/save")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiException(CREATE_PROCESS_DEFINITION)
     public Result createProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -102,13 +93,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processId   process definition id
      * @return copy result code
      */
-    @ApiOperation(value = "copyProcessDefinition", notes = "COPY_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100")
-    })
+
     @PostMapping(value = "/copy")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(COPY_PROCESS_DEFINITION_ERROR)
     public Result copyProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                         @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                         @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -127,13 +113,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param name        name
      * @return true if process definition name not exists, otherwise false
      */
-    @ApiOperation(value = "verify-name", notes = "VERIFY_PROCESS_DEFINITION_NAME_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String")
-    })
+
     @GetMapping(value = "/verify-name")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(VERIFY_PROCESS_DEFINITION_NAME_UNIQUE_ERROR)
     public Result verifyProcessDefinitionName(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                               @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -158,18 +139,8 @@ public class ProcessDefinitionController extends BaseController {
      * @return update result code
      */
 
-    @ApiOperation(value = "updateProcessDefinition", notes = "UPDATE_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
-            @ApiImplicitParam(name = "id", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "processDefinitionJson", value = "PROCESS_DEFINITION_JSON", required = true, type = "String"),
-            @ApiImplicitParam(name = "locations", value = "PROCESS_DEFINITION_LOCATIONS", required = true, type = "String"),
-            @ApiImplicitParam(name = "connects", value = "PROCESS_DEFINITION_CONNECTS", required = true, type = "String"),
-            @ApiImplicitParam(name = "description", value = "PROCESS_DEFINITION_DESC", required = false, type = "String"),
-    })
+
     @PostMapping(value = "/update")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(UPDATE_PROCESS_DEFINITION_ERROR)
     public Result updateProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                           @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                           @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -198,15 +169,8 @@ public class ProcessDefinitionController extends BaseController {
      * @return release result code
      */
 
-    @ApiOperation(value = "releaseProcessDefinition", notes = "RELEASE_PROCESS_DEFINITION_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "PROCESS_DEFINITION_NAME", required = true, type = "String"),
-            @ApiImplicitParam(name = "processId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "releaseState", value = "PROCESS_DEFINITION_CONNECTS", required = true, dataType = "Int", example = "100"),
-    })
+
     @PostMapping(value = "/release")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(RELEASE_PROCESS_DEFINITION_ERROR)
     public Result releaseProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -227,13 +191,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processId   process definition id
      * @return process definition detail
      */
-    @ApiOperation(value = "queryProcessDefinitionById", notes = "QUERY_PROCESS_DEFINITION_BY_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100")
-    })
+
     @GetMapping(value = "/select-by-id")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_DATAIL_OF_PROCESS_DEFINITION_ERROR)
     public Result queryProcessDefinitionById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                              @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -252,10 +211,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param projectName project name
      * @return process definition list
      */
-    @ApiOperation(value = "queryProcessDefinitionList", notes = "QUERY_PROCESS_DEFINITION_LIST_NOTES")
+
     @GetMapping(value = "/list")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_DEFINITION_LIST)
     public Result queryProcessDefinitionList(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                              @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                              @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName
@@ -277,16 +234,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param userId      user id
      * @return process definition page
      */
-    @ApiOperation(value = "queryProcessDefinitionListPaging", notes = "QUERY_PROCESS_DEFINITION_LIST_PAGING_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNo", value = "PAGE_NO", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "searchVal", value = "SEARCH_VAL", required = false, type = "String"),
-            @ApiImplicitParam(name = "userId", value = "USER_ID", required = false, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "pageSize", value = "PAGE_SIZE", required = true, dataType = "Int", example = "100")
-    })
+
     @GetMapping(value = "/list-paging")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_DEFINITION_LIST_PAGING_ERROR)
     public Result queryProcessDefinitionListPaging(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                    @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                    @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -313,14 +262,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param limit       limit
      * @return tree view json data
      */
-    @ApiOperation(value = "viewTree", notes = "VIEW_TREE_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100"),
-            @ApiImplicitParam(name = "limit", value = "LIMIT", required = true, dataType = "Int", example = "100")
-    })
+
     @GetMapping(value = "/view-tree")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(ENCAPSULATION_TREEVIEW_STRUCTURE_ERROR)
     public Result viewTree(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                            @RequestHeader(HttpHeadersParam.TOKEN) String token,
                            @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -338,13 +281,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processDefinitionId process definition id
      * @return task list
      */
-    @ApiOperation(value = "getNodeListByDefinitionId", notes = "GET_NODE_LIST_BY_DEFINITION_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", required = true, dataType = "Int", example = "100")
-    })
+
     @GetMapping(value = "gen-task-list")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(GET_TASKS_LIST_BY_PROCESS_DEFINITION_ID_ERROR)
     public Result getNodeListByDefinitionId(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -364,13 +302,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processDefinitionIdList process definition id list
      * @return node list data
      */
-    @ApiOperation(value = "getNodeListByDefinitionIdList", notes = "GET_NODE_LIST_BY_DEFINITION_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionIdList", value = "PROCESS_DEFINITION_ID_LIST", required = true, type = "String")
-    })
+
     @GetMapping(value = "get-task-list")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(GET_TASKS_LIST_BY_PROCESS_DEFINITION_ID_ERROR)
     public Result getNodeListByDefinitionIdList(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestHeader(HttpHeadersParam.TOKEN) String token,
@@ -391,13 +324,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processDefinitionId process definition id
      * @return delete result code
      */
-    @ApiOperation(value = "deleteProcessDefinitionById", notes = "DELETE_PROCESS_DEFINITION_BY_ID_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionId", value = "PROCESS_DEFINITION_ID", dataType = "Int", example = "100")
-    })
+
     @GetMapping(value = "/delete")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(DELETE_PROCESS_DEFINE_BY_ID_ERROR)
     public Result deleteProcessDefinitionById(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                               @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                               @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -417,13 +345,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param processDefinitionIds process definition id list
      * @return delete result code
      */
-    @ApiOperation(value = "batchDeleteProcessDefinitionByIds", notes = "BATCH_DELETE_PROCESS_DEFINITION_BY_IDS_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionIds", value = "PROCESS_DEFINITION_IDS", type = "String")
-    })
+
     @GetMapping(value = "/batch-delete")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(BATCH_DELETE_PROCESS_DEFINE_BY_IDS_ERROR)
     public Result batchDeleteProcessDefinitionByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                     @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                     @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -469,12 +392,8 @@ public class ProcessDefinitionController extends BaseController {
      * @param response             response
      */
 
-    @ApiOperation(value = "batchExportProcessDefinitionByIds", notes = "BATCH_EXPORT_PROCESS_DEFINITION_BY_IDS_NOTES")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "processDefinitionIds", value = "PROCESS_DEFINITION_ID", required = true, dataType = "String")
-    })
+
     @GetMapping(value = "/export")
-    @ResponseBody
     public void batchExportProcessDefinitionByIds(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                   @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                   @ApiParam(name = "projectName", value = "PROJECT_NAME", required = true) @PathVariable String projectName,
@@ -496,10 +415,7 @@ public class ProcessDefinitionController extends BaseController {
      * @param projectId project id
      * @return process definition list
      */
-    @ApiOperation(value = "queryProcessDefinitionAllByProjectId", notes = "QUERY_PROCESS_DEFINITION_All_BY_PROJECT_ID_NOTES")
     @GetMapping(value = "/queryProcessDefinitionAllByProjectId")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiException(QUERY_PROCESS_DEFINITION_LIST)
     public Result queryProcessDefinitionAllByProjectId(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                                        @RequestHeader(HttpHeadersParam.TOKEN) String token,
                                                        @RequestParam("projectId") Integer projectId) {
