@@ -20,6 +20,8 @@ package com.gs.cd.gscheduler.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 import org.apache.dolphinscheduler.common.enums.ExecutionStatus;
 import org.apache.dolphinscheduler.common.enums.Flag;
 import org.apache.dolphinscheduler.common.enums.Priority;
@@ -295,7 +297,7 @@ public class TaskInstance implements Serializable {
     public Date getSubmitTime() {
         return submitTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setSubmitTime(Date submitTime) {
         this.submitTime = submitTime;
     }
@@ -303,7 +305,7 @@ public class TaskInstance implements Serializable {
     public Date getStartTime() {
         return startTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -311,7 +313,7 @@ public class TaskInstance implements Serializable {
     public Date getEndTime() {
         return endTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }

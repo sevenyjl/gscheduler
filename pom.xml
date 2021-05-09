@@ -4,9 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>gscheduler-api</module>
-        <module>gscheduler-dao</module>
-        <module>gscheduler-common</module>
         <module>dolphinscheduler-api</module>
         <module>gscheduler-trigger</module>
         <module>gscheduler-server</module>
@@ -22,7 +19,7 @@
     <packaging>pom</packaging>
     <properties>
         <java.version>1.8</java.version>
-        <kipf.version>3.7.0-SNAPSHOT</kipf.version>
+        <kipf.version>3.7.1-SNAPSHOT</kipf.version>
         <oracle.version>19.3.0.0</oracle.version>
         <neo4j.version>4.0.0</neo4j.version>
     </properties>
@@ -36,12 +33,11 @@
     <dependencyManagement>
         <dependencies>
             <!--公司组件-->
-<!--            &lt;!&ndash;动态数据源配置&ndash;&gt;-->
-<!--            <dependency>-->
-<!--                <groupId>com.gs.cd</groupId>-->
-<!--                <artifactId>db-dynamic</artifactId>-->
-<!--                <version>${kipf.version}</version>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>com.gs.cd</groupId>
+                <artifactId>db-dynamic</artifactId>
+                <version>${kipf.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.gs.cd</groupId>
                 <artifactId>common-utils</artifactId>

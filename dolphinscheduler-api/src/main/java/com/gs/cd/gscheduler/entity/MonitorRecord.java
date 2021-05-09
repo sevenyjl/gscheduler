@@ -16,6 +16,8 @@
  */
 package com.gs.cd.gscheduler.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 import org.apache.dolphinscheduler.common.enums.DbType;
 import org.apache.dolphinscheduler.common.enums.Flag;
 
@@ -101,7 +103,7 @@ public class MonitorRecord {
     public Date getDate() {
         return date;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setDate(Date date) {
         this.date = date;
     }

@@ -16,6 +16,8 @@
  */
 package com.gs.cd.gscheduler.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 import org.apache.dolphinscheduler.common.enums.CycleEnum;
 
 import java.util.Date;
@@ -60,7 +62,7 @@ public class CycleDependency {
     public Date getLastScheduleTime() {
         return lastScheduleTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setLastScheduleTime(Date lastScheduleTime) {
         this.lastScheduleTime = lastScheduleTime;
     }
@@ -68,7 +70,7 @@ public class CycleDependency {
     public Date getExpirationTime() {
         return expirationTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setExpirationTime(Date expirationTime) {
         this.expirationTime = expirationTime;
     }

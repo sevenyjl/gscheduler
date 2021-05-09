@@ -17,6 +17,8 @@
 package com.gs.cd.gscheduler.entity;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 import org.apache.dolphinscheduler.common.enums.AlertStatus;
 import org.apache.dolphinscheduler.common.enums.AlertType;
 import org.apache.dolphinscheduler.common.enums.ShowType;
@@ -176,7 +178,7 @@ public class Alert {
     public Date getCreateTime() {
         return createTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
@@ -184,7 +186,7 @@ public class Alert {
     public Date getUpdateTime() {
         return updateTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }

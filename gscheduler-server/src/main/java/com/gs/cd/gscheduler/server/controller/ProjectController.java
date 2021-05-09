@@ -1,12 +1,20 @@
 package com.gs.cd.gscheduler.server.controller;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
+import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
+import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProjectApi;
+import com.gs.cd.gscheduler.entity.Project;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
-import org.apache.dolphinscheduler.common.Constants;
+import com.gs.cd.gscheduler.utils.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 项目管理
@@ -18,9 +26,12 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/projects")
+@Slf4j
 public class ProjectController {
     @Autowired
     ProjectApi projectApi;
+
+
 
     /**
      * 创建项目
@@ -33,6 +44,7 @@ public class ProjectController {
     @PostMapping("/create")
     public ApiResult createProject(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam("projectName") String projectName,
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
@@ -51,6 +63,7 @@ public class ProjectController {
     @PostMapping(value = "/update")
     public ApiResult updateProject(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam("projectId") Integer projectId,
             @RequestParam("projectName") String projectName,
             @RequestParam(value = "description", required = false) String description) {
@@ -65,7 +78,7 @@ public class ProjectController {
      * @param projectId  项目id
      * @return
      */
-    @PostMapping(value = "/query-by-id")
+    @GetMapping(value = "/query-by-id")
     public ApiResult queryProjectById(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestParam("projectId") Integer projectId) {

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: gscheduler-server
+  cloud:
+    nacos:
+      server-addr: 10.201.81.1:8840
+      config:
+        file-extension: yml
+        shared-dataids: environment.yml,common.yml
+        refreshable-dataids: environment.yml,common.yml
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+    time-zone: GMT+8
+server:
+  port: 8080
+  servlet:
+    context-path: /gscheduler/
+cloud:
+  starter:
+    jackson:
+      property-naming-strategy:
+        use-snake-case: false

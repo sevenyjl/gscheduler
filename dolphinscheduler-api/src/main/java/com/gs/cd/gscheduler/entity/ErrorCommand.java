@@ -20,6 +20,8 @@ package com.gs.cd.gscheduler.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 import org.apache.dolphinscheduler.common.enums.*;
 
 import java.util.Date;
@@ -205,7 +207,7 @@ public class ErrorCommand {
     public Date getScheduleTime() {
         return scheduleTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setScheduleTime(Date scheduleTime) {
         this.scheduleTime = scheduleTime;
     }
@@ -213,7 +215,7 @@ public class ErrorCommand {
     public Date getStartTime() {
         return startTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -237,7 +239,7 @@ public class ErrorCommand {
     public Date getUpdateTime() {
         return updateTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }

@@ -113,6 +113,10 @@ public class Result<T> {
                 '}';
     }
 
+    public boolean isSuccess() {
+        return code == 0;
+    }
+
     public ApiResult apiResult() {
         ApiResult apiResult = new ApiResult();
         apiResult.put(ApiResult.CODE_TAG, this.code);

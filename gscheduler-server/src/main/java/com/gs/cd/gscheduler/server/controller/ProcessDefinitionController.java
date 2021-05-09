@@ -1,23 +1,14 @@
 package com.gs.cd.gscheduler.server.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.api.ProcessDefinitionApi;
-import com.gs.cd.gscheduler.api.ProjectApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
-import org.apache.dolphinscheduler.common.Constants;
-import org.apache.dolphinscheduler.common.utils.ParameterUtils;
-import org.apache.dolphinscheduler.common.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 工作流定义管理
@@ -29,9 +20,11 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("projects/{projectName}/process")
+@Slf4j
 public class ProcessDefinitionController {
     @Autowired
     ProcessDefinitionApi processDefinitionApi;
+
 
     /**
      * 创建process定义
@@ -59,6 +52,7 @@ public class ProcessDefinitionController {
     @PostMapping("/save")
     public ApiResult createProcessDefinition(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "name", required = true) String name,
             @RequestParam(value = "processDefinitionJson", required = true) String json,
@@ -81,6 +75,7 @@ public class ProcessDefinitionController {
     @PostMapping(value = "/copy")
     public ApiResult copyProcessDefinition(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "processId", required = true) int processId
     ) {
@@ -121,6 +116,7 @@ public class ProcessDefinitionController {
     @PostMapping(value = "/update")
     public ApiResult updateProcessDefinition(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "name", required = true) String name,
             @RequestParam(value = "id", required = true) int id,

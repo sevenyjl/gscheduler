@@ -17,6 +17,9 @@
 package com.gs.cd.gscheduler.entity;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
+
 import java.util.Date;
 
 
@@ -89,7 +92,7 @@ public class AccessToken {
     public Date getExpireTime() {
         return expireTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
@@ -97,7 +100,7 @@ public class AccessToken {
     public Date getCreateTime() {
         return createTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
@@ -105,7 +108,7 @@ public class AccessToken {
     public Date getUpdateTime() {
         return updateTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }

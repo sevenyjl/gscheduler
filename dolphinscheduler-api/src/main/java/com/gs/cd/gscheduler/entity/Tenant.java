@@ -20,6 +20,9 @@ package com.gs.cd.gscheduler.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
 
 import java.util.Date;
 import java.util.Objects;
@@ -114,6 +117,7 @@ public class Tenant {
         return createTime;
     }
 
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
@@ -122,6 +126,7 @@ public class Tenant {
         return updateTime;
     }
 
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }

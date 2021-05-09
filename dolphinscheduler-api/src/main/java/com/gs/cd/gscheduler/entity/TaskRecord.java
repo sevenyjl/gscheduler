@@ -16,6 +16,9 @@
  */
 package com.gs.cd.gscheduler.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
+
 import java.util.Date;
 
 /**
@@ -139,7 +142,7 @@ public class TaskRecord {
     public Date getStartTime() {
         return startTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -147,7 +150,7 @@ public class TaskRecord {
     public Date getEndTime() {
         return endTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }

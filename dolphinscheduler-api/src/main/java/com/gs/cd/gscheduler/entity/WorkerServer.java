@@ -16,6 +16,9 @@
  */
 package com.gs.cd.gscheduler.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gs.cd.gscheduler.config.DateJsonDateDeserializer;
+
 import java.util.Date;
 
 public class WorkerServer {
@@ -83,7 +86,7 @@ public class WorkerServer {
     public Date getCreateTime() {
         return createTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
@@ -99,7 +102,7 @@ public class WorkerServer {
     public Date getLastHeartbeatTime() {
         return lastHeartbeatTime;
     }
-
+    @JsonDeserialize(using = DateJsonDateDeserializer.class)
     public void setLastHeartbeatTime(Date lastHeartbeatTime) {
         this.lastHeartbeatTime = lastHeartbeatTime;
     }
