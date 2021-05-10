@@ -15,7 +15,7 @@
     </parent>
     <groupId>com.gs.cd</groupId>
     <artifactId>gscheduler</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
         <java.version>1.8</java.version>

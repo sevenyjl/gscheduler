@@ -3,3 +3,4 @@
 target
 *.log
 release-docs
+.flattened-pom.xml
