@@ -28,6 +28,7 @@ public class InitDolphinSchedulerAdmin implements ApplicationRunner {
     private String password;
     @Value("${dolphinscheduler.tenantName:default}")
     private String tenantName;
+
     @Autowired
     LoginApi loginApi;
     @Autowired
