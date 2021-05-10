@@ -2,6 +2,8 @@ package com.gs.cd.gscheduler.server.controller;
 
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
+import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
+import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProcessDefinitionApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,8 +62,9 @@ public class ProcessDefinitionController {
             @RequestParam(value = "connects", required = true) String connects,
             @RequestParam(value = "description", required = false) String description
     ) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         return processDefinitionApi.createProcessDefinition(TenantCodeService.getSessionId(tenantCode),
-                projectName, name, json, locations, connects, description).apiResult();
+                projectName, name, json, locations, connects, description, jwtUserInfo.getUserName()).apiResult();
     }
 
     /**
@@ -79,8 +82,9 @@ public class ProcessDefinitionController {
             @PathVariable String projectName,
             @RequestParam(value = "processId", required = true) int processId
     ) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         return processDefinitionApi.copyProcessDefinition(TenantCodeService.getSessionId(tenantCode),
-                projectName, processId).apiResult();
+                projectName, processId, jwtUserInfo.getUserName()).apiResult();
     }
 
     /**
@@ -124,8 +128,9 @@ public class ProcessDefinitionController {
             @RequestParam(value = "locations", required = false) String locations,
             @RequestParam(value = "connects", required = false) String connects,
             @RequestParam(value = "description", required = false) String description) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         return processDefinitionApi.updateProcessDefinition(TenantCodeService.getSessionId(tenantCode),
-                projectName, name, id, processDefinitionJson, locations, connects, description).apiResult();
+                projectName, name, id, processDefinitionJson, locations, connects, description, jwtUserInfo.getUserName()).apiResult();
     }
 
 

@@ -17,14 +17,16 @@ public interface ProjectApi {
     @PostMapping(value = "/create")
     public Result createProject(@RequestHeader(name = "Cookie") String sessinoId,
                                 @RequestParam("projectName") String projectName,
-                                @RequestParam(value = "description", required = false) String description);
+                                @RequestParam(value = "description", required = false) String description,
+                                @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
 
     @PostMapping(value = "/update")
     public Result updateProject(@RequestHeader(name = "Cookie") String sessinoId,
                                 @RequestParam("projectId") Integer projectId,
                                 @RequestParam("projectName") String projectName,
-                                @RequestParam(value = "description", required = false) String description);
+                                @RequestParam(value = "description", required = false) String description,
+                                @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
 
     @GetMapping(value = "/query-by-id")
@@ -58,7 +60,8 @@ public interface ProjectApi {
     @PostMapping(value = "/import-definition")
     public Result importProcessDefinition(@RequestHeader(name = "Cookie") String sessinoId,
                                           @RequestParam("file") MultipartFile file,
-                                          @RequestParam("projectName") String projectName);
+                                          @RequestParam("projectName") String projectName,
+                                          @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
 
     @GetMapping(value = "/query-project-list")

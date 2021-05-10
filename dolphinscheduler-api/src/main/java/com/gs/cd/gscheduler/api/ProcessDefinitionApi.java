@@ -23,12 +23,14 @@ public interface ProcessDefinitionApi {
                                           @RequestParam(value = "processDefinitionJson", required = true) String json,
                                           @RequestParam(value = "locations", required = true) String locations,
                                           @RequestParam(value = "connects", required = true) String connects,
-                                          @RequestParam(value = "description", required = false) String description);
+                                          @RequestParam(value = "description", required = false) String description,
+                                          @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
     @PostMapping(value = "/projects/{projectName}/process/copy")
     public Result copyProcessDefinition(@RequestHeader(name = "Cookie") String sessinoId,
                                         @PathVariable String projectName,
-                                        @RequestParam(value = "processId", required = true) int processId);
+                                        @RequestParam(value = "processId", required = true) int processId,
+                                        @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
     @GetMapping(value = "/projects/{projectName}/process/verify-name")
     public Result verifyProcessDefinitionName(@RequestHeader(name = "Cookie") String sessinoId,
@@ -43,7 +45,8 @@ public interface ProcessDefinitionApi {
                                           @RequestParam(value = "processDefinitionJson", required = true) String processDefinitionJson,
                                           @RequestParam(value = "locations", required = false) String locations,
                                           @RequestParam(value = "connects", required = false) String connects,
-                                          @RequestParam(value = "description", required = false) String description);
+                                          @RequestParam(value = "description", required = false) String description,
+                                          @RequestParam(value = "userName", required = false, defaultValue = "defaultUser") String userName);
 
     @PostMapping(value = "/projects/{projectName}/process/release")
     public Result releaseProcessDefinition(@RequestHeader(name = "Cookie") String sessinoId,

@@ -11,10 +11,13 @@ import com.gs.cd.gscheduler.entity.Project;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import com.gs.cd.gscheduler.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 项目管理
@@ -32,7 +35,6 @@ public class ProjectController {
     ProjectApi projectApi;
 
 
-
     /**
      * 创建项目
      *
@@ -48,7 +50,8 @@ public class ProjectController {
             @RequestParam("projectName") String projectName,
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
-        return projectApi.createProject(sessionId, projectName, description).apiResult();
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        return projectApi.createProject(sessionId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
     /**
@@ -68,7 +71,8 @@ public class ProjectController {
             @RequestParam("projectName") String projectName,
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
-        return projectApi.updateProject(sessionId, projectId, projectName, description).apiResult();
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        return projectApi.updateProject(sessionId, projectId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
     /**
@@ -119,5 +123,15 @@ public class ProjectController {
             @RequestParam("projectId") Integer projectId
     ) {
         return projectApi.deleteProject(TenantCodeService.getSessionId(tenantCode), projectId).apiResult();
+    }
+
+
+    @PostMapping(value = "/import-definition")
+    public ApiResult importProcessDefinition(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                             @RequestHeader(HttpHeadersParam.TOKEN) String token,
+                                             @RequestParam("file") MultipartFile file,
+                                             @RequestParam("projectName") String projectName) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        return projectApi.importProcessDefinition(TenantCodeService.getSessionId(tenantCode), file, projectName, jwtUserInfo.getUserName()).apiResult();
     }
 }
