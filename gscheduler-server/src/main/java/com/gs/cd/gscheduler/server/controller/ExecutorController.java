@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * execute process controller
  */
 @RestController
-@RequestMapping("projects/{projectName}/executors")
+@RequestMapping("/projects/{projectName}/executors")
 public class ExecutorController {
 
 

@@ -34,7 +34,7 @@ public class SchedulerAOP {
     @Autowired
     TenantCodeService tenantCodeService;
 
-    @Pointcut("execution(public * com.gs.cd.gscheduler.server.controller.*.*(..))")
+    @Pointcut("execution(public * com.gs.cd.gscheduler.server.controller..*(..))")
     public void pointCut() {
     }
 

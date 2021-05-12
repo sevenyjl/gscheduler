@@ -5,6 +5,7 @@ import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import feign.Response;
 
 /**
  * @Author seven
@@ -106,7 +107,7 @@ public interface ProcessDefinitionApi {
     );
 
     @GetMapping(value = "/projects/{projectName}/process/export")
-    public void batchExportProcessDefinitionByIds(@RequestHeader(name = "Cookie") String sessinoId,
+    public Response batchExportProcessDefinitionByIds(@RequestHeader(name = "Cookie") String sessinoId,
                                                   @PathVariable String projectName,
                                                   @RequestParam("processDefinitionIds") String processDefinitionIds);
 

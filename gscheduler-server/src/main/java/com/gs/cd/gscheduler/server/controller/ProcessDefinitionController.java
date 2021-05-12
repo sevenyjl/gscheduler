@@ -1,16 +1,30 @@
 package com.gs.cd.gscheduler.server.controller;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.IoUtil;
+import com.alibaba.fastjson.JSON;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProcessDefinitionApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import feign.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 /**
  * 工作流定义管理
@@ -302,15 +316,33 @@ public class ProcessDefinitionController {
      * @param projectName          项目名称
      * @param processDefinitionIds 工作流id列表
      */
-    // TODO: 2021/4/15 可能有问题
     @GetMapping(value = "/export")
     public void batchExportProcessDefinitionByIds(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @PathVariable String projectName,
             @RequestParam("processDefinitionIds") String processDefinitionIds,
-            HttpServletResponse response) {
-        processDefinitionApi.batchExportProcessDefinitionByIds(TenantCodeService.getSessionId(tenantCode),
+            HttpServletResponse response) throws IOException {
+        Response r = processDefinitionApi.batchExportProcessDefinitionByIds(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionIds);
+        Response.Body body = r.body();
+        BufferedReader reader = null;
+        ServletOutputStream outputStream = null;
+        try {
+            reader = IoUtil.getReader(body.asInputStream(), "UTF-8");
+            response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + projectName + "_" + tenantCode + DateUtil.format(new Date(), Constants.PARAMETER_FORMAT_TIME) + ".json");
+            outputStream = response.getOutputStream();
+            String s = null;
+            while ((s = reader.readLine()) != null) {
+                outputStream.write(s.getBytes(StandardCharsets.UTF_8));
+                outputStream.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IoUtil.close(outputStream);
+            IoUtil.close(reader);
+        }
     }
 
     /**

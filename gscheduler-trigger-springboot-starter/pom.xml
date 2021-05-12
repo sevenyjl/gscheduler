@@ -9,34 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>gscheduler-trigger</artifactId>
+    <artifactId>gscheduler-trigger-springboot-starter</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <dependencies>
-        <!--在线代码生成器-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-quartz</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.github.davidfantasy</groupId>
-            <artifactId>mybatis-plus-generator-ui</artifactId>
-            <version>1.4.5</version>
-            <scope>test</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.0</version>
-            <scope>test</scope>
+            <groupId>com.gs.cd</groupId>
+            <artifactId>common-utils</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>org.apache.dolphinscheduler</groupId>
+            <artifactId>dolphinscheduler-common</artifactId>
+            <version>1.3.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
 </project>

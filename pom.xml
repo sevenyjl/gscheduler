@@ -5,8 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>dolphinscheduler-api</module>
-        <module>gscheduler-trigger</module>
         <module>gscheduler-server</module>
+        <module>gscheduler-trigger-springboot-starter</module>
+        <module>gscheduler-quartz</module>
+        <module>gscheduler-trigger-server</module>
     </modules>
     <parent>
         <artifactId>servicecloud</artifactId>
