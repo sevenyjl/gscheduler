@@ -16,11 +16,6 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
     <dependencies>
-
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-quartz</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -28,11 +23,6 @@
         <dependency>
             <groupId>com.gs.cd</groupId>
             <artifactId>common-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dolphinscheduler</groupId>
-            <artifactId>dolphinscheduler-common</artifactId>
-            <version>1.3.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

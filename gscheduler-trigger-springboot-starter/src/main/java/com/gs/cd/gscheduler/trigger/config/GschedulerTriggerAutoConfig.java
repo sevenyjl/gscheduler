@@ -1,6 +1,7 @@
 package com.gs.cd.gscheduler.trigger.config;
 
 //import com.gs.cd.gscheduler.trigger.openfeign.TriggerClient;
+import com.gs.cd.gscheduler.trigger.openfeign.TriggerClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @Version 1.0
  */
 @Configuration
-//@EnableFeignClients(clients = {TriggerClient.class})
+@EnableFeignClients(clients = {TriggerClient.class})
 @EnableConfigurationProperties
 @Slf4j
 public class GschedulerTriggerAutoConfig {

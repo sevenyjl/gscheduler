@@ -1,6 +1,6 @@
 spring:
   application:
-    name: gscheduler-server
+    name: gscheduler-trigger-server
   cloud:
     nacos:
       server-addr: 10.201.83.180:8840
@@ -13,8 +13,6 @@ spring:
     time-zone: GMT+8
 server:
   port: 8080
-  servlet:
-    context-path: /gscheduler/trigger/
 cloud:
   starter:
     jackson:

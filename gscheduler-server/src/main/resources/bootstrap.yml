@@ -3,7 +3,7 @@ spring:
     name: gscheduler-server
   cloud:
     nacos:
-      server-addr: 10.201.81.1:8840
+      server-addr: 10.201.83.180:8840
       config:
         file-extension: yml
         shared-dataids: environment.yml,common.yml
