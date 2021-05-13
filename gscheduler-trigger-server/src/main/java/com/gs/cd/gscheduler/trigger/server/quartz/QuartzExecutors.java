@@ -32,13 +32,13 @@ public class QuartzExecutors {
 
     public void addJob(GschedulerTrigger gschedulerTrigger) throws TriggerException {
         //check
-        if (StrUtil.isNotEmpty(gschedulerTrigger.getTenantCode())) {
+        if (StrUtil.isEmpty(gschedulerTrigger.getTenantCode())) {
             throw new TriggerException("租户code不能为空！");
         }
-        if (StrUtil.isNotEmpty(gschedulerTrigger.getTaskId())) {
+        if (StrUtil.isEmpty(gschedulerTrigger.getTaskId())) {
             throw new TriggerException("租户taskId不能为空！");
         }
-        if (StrUtil.isNotEmpty(gschedulerTrigger.getTaskId())) {
+        if (StrUtil.isEmpty(gschedulerTrigger.getTaskId())) {
             throw new TriggerException("租户groupName不能为空！");
         }
         HashMap<String, Object> stringObjectHashMap = new HashMap<>();
@@ -93,9 +93,9 @@ public class QuartzExecutors {
 
     public boolean deleteJob(String tenantCode, String jobName, String jobGroupName) {
         try {
-            JobKey jobKey = new JobKey(jobName, jobGroupName);
+            JobKey jobKey = new JobKey(jobName, tenantCode + "," + jobGroupName);
             if (scheduler.checkExists(jobKey)) {
-                log.info("删除定时job, job name: {}, job group name: {},", jobName, jobGroupName);
+                log.info("删除定时job, job name: {}, job group name: {},", jobName, tenantCode + "," + jobGroupName);
                 return scheduler.deleteJob(jobKey);
             } else {
                 return true;
@@ -108,13 +108,13 @@ public class QuartzExecutors {
 
     public boolean deleteAllJobs(String tenantCode, String jobGroupName) {
         try {
-            log.info("尝试删除JobGroupName中的所有job: {}", jobGroupName);
+            log.info("尝试删除JobGroupName中的所有job: {}", tenantCode + "," + jobGroupName);
             List<JobKey> jobKeys = new ArrayList<>();
             jobKeys.addAll(scheduler.getJobKeys(GroupMatcher.groupEndsWith(jobGroupName)));
 
             return scheduler.deleteJobs(jobKeys);
         } catch (SchedulerException e) {
-            log.error("尝试删除JobGroupName中的所有job: {} 失败了 {}", jobGroupName, e);
+            log.error("尝试删除JobGroupName中的所有job: {} 失败了 {}", tenantCode + "," + jobGroupName, e);
         }
         return false;
     }

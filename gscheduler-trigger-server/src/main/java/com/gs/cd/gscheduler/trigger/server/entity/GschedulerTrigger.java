@@ -44,7 +44,7 @@ public class GschedulerTrigger implements Serializable {
     private String params;
 
     @TableField(exist = false)
-    private ITrigger iTrigger;
+    private HttpParams httpParams;
 
     private TriggerType type;
 
@@ -52,17 +52,19 @@ public class GschedulerTrigger implements Serializable {
 
     private String tenantCode;
 
+    private String address;
+
     public String iTrigger2Params() {
-        if (iTrigger != null) {
+        if (httpParams != null) {
             try {
-                String s = JSONUtil.toJsonStr(iTrigger);
+                String s = JSONUtil.toJsonStr(httpParams);
                 this.params = s;
                 return s;
             } catch (Exception e) {
-                log.error("iTrigger序列化错误{}", iTrigger);
+                log.error("iTrigger序列化错误{}", httpParams);
             }
         }
-        return null;
+        return this.params;
     }
 
     public ITrigger params2ITrigger() {
@@ -78,7 +80,7 @@ public class GschedulerTrigger implements Serializable {
                 log.error("反序列化错误{}", params);
             }
         }
-        return null;
+        return this.httpParams;
     }
 
 }

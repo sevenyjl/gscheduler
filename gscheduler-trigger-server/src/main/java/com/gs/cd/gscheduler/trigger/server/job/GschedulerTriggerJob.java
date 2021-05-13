@@ -33,7 +33,11 @@ public class GschedulerTriggerJob implements Serializable, Job {
         log.debug("转换gschedulerTrigger=" + gschedulerTrigger);
         ITrigger iTrigger = gschedulerTrigger.params2ITrigger();
         try {
-            iTrigger.execute();
+            if (iTrigger == null) {
+                log.warn("触发器错误,params为空：{}", gschedulerTrigger);
+            } else {
+                iTrigger.execute();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

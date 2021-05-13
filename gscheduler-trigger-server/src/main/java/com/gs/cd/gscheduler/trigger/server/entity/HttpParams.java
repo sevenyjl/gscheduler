@@ -65,7 +65,6 @@ public class HttpParams implements ITrigger {
             log.debug("执行成功，执行返回值：" + execute.body());
         } else {
             log.error("执行请求失败：" + this);
-            throw new Exception("执行请求失败：" + this);
         }
     }
 }

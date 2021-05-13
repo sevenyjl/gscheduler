@@ -33,4 +33,7 @@ public interface GschedulerTriggerService extends IService<GschedulerTrigger> {
 
     boolean unlockBathById(List<GschedulerTrigger> gschedulerTriggerList);
 
+    boolean stopQuartzById(Integer id);
+
+    boolean addQuartzById(GschedulerTrigger gschedulerTrigger);
 }

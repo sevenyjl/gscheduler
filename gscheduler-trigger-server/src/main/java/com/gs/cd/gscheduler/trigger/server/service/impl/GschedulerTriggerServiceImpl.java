@@ -1,7 +1,11 @@
 package com.gs.cd.gscheduler.trigger.server.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gs.cd.gscheduler.trigger.server.config.GSchedulerTriggerInit;
 import com.gs.cd.gscheduler.trigger.server.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.trigger.server.execption.TriggerException;
 import com.gs.cd.gscheduler.trigger.server.mapper.GschedulerTriggerMapper;
@@ -26,19 +30,31 @@ import java.util.List;
 public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerMapper, GschedulerTrigger> implements GschedulerTriggerService {
     @Autowired
     QuartzExecutors quartzExecutors;
+    @Autowired
+    NacosService nacosService;
 
     @Override
     public boolean create(GschedulerTrigger gschedulerTrigger) {
+        //check
+        GschedulerTrigger byTaskIdAndGroupName = getByTaskIdAndGroupName(gschedulerTrigger.getTenantCode(), gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName());
+        if (byTaskIdAndGroupName != null)
+            throw new RuntimeException(String.format("已经存在 tenantCode=%s,taskId=%s,groupName=%s的触发数据", gschedulerTrigger.getTenantCode(), gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName()));
         //创建定时任务
         try {
-            quartzExecutors.addJob(gschedulerTrigger);
+            if (!remoteAdd(nacosService.getFirstServerAddress(), gschedulerTrigger)) {
+                return false;
+            }
         } catch (TriggerException e) {
             log.error(e.getMessage());
             return false;
         }
         //创建表
         gschedulerTrigger.setLockFlag(true);
-        return save(gschedulerTrigger);
+        gschedulerTrigger.setAddress(nacosService.getFirstServerAddress());
+        if (save(gschedulerTrigger)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -51,10 +67,9 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
 
     @Override
     public boolean delete(String tenantCode, String taskId, String groupName) {
-        //去掉定时任务
-        if (quartzExecutors.deleteJob(tenantCode, taskId, groupName)) {
-            return remove(new QueryWrapper<GschedulerTrigger>().lambda().eq(GschedulerTrigger::getTenantCode, tenantCode)
-                    .eq(GschedulerTrigger::getTaskId, taskId).eq(GschedulerTrigger::getGroupName, groupName));
+        GschedulerTrigger byTaskIdAndGroupName = getByTaskIdAndGroupName(tenantCode, taskId, groupName);
+        if (byTaskIdAndGroupName != null) {
+            return remoteStop(byTaskIdAndGroupName.getAddress(), byTaskIdAndGroupName.getId());
         }
         return false;
     }
@@ -65,41 +80,95 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
         if (byTaskIdAndGroupName == null) {
             throw new RuntimeException(String.format("未找到tenantCode=%s,taskId=%s,groupName=%s的触发数据", gschedulerTrigger.getTenantCode(), gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName()));
         }
-        if (quartzExecutors.deleteJob(gschedulerTrigger.getTenantCode(), gschedulerTrigger.getTaskId(), gschedulerTrigger.getGroupName())) {
-            try {
-                quartzExecutors.addJob(gschedulerTrigger);
-                gschedulerTrigger.setId(byTaskIdAndGroupName.getId());
-                gschedulerTrigger.setLockFlag(true);
-                updateById(gschedulerTrigger);
-            } catch (TriggerException e) {
-                log.error(e.getMessage());
+        try {
+            if (!remoteStop(byTaskIdAndGroupName.getAddress(), byTaskIdAndGroupName.getId())) {
+                log.error("远程停止quartz错误，{}", byTaskIdAndGroupName);
                 return false;
             }
+        } catch (Exception e) {
+            log.error("远程停止quartz错误，{} \n错误详情:{}", byTaskIdAndGroupName, e.getMessage());
+            return false;
         }
-        return false;
+        try {
+            if (!remoteAdd(nacosService.getFirstServerAddress(), gschedulerTrigger)) {
+                log.error("远程添加quartz错误：{}", byTaskIdAndGroupName);
+                return false;
+            }
+            gschedulerTrigger.setId(byTaskIdAndGroupName.getId());
+            gschedulerTrigger.setLockFlag(true);
+            gschedulerTrigger.setAddress(nacosService.getFirstServerAddress());
+            return updateById(gschedulerTrigger);
+        } catch (TriggerException e) {
+            log.error(e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public boolean lockById(GschedulerTrigger gschedulerTrigger) {
         gschedulerTrigger.setLockFlag(true);
+        gschedulerTrigger.setAddress(nacosService.getFirstServerAddress());
         return updateById(gschedulerTrigger);
     }
 
     @Override
     public boolean lockBathById(List<GschedulerTrigger> gschedulerTriggerList) {
-        gschedulerTriggerList.forEach(s -> s.setLockFlag(true));
-        return saveBatch(gschedulerTriggerList);
+        if (CollectionUtil.isNotEmpty(gschedulerTriggerList)) {
+            gschedulerTriggerList.forEach(s -> {
+                s.setLockFlag(true);
+                s.setAddress(nacosService.getFirstServerAddress());
+            });
+            return updateBatchById(gschedulerTriggerList);
+        }
+        return false;
     }
 
     @Override
     public boolean unlockById(GschedulerTrigger gschedulerTrigger) {
         gschedulerTrigger.setLockFlag(false);
+        gschedulerTrigger.setAddress(null);
         return updateById(gschedulerTrigger);
     }
 
     @Override
     public boolean unlockBathById(List<GschedulerTrigger> gschedulerTriggerList) {
-        gschedulerTriggerList.forEach(s -> s.setLockFlag(false));
-        return saveBatch(gschedulerTriggerList);
+        if (CollectionUtil.isNotEmpty(gschedulerTriggerList)) {
+            gschedulerTriggerList.forEach(s -> {
+                s.setLockFlag(false);
+                s.setAddress(null);
+            });
+            return updateBatchById(gschedulerTriggerList);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean stopQuartzById(Integer id) {
+        GschedulerTrigger byId = getById(id);
+        if (byId != null) {
+            return quartzExecutors.deleteJob(byId.getTenantCode(), byId.getTaskId(), byId.getGroupName());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addQuartzById(GschedulerTrigger gschedulerTrigger) {
+        if (gschedulerTrigger != null) {
+            GSchedulerTriggerInit.addCache(gschedulerTrigger);
+            quartzExecutors.addJob(gschedulerTrigger);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean remoteStop(String address, Integer id) {
+        final String api = address + "/gtrigger/stopQuartz/" + id;
+        return Boolean.parseBoolean(HttpUtil.get(api));
+    }
+
+    private boolean remoteAdd(String address, GschedulerTrigger gschedulerTrigger) {
+        final String api = address + "/gtrigger/addQuartz";
+        String post = HttpUtil.post(api, JSONUtil.toJsonStr(gschedulerTrigger));
+        return Boolean.parseBoolean(post);
     }
 }

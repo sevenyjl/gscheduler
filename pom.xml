@@ -7,7 +7,6 @@
         <module>dolphinscheduler-api</module>
         <module>gscheduler-server</module>
         <module>gscheduler-trigger-springboot-starter</module>
-        <module>gscheduler-quartz</module>
         <module>gscheduler-trigger-server</module>
     </modules>
     <parent>
