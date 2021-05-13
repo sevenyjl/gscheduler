@@ -126,7 +126,7 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
     @Override
     public boolean unlockById(GschedulerTrigger gschedulerTrigger) {
         gschedulerTrigger.setLockFlag(false);
-        gschedulerTrigger.setAddress(null);
+        gschedulerTrigger.setAddress("");
         return updateById(gschedulerTrigger);
     }
 
@@ -135,7 +135,7 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
         if (CollectionUtil.isNotEmpty(gschedulerTriggerList)) {
             gschedulerTriggerList.forEach(s -> {
                 s.setLockFlag(false);
-                s.setAddress(null);
+                s.setAddress("");
             });
             return updateBatchById(gschedulerTriggerList);
         }
