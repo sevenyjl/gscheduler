@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
  * @Version 1.0
  */
 @FeignClient(url = "${dolphinscheduler.url:http://127.0.0.1:12345/dolphinscheduler}", name = "ExecutorApi")
-
 public interface ExecutorApi {
     @PostMapping(value = "/projects/{projectName}/executors/start-process-instance")
     public Result startProcessInstance(@RequestHeader(name = "Cookie") String sessinoId,
