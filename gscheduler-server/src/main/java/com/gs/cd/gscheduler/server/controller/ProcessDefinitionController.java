@@ -15,6 +15,7 @@ import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -322,26 +323,19 @@ public class ProcessDefinitionController {
             @PathVariable String projectName,
             @RequestParam("processDefinitionIds") String processDefinitionIds,
             HttpServletResponse response) throws IOException {
-        Response r = processDefinitionApi.batchExportProcessDefinitionByIds(TenantCodeService.getSessionId(tenantCode),
+        String r = processDefinitionApi.batchExportProcessDefinitionByIds(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionIds);
-        Response.Body body = r.body();
-        BufferedReader reader = null;
         ServletOutputStream outputStream = null;
         try {
-            reader = IoUtil.getReader(body.asInputStream(), "UTF-8");
             response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + projectName + "_" + tenantCode + DateUtil.format(new Date(), Constants.PARAMETER_FORMAT_TIME) + ".json");
             outputStream = response.getOutputStream();
-            String s = null;
-            while ((s = reader.readLine()) != null) {
-                outputStream.write(s.getBytes(StandardCharsets.UTF_8));
-                outputStream.flush();
-            }
+            outputStream.write(r.getBytes(StandardCharsets.UTF_8));
+            outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             IoUtil.close(outputStream);
-            IoUtil.close(reader);
         }
     }
 

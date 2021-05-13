@@ -1,11 +1,12 @@
 package com.gs.cd.gscheduler.api;
 
 import com.gs.cd.gscheduler.utils.Result;
+import feign.Response;
 import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import feign.Response;
 
 /**
  * @Author seven
@@ -107,9 +108,9 @@ public interface ProcessDefinitionApi {
     );
 
     @GetMapping(value = "/projects/{projectName}/process/export")
-    public Response batchExportProcessDefinitionByIds(@RequestHeader(name = "Cookie") String sessinoId,
-                                                  @PathVariable String projectName,
-                                                  @RequestParam("processDefinitionIds") String processDefinitionIds);
+    public String batchExportProcessDefinitionByIds(@RequestHeader(name = "Cookie") String sessinoId,
+                                                      @PathVariable String projectName,
+                                                      @RequestParam("processDefinitionIds") String processDefinitionIds);
 
     @GetMapping(value = "/projects/{projectName}/process/queryProcessDefinitionAllByProjectId")
     public Result queryProcessDefinitionAllByProjectId(@RequestHeader(name = "Cookie") String sessinoId,
