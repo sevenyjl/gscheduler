@@ -1,3 +1,4 @@
+#gscheduler-trigger-server.yml
 postgresql:
   schema: gscheduler_trigger
 spring:
