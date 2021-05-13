@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.FeignClient;
 
 /**
  * @Author seven
@@ -13,6 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  */
 @SpringBootApplication
 @EnableFeignClients(basePackages = "com.gs.cd.gscheduler.api")
+@FeignClient
 @MapperScan("com.gs.cd.gscheduler.server.mapper")
 public class ServerApplication {
     public static void main(String[] args) {
