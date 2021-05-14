@@ -18,6 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>com.gs.cd</groupId>
+            <artifactId>kmp-auth-spring-boot-starter</artifactId>
+            <version>3.7.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gs.cd</groupId>
             <artifactId>cloud-starter</artifactId>
         </dependency>
         <dependency>

@@ -9,6 +9,9 @@ import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProjectApi;
 import com.gs.cd.gscheduler.entity.Project;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
+import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
+import com.gs.cd.gscheduler.server.vo.UserGroupAndRoleVO;
 import com.gs.cd.gscheduler.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.Constants;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +35,11 @@ import java.util.Map;
 @RequestMapping("/projects")
 @Slf4j
 public class ProjectController {
+    private static final String add = "taskScheduling:projectManagement:add";
+    private static final String view = "taskScheduling:projectManagement:view";
+    private static final String edit = "taskScheduling:projectManagement:edit";
+    private static final String delete = "taskScheduling:projectManagement:delete";
+    private static final String configurePermissions = "taskScheduling:projectManagement:configurePermissions";
     @Autowired
     ProjectApi projectApi;
 
@@ -51,6 +60,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        check(add, jwtUserInfo);
         return projectApi.createProject(sessionId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -72,6 +82,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        check(edit, jwtUserInfo);
         return projectApi.updateProject(sessionId, projectId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -85,8 +96,11 @@ public class ProjectController {
     @GetMapping(value = "/query-by-id")
     public ApiResult queryProjectById(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam("projectId") Integer projectId) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+//        check(view, jwtUserInfo);
         return projectApi.queryProjectById(sessionId, projectId).apiResult();
     }
 
@@ -102,10 +116,13 @@ public class ProjectController {
     @GetMapping(value = "/list-paging")
     public ApiResult queryProjectListPaging(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam(value = "searchVal", required = false) String searchVal,
             @RequestParam("pageSize") Integer pageSize,
             @RequestParam("pageNo") Integer pageNo
     ) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+//        check(view, jwtUserInfo);
         return projectApi.queryProjectListPaging(TenantCodeService.getSessionId(tenantCode),
                 searchVal, pageSize, pageNo).apiResult();
     }
@@ -120,8 +137,11 @@ public class ProjectController {
     @GetMapping(value = "/delete")
     public ApiResult deleteProject(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam("projectId") Integer projectId
     ) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        check(delete, jwtUserInfo);
         return projectApi.deleteProject(TenantCodeService.getSessionId(tenantCode), projectId).apiResult();
     }
 
@@ -132,6 +152,46 @@ public class ProjectController {
                                              @RequestParam("file") MultipartFile file,
                                              @RequestParam("projectName") String projectName) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        check(add, jwtUserInfo);
         return projectApi.importProcessDefinition(TenantCodeService.getSessionId(tenantCode), file, projectName, jwtUserInfo.getUserName()).apiResult();
+    }
+
+    @Autowired
+    private GschedulerProjectPurviewService gschedulerProjectPurviewService;
+
+    /**
+     * 配置权限
+     */
+    @PostMapping("purview/{id}")
+    public ApiResult purview(@PathVariable Integer id, @RequestBody List<UserGroupAndRoleVO> userGroupAndRoleVOS,
+                             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                             @RequestHeader(HttpHeadersParam.TOKEN) String token) {
+        JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        check(configurePermissions, jwtUserInfo);
+        userGroupAndRoleVOS.forEach(s -> {
+            GschedulerProjectPurview gschedulerProjectPurview = new GschedulerProjectPurview();
+            gschedulerProjectPurview.setProjectId(id);
+            gschedulerProjectPurview.setRoleId(s.getRoleId());
+            s.getUserGroupId().forEach(sb -> {
+                gschedulerProjectPurview.setUserGoupId(sb);
+                gschedulerProjectPurviewService.save(gschedulerProjectPurview);
+            });
+        });
+        return ApiResult.success();
+    }
+
+    /**
+     * 通id获取当前用户的权限
+     */
+    @GetMapping("purview/get/{id}")
+    public ApiResult purviewGetById(@PathVariable Integer id,
+                                    @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                    @RequestHeader(HttpHeadersParam.TOKEN) String token) {
+        gschedulerProjectPurviewService.getResourcesByProjectId(id, token,tenantCode);
+        return ApiResult.success();
+    }
+
+    private boolean check(String resourcesParams, JwtUserInfo jwtUserInfo) {
+        return false;
     }
 }
