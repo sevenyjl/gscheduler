@@ -59,7 +59,7 @@ public class HttpParams implements ITrigger {
     }
 
     @Override
-    public void execute() throws Exception{
+    public void execute() throws Exception {
         HttpResponse execute = getHttpRequest().execute();
         if (execute.isOk()) {
             log.debug("执行成功，执行返回值：" + execute.body());

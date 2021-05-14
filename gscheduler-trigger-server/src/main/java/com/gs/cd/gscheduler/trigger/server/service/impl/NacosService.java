@@ -30,14 +30,14 @@ public class NacosService {
     private String serviceName;
 
     public boolean addressIsExist(String address) {
-        List<NacosServiceBean> nacosServiceBeans = nacosServiceBeanList(nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
+        List<NacosServiceBean> nacosServiceBeans = nacosServiceBeanList(serviceName, nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
         NacosServiceBean nacosServiceBean = nacosServiceBeans.stream()
                 .filter(s -> s.isEnabled() && s.getAddress().equals(address))
                 .findFirst().orElse(null);
         return nacosServiceBean != null;
     }
 
-    private List<NacosServiceBean> nacosServiceBeanList(String clusterName, String namespaceId) {
+    public List<NacosServiceBean> nacosServiceBeanList(String serviceName, String clusterName, String namespaceId) {
         String serverAddr = nacosConfigProperties.getServerAddr();
         HashMap<String, Object> params = new HashMap<>();
         params.put("serviceName", serviceName);
@@ -54,11 +54,11 @@ public class NacosService {
     }
 
     public List<NacosServiceBean> listAll() {
-        return nacosServiceBeanList(nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
+        return nacosServiceBeanList(serviceName,nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
     }
 
     public String getFirstServerAddress() {
-        List<NacosServiceBean> nacosServiceBeans = nacosServiceBeanList(nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
+        List<NacosServiceBean> nacosServiceBeans = nacosServiceBeanList(serviceName,nacosConfigProperties.getClusterName(), nacosConfigProperties.getNamespace());
         if (!nacosServiceBeans.isEmpty()) {
             for (NacosServiceBean nacosServiceBean : nacosServiceBeans) {
                 if (nacosServiceBean.isEnabled()) {

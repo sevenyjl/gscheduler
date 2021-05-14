@@ -1,6 +1,8 @@
 package com.gs.cd.gscheduler.trigger.server.controller;
 
 import cn.hutool.core.net.Ipv4Util;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.nacos.client.utils.IPUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
@@ -20,6 +22,7 @@ import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @Author seven
@@ -77,6 +80,27 @@ public class TriggerController {
         log.info("create trigger tenantCode={},gschedulerTrigger={}", tenantCode, gschedulerTrigger);
         gschedulerTrigger.setTenantCode(tenantCode);
         gschedulerTrigger.iTrigger2Params();
+        if (StrUtil.isNotEmpty(gschedulerTrigger.getNacosServiceName())) {
+            try {
+                String url = gschedulerTrigger.getHttpParams().getUrl();
+                String replace = url.replace("http://", "").replace("https://", "");
+                int index = replace.indexOf("/");
+                if (index != -1) {
+                    replace = replace.substring(index);
+                } else {
+                    replace = "";
+                }
+                //从nacos中查询服务
+                List<NacosService.NacosServiceBean> nacosServiceBeans = nacosService.nacosServiceBeanList(gschedulerTrigger.getNacosServiceName(),
+                        gschedulerTrigger.getClusterName(),
+                        gschedulerTrigger.getNameSpaceId());
+                NacosService.NacosServiceBean nacosServiceBean = RandomUtil.randomEle(nacosServiceBeans);
+                gschedulerTrigger.getHttpParams().setUrl(nacosServiceBean.getIp() + ":" + nacosServiceBean.getPort() + replace);
+                gschedulerTrigger.iTrigger2Params();
+            } catch (Exception e) {
+                log.error("nacos 执行错误:{}", gschedulerTrigger);
+            }
+        }
         return gschedulerTriggerService.create(gschedulerTrigger) ? ApiResult.success() : ApiResult.error();
     }
 

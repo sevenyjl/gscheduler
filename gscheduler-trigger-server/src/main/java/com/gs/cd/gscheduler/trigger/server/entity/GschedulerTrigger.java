@@ -54,6 +54,13 @@ public class GschedulerTrigger implements Serializable {
 
     private String address;
 
+    @TableField(exist = false)
+    private String nacosServiceName;
+    @TableField(exist = false)
+    private String clusterName;
+    @TableField(exist = false)
+    private String nameSpaceId;
+
     public String iTrigger2Params() {
         if (httpParams != null) {
             try {

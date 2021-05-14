@@ -33,6 +33,35 @@ public class GschedulerTriggerVO {
 
     private Date endTime;
 
+
+    private String nacosServiceName;
+    private String clusterName;
+    private String nameSpaceId;
+
+    public String getNacosServiceName() {
+        return nacosServiceName;
+    }
+
+    public void setNacosServiceName(String nacosServiceName) {
+        this.nacosServiceName = nacosServiceName;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
+    }
+
+    public String getNameSpaceId() {
+        return nameSpaceId;
+    }
+
+    public void setNameSpaceId(String nameSpaceId) {
+        this.nameSpaceId = nameSpaceId;
+    }
+
     public Date getStartTime() {
         return startTime;
     }
@@ -53,8 +82,8 @@ public class GschedulerTriggerVO {
         this.id = id;
     }
 
-    public GschedulerTriggerVO(@NonNull Integer id,@NonNull  String taskId,@NonNull  String groupName,
-                               @NonNull  String corn,@NonNull  HttpParams httpParams) {
+    public GschedulerTriggerVO(@NonNull Integer id, @NonNull String taskId, @NonNull String groupName,
+                               @NonNull String corn, @NonNull HttpParams httpParams) {
         this.id = id;
         this.taskId = taskId;
         this.groupName = groupName;
@@ -74,5 +103,17 @@ public class GschedulerTriggerVO {
         this.httpParams = httpParams;
         this.type = TriggerType.HTTP;
         this.params = JSONUtil.toJsonStr(httpParams);
+    }
+
+    public GschedulerTriggerVO(String taskId, String groupName, String corn, String params, HttpParams httpParams, TriggerType type, String nacosServiceName, String clusterName, String nameSpaceId) {
+        this.taskId = taskId;
+        this.groupName = groupName;
+        this.corn = corn;
+        this.params = params;
+        this.httpParams = httpParams;
+        this.type = type;
+        this.nacosServiceName = nacosServiceName;
+        this.clusterName = clusterName;
+        this.nameSpaceId = nameSpaceId;
     }
 }
