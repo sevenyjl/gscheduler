@@ -13,6 +13,8 @@ import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
 import com.gs.cd.gscheduler.server.vo.UserGroupAndRoleVO;
 import com.gs.cd.gscheduler.utils.Result;
+import com.gs.cd.kmp.api.entity.Resource;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -35,11 +38,6 @@ import java.util.Map;
 @RequestMapping("/projects")
 @Slf4j
 public class ProjectController {
-    private static final String add = "taskScheduling:projectManagement:add";
-    private static final String view = "taskScheduling:projectManagement:view";
-    private static final String edit = "taskScheduling:projectManagement:edit";
-    private static final String delete = "taskScheduling:projectManagement:delete";
-    private static final String configurePermissions = "taskScheduling:projectManagement:configurePermissions";
     @Autowired
     ProjectApi projectApi;
 
@@ -60,7 +58,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(add, jwtUserInfo);
+//        check(GschedulerProjectPurview.add, jwtUserInfo);
         return projectApi.createProject(sessionId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -82,7 +80,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(edit, jwtUserInfo);
+        check(projectId, GschedulerProjectPurview.edit, token, tenantCode);
         return projectApi.updateProject(sessionId, projectId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -100,7 +98,7 @@ public class ProjectController {
             @RequestParam("projectId") Integer projectId) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-//        check(view, jwtUserInfo);
+//        check(GschedulerProjectPurview.view, jwtUserInfo);
         return projectApi.queryProjectById(sessionId, projectId).apiResult();
     }
 
@@ -122,7 +120,7 @@ public class ProjectController {
             @RequestParam("pageNo") Integer pageNo
     ) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-//        check(view, jwtUserInfo);
+//        check(GschedulerProjectPurview.view, jwtUserInfo);
         return projectApi.queryProjectListPaging(TenantCodeService.getSessionId(tenantCode),
                 searchVal, pageSize, pageNo).apiResult();
     }
@@ -141,7 +139,7 @@ public class ProjectController {
             @RequestParam("projectId") Integer projectId
     ) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(delete, jwtUserInfo);
+        check(projectId, GschedulerProjectPurview.delete, token, tenantCode);
         return projectApi.deleteProject(TenantCodeService.getSessionId(tenantCode), projectId).apiResult();
     }
 
@@ -152,7 +150,7 @@ public class ProjectController {
                                              @RequestParam("file") MultipartFile file,
                                              @RequestParam("projectName") String projectName) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(add, jwtUserInfo);
+//        check(GschedulerProjectPurview.add, jwtUserInfo);
         return projectApi.importProcessDefinition(TenantCodeService.getSessionId(tenantCode), file, projectName, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -167,13 +165,13 @@ public class ProjectController {
                              @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                              @RequestHeader(HttpHeadersParam.TOKEN) String token) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(configurePermissions, jwtUserInfo);
+        check(id, GschedulerProjectPurview.configurePermissions, token, tenantCode);
         userGroupAndRoleVOS.forEach(s -> {
             GschedulerProjectPurview gschedulerProjectPurview = new GschedulerProjectPurview();
             gschedulerProjectPurview.setProjectId(id);
             gschedulerProjectPurview.setRoleId(s.getRoleId());
             s.getUserGroupId().forEach(sb -> {
-                gschedulerProjectPurview.setUserGoupId(sb);
+                gschedulerProjectPurview.setUserGroupId(sb);
                 gschedulerProjectPurviewService.save(gschedulerProjectPurview);
             });
         });
@@ -187,11 +185,15 @@ public class ProjectController {
     public ApiResult purviewGetById(@PathVariable Integer id,
                                     @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                     @RequestHeader(HttpHeadersParam.TOKEN) String token) {
-        gschedulerProjectPurviewService.getResourcesByProjectId(id, token,tenantCode);
-        return ApiResult.success();
+        Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
+        return ApiResult.success(resourcesByProjectId);
     }
 
-    private boolean check(String resourcesParams, JwtUserInfo jwtUserInfo) {
-        return false;
+    private void check(Integer id, @NonNull String resourcesParams, String token, String tenantCode) {
+        Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
+        if (!resourcesByProjectId.contains(resourcesParams)) {
+            log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
+            throw new RuntimeException("当前用户无权限操作");
+        }
     }
 }

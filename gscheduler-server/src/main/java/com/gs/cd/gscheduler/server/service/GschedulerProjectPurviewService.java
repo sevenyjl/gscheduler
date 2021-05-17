@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.kmp.api.entity.Resource;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
  * @Version 1.0
  */
 public interface GschedulerProjectPurviewService extends IService<GschedulerProjectPurview> {
-    List<Resource> getResourcesByProjectId(Integer id, String token, String tenantCode);
+    Collection<Resource> getResourcesByProjectId(Integer id, String token, String tenantCode);
 }

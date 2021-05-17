@@ -15,9 +15,15 @@ import lombok.Data;
 @TableName("gscheduler_project_purview")
 public class GschedulerProjectPurview {
 
+//    public static final String add = "taskScheduling:projectManagement:add";
+    public static final String view = "taskScheduling:projectManagement:view";
+    public static final String edit = "taskScheduling:projectManagement:edit";
+    public static final String delete = "taskScheduling:projectManagement:delete";
+    public static final String configurePermissions = "taskScheduling:projectManagement:configurePermissions";
+
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer projectId;
-    private String userGoupId;
+    private String userGroupId;
     private String roleId;
 }
