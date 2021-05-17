@@ -97,6 +97,7 @@ public class TriggerController {
                 NacosService.NacosServiceBean nacosServiceBean = RandomUtil.randomEle(nacosServiceBeans);
                 gschedulerTrigger.getHttpParams().setUrl(nacosServiceBean.getIp() + ":" + nacosServiceBean.getPort() + replace);
                 gschedulerTrigger.iTrigger2Params();
+                log.debug("通过nacos调用 {}", nacosServiceBean);
             } catch (Exception e) {
                 log.error("nacos 执行错误:{}", gschedulerTrigger);
             }
