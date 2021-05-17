@@ -18,6 +18,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -189,11 +190,17 @@ public class ProjectController {
         return ApiResult.success(resourcesByProjectId);
     }
 
+    //是否开启业务权限配置
+    @Value("${gscheduler.purview.flag:true}")
+    private boolean purviewFlag = true;
+
     private void check(Integer id, @NonNull String resourcesParams, String token, String tenantCode) {
-        Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
-        if (!resourcesByProjectId.contains(resourcesParams)) {
-            log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
-            throw new RuntimeException("当前用户无权限操作");
+        if (purviewFlag) {
+            Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
+            if (!resourcesByProjectId.contains(resourcesParams)) {
+                log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
+                throw new RuntimeException("当前用户无权限操作");
+            }
         }
     }
 }
