@@ -1,17 +1,15 @@
 package com.gs.cd.gscheduler.server.controller;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.gs.cd.cloud.common.ApiResult;
-import com.gs.cd.gscheduler.api.EltApi;
+import com.gs.cd.cloud.common.HttpHeadersParam;
+import com.gs.cd.gsnow.api.GSnowClient;
 import com.gs.cd.gsnow.api.service.GSnowService;
+import com.gs.cd.gsnow.entity.GSnowCollector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 
 /**
  * schedulerx
@@ -22,17 +20,20 @@ import java.util.ArrayList;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("etl")
-public class EtlController {
+@RequestMapping("gsnow")
+public class GSnowController {
     @Autowired
-    EltApi eltApi;
+    GSnowClient gSnowClient;
+
     /**
      * 获取收集器集合
      *
      * @return
      */
     @GetMapping("collector/list")
-    public ApiResult listEtlCollector() {
-        return eltApi.listEtlCollector().apiResult();
+    public ApiResult listEtlCollector(
+            @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode) {
+        ApiResult apiResult = gSnowClient.search(new GSnowCollector(), tenantCode);
+        return apiResult;
     }
 }

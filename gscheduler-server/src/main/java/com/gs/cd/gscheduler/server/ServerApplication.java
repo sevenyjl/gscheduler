@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication(scanBasePackages = {
         "com.gs.cd.gscheduler.server",
         "com.gs.cd.db.dynamic.*"})
-@EnableFeignClients(basePackages = "com.gs.cd.gscheduler.api")
+@EnableFeignClients(basePackages = {"com.gs.cd.gscheduler.api"})
 @FeignClient
 @MapperScan("com.gs.cd.gscheduler.server.mapper")
 @Import(DynamicDataSourceRegister.class)
