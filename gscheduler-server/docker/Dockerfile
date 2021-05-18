@@ -17,7 +17,7 @@ ENV SERVICE_NAME gscheduler-server
 #JVM参数
 ENV JAVA_OPTS=""
 # 添加运行jar
-COPY target/gscheduler-server-*.jar /root/
+COPY ./target/gscheduler-server-*.jar /root/
 # 设置运行权限
 RUN echo '#!/bin/bash\n\
           var=`find /root/ -name *.jar`\n\

@@ -73,7 +73,7 @@ public class TenantCodeService {
                 runTimes = 0;
                 sessionId = login.getData().toString()
                         .replace("{", "").replace("}", "");
-                tenantCodeSessionMap.put(tenantCode, sessionId);
+                tenantCodeSessionMap.put(tenantCode, sessionId + ";language=zh_CN");
                 return sessionId;
             }
         } else {
