@@ -178,7 +178,7 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
         GschedulerTrigger byId = getById(id);
         if (byId != null) {
             byId.setSuspendFlag(isPause);
-            boolean b = quartzExecutors.pause(byId.getTenantCode(), byId.getTaskId(), byId.getGroupName());
+            boolean b = quartzExecutors.pause(byId.getTenantCode(), byId.getTaskId(), byId.getGroupName(),isPause);
             log.debug("是否暂停定时任务：{}，状态：{}，暂停数据：{}", isPause, b, byId);
             return updateById(byId);
         }
