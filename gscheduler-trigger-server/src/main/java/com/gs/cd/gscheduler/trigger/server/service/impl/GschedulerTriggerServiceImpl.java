@@ -146,6 +146,8 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
     public boolean stopQuartzById(Integer id) {
         GschedulerTrigger byId = getById(id);
         if (byId != null) {
+            boolean b = removeById(byId.getId());
+            log.debug("删除状态：{}，删除数据：{}", b, byId);
             return quartzExecutors.deleteJob(byId.getTenantCode(), byId.getTaskId(), byId.getGroupName());
         }
         return false;
