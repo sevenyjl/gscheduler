@@ -5,6 +5,7 @@ import com.gs.cd.gscheduler.api.UsersApi;
 import com.gs.cd.gscheduler.entity.Tenant;
 import com.gs.cd.gscheduler.entity.User;
 import com.gs.cd.gscheduler.utils.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.util.List;
  * @Description
  * @Version 1.0
  */
+@Slf4j
 @Component
 public class TenantCodeService {
     private static final HashMap<String, String> tenantCodeSessionMap = new HashMap<>();
@@ -43,6 +45,8 @@ public class TenantCodeService {
         return tenantCodeSessionMap.get(tenantCode);
     }
 
+    private static int runTimes = 0;
+
     public String check(String tenantCode) {
         String sessionId = tenantCodeSessionMap.get(tenantCode);
         if (sessionId == null) {
@@ -58,10 +62,15 @@ public class TenantCodeService {
                     usersApi.createUser(adminSessionId, tenantCode, defaultPassword, tenant.getId(), null, "test@test.com", null);
                 } else {
                     //修改密码
-                    usersApi.updateUser(sessionId, user.getId(), user.getUserName(), defaultPassword, user.getQueue(), user.getEmail(), user.getTenantId(), null);
+                    usersApi.updateUser(adminSessionId, user.getId(), user.getUserName(), defaultPassword, user.getQueue(), user.getEmail(), user.getTenantId(), null);
                 }
+                if (runTimes > 10) {
+                    log.error("重试次数过多了，请联系程序员修复。重试次数：{}", runTimes);
+                }
+                runTimes++;
                 return check(tenantCode);
             } else {
+                runTimes = 0;
                 sessionId = login.getData().toString()
                         .replace("{", "").replace("}", "");
                 tenantCodeSessionMap.put(tenantCode, sessionId);
