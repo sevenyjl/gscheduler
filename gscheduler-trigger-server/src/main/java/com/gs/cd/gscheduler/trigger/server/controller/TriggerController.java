@@ -73,6 +73,20 @@ public class TriggerController {
         return ApiResult.success(byTaskIdAndGroupName);
     }
 
+    @GetMapping("suspend")
+    ApiResult suspendChange(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                            @RequestParam String taskId,
+                            @RequestParam String groupName,
+                            @RequestParam boolean isSuspend) {
+        log.info("suspend trigger tenantCode={},taskId={},groupName={},isSuspend={}", tenantCode, taskId, groupName, isSuspend);
+        GschedulerTrigger byTaskIdAndGroupName = gschedulerTriggerService.getByTaskIdAndGroupName(tenantCode, taskId, groupName);
+        if (byTaskIdAndGroupName != null) {
+            byTaskIdAndGroupName.setSuspendFlag(isSuspend);
+            return gschedulerTriggerService.updateById(byTaskIdAndGroupName) ? ApiResult.success() : ApiResult.error();
+        }
+        return ApiResult.error(String.format("暂停任务失败,无tenantCode=%s taskId=%s groupName=%s的定时任务", tenantCode, taskId, groupName));
+    }
+
 
     @PostMapping(value = "/create")
     public ApiResult create(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,

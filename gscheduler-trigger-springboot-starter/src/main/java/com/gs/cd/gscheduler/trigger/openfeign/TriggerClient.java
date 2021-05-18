@@ -38,4 +38,10 @@ public interface TriggerClient {
             @NonNull @PathVariable String taskId,
             @NonNull @PathVariable String groupName,
             @NonNull @RequestBody GschedulerTriggerVO params);
+
+    @PostMapping(value = "/gtrigger/suspend")
+    ApiResult updateByTaskIdAndGroupName(@NonNull @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                                         @NonNull @RequestParam String taskId,
+                                         @NonNull @RequestParam String groupName,
+                                         @NonNull @RequestParam boolean isSuspend);
 }

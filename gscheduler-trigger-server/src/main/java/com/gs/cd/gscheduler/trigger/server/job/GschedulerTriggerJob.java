@@ -28,18 +28,22 @@ public class GschedulerTriggerJob implements Serializable, Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobKey key = jobDetail.getKey();
-        log.debug("定时任务name={},group={},des={}", key.getName(), key.getGroup(), jobDetail.getDescription());
         GschedulerTrigger gschedulerTrigger = (GschedulerTrigger) jobExecutionContext.getMergedJobDataMap().get("gschedulerTrigger");
-        log.debug("转换gschedulerTrigger=" + gschedulerTrigger);
-        ITrigger iTrigger = gschedulerTrigger.params2ITrigger();
-        try {
-            if (iTrigger == null) {
-                log.warn("触发器错误,params为空：{}", gschedulerTrigger);
-            } else {
-                iTrigger.execute();
+        if (gschedulerTrigger.getSuspendFlag()) {
+            log.debug("暂停定时任务了");
+        } else {
+            log.debug("定时任务name={},group={},des={}", key.getName(), key.getGroup(), jobDetail.getDescription());
+            log.debug("转换gschedulerTrigger=" + gschedulerTrigger);
+            ITrigger iTrigger = gschedulerTrigger.params2ITrigger();
+            try {
+                if (iTrigger == null) {
+                    log.warn("触发器错误,params为空：{}", gschedulerTrigger);
+                } else {
+                    iTrigger.execute();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

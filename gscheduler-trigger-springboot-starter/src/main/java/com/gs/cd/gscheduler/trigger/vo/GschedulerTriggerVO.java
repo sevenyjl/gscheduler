@@ -2,7 +2,7 @@ package com.gs.cd.gscheduler.trigger.vo;
 
 import cn.hutool.json.JSONUtil;
 import com.gs.cd.gscheduler.trigger.enums.TriggerType;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.Date;
  * @Description
  * @Version 1.0
  */
-@Getter
+@Data
 public class GschedulerTriggerVO {
     private Integer id;
 
@@ -32,6 +32,9 @@ public class GschedulerTriggerVO {
     private Date startTime;
 
     private Date endTime;
+
+    private boolean suspendFlag = false;
+    ;
 
 
     private String nacosServiceName;
@@ -82,6 +85,15 @@ public class GschedulerTriggerVO {
         this.id = id;
     }
 
+    public GschedulerTriggerVO(String taskId, String groupName, String corn, String params, HttpParams httpParams, TriggerType type) {
+        this.taskId = taskId;
+        this.groupName = groupName;
+        this.corn = corn;
+        this.params = params;
+        this.httpParams = httpParams;
+        this.type = type;
+    }
+
     public GschedulerTriggerVO(@NonNull Integer id, @NonNull String taskId, @NonNull String groupName,
                                @NonNull String corn, @NonNull HttpParams httpParams) {
         this.id = id;
@@ -103,17 +115,5 @@ public class GschedulerTriggerVO {
         this.httpParams = httpParams;
         this.type = TriggerType.HTTP;
         this.params = JSONUtil.toJsonStr(httpParams);
-    }
-
-    public GschedulerTriggerVO(String taskId, String groupName, String corn, String params, HttpParams httpParams, TriggerType type, String nacosServiceName, String clusterName, String nameSpaceId) {
-        this.taskId = taskId;
-        this.groupName = groupName;
-        this.corn = corn;
-        this.params = params;
-        this.httpParams = httpParams;
-        this.type = type;
-        this.nacosServiceName = nacosServiceName;
-        this.clusterName = clusterName;
-        this.nameSpaceId = nameSpaceId;
     }
 }

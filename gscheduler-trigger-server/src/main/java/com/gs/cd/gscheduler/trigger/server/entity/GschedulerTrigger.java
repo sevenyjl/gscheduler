@@ -53,6 +53,7 @@ public class GschedulerTrigger implements Serializable {
     private String tenantCode;
 
     private String address;
+    private Boolean suspendFlag = false;
 
     @TableField(exist = false)
     private String nacosServiceName;
