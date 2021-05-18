@@ -5,6 +5,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.gscheduler.trigger.server.config.GSchedulerTriggerInit;
 import com.gs.cd.gscheduler.trigger.server.entity.GschedulerTrigger;
 import com.gs.cd.gscheduler.trigger.server.execption.TriggerException;
@@ -63,6 +64,15 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
                 .eq(GschedulerTrigger::getTenantCode, tenantCode)
                 .eq(GschedulerTrigger::getTaskId, taskId)
                 .eq(GschedulerTrigger::getGroupName, groupName));
+    }
+
+    @Override
+    public boolean suspend(String tenantCode, String taskId, String groupName, boolean isSuspend) {
+        GschedulerTrigger byTaskIdAndGroupName = getByTaskIdAndGroupName(tenantCode, taskId, groupName);
+        if (byTaskIdAndGroupName != null) {
+            return remotePause(byTaskIdAndGroupName.getAddress(), byTaskIdAndGroupName.getId(), isSuspend);
+        }
+        return false;
     }
 
     @Override
@@ -161,6 +171,23 @@ public class GschedulerTriggerServiceImpl extends ServiceImpl<GschedulerTriggerM
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean pause(Integer id, boolean isPause) {
+        GschedulerTrigger byId = getById(id);
+        if (byId != null) {
+            byId.setSuspendFlag(isPause);
+            boolean b = quartzExecutors.pause(byId.getTenantCode(), byId.getTaskId(), byId.getGroupName());
+            log.debug("是否暂停定时任务：{}，状态：{}，暂停数据：{}", isPause, b, byId);
+            return updateById(byId);
+        }
+        return false;
+    }
+
+    private boolean remotePause(String address, Integer id, boolean isPause) {
+        final String api = address + "/gtrigger/pause/" + id + "?isPause=" + isPause;
+        return Boolean.parseBoolean(HttpUtil.get(api));
     }
 
     private boolean remoteStop(String address, Integer id) {

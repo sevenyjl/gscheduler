@@ -54,6 +54,12 @@ public class TriggerController {
         return gschedulerTriggerService.addQuartzById(gschedulerTrigger);
     }
 
+    @GetMapping(value = "pause/{id}")
+    boolean pause(@PathVariable Integer id, @RequestParam boolean isPause) {
+        log.info("是否暂停任务：{}，定时任务：{}", isPause, id);
+        return gschedulerTriggerService.pause(id, isPause);
+    }
+
     @GetMapping(value = "health")
     ApiResult health() throws UnknownHostException {
         ApiResult success = ApiResult.success("gscheduler-trigger-server <version>1.1.0-SNAPSHOT</version>");
@@ -79,12 +85,7 @@ public class TriggerController {
                             @RequestParam String groupName,
                             @RequestParam boolean isSuspend) {
         log.info("suspend trigger tenantCode={},taskId={},groupName={},isSuspend={}", tenantCode, taskId, groupName, isSuspend);
-        GschedulerTrigger byTaskIdAndGroupName = gschedulerTriggerService.getByTaskIdAndGroupName(tenantCode, taskId, groupName);
-        if (byTaskIdAndGroupName != null) {
-            byTaskIdAndGroupName.setSuspendFlag(isSuspend);
-            return gschedulerTriggerService.updateById(byTaskIdAndGroupName) ? ApiResult.success() : ApiResult.error();
-        }
-        return ApiResult.error(String.format("暂停任务失败,无tenantCode=%s taskId=%s groupName=%s的定时任务", tenantCode, taskId, groupName));
+        return gschedulerTriggerService.suspend(tenantCode, taskId, groupName, isSuspend) ? ApiResult.success() : ApiResult.error();
     }
 
 

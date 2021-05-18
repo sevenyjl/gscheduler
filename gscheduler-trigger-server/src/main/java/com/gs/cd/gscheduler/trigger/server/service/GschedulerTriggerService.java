@@ -21,6 +21,8 @@ public interface GschedulerTriggerService extends IService<GschedulerTrigger> {
 
     GschedulerTrigger getByTaskIdAndGroupName(String tenantCode, String taskId, String groupName);
 
+    boolean suspend(String tenantCode, String taskId, String groupName,boolean isSuspend);
+
     boolean delete(String tenantCode, String taskId, String groupName);
 
     boolean edit(GschedulerTrigger gschedulerTrigger);
@@ -36,4 +38,7 @@ public interface GschedulerTriggerService extends IService<GschedulerTrigger> {
     boolean stopQuartzById(Integer id);
 
     boolean addQuartzById(GschedulerTrigger gschedulerTrigger);
+
+    boolean pause(Integer id, boolean isPause);
+
 }

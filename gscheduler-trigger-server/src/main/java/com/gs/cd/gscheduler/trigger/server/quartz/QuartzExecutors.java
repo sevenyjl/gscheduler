@@ -101,7 +101,24 @@ public class QuartzExecutors {
                 return true;
             }
         } catch (SchedulerException e) {
-            log.error("删除定时失败 job : {}", jobName, e);
+            log.error("删除定时失败 job:{} ,errMsg: {}", jobName, e);
+        }
+        return false;
+    }
+
+    public boolean pause(String tenantCode, String jobName, String jobGroupName) {
+
+        try {
+            JobKey jobKey = new JobKey(jobName, tenantCode + "," + jobGroupName);
+            if (scheduler.checkExists(jobKey)) {
+                log.info("暂停定时job, job name: {}, job group name: {},", jobName, tenantCode + "," + jobGroupName);
+                scheduler.pauseJob(jobKey);
+                return true;
+            } else {
+                return true;
+            }
+        } catch (SchedulerException e) {
+            log.error("暂停定时失败 job:{} ,errMsg:{}", jobName, e);
         }
         return false;
     }
