@@ -27,19 +27,23 @@ DROP TABLE IF EXISTS "gscheduler_trigger"."gscheduler_trigger";
 CREATE TABLE "gscheduler_trigger"."gscheduler_trigger"
 (
     "id"          serial8,
-    "task_id"     varchar COLLATE "pg_catalog"."default",
-    "corn"        varchar(255) COLLATE "pg_catalog"."default",
-    "create_time" date,
-    "update_time" date,
-    "start_time"  date,
-    "end_time"    date,
-    "params"      text COLLATE "pg_catalog"."default",
-    "type"        varchar(255) COLLATE "pg_catalog"."default",
-    "group_name"  varchar(255) COLLATE "pg_catalog"."default",
-    "lock_flag"   bool,
-    "tenant_code" varchar(255) COLLATE "pg_catalog"."default"
+    "task_id"      varchar COLLATE "pg_catalog"."default",
+    "corn"         varchar(255) COLLATE "pg_catalog"."default",
+    "create_time"  date,
+    "update_time"  date,
+    "start_time"   date,
+    "end_time"     date,
+    "params"       text COLLATE "pg_catalog"."default",
+    "type"         varchar(255) COLLATE "pg_catalog"."default",
+    "group_name"   varchar(255) COLLATE "pg_catalog"."default",
+    "lock_flag"    bool,
+    "tenant_code"  varchar(255) COLLATE "pg_catalog"."default",
+    "address"      varchar(255) COLLATE "pg_catalog"."default",
+    "suspend_flag" bool
 )
 ;
+COMMENT
+ON COLUMN "gscheduler_trigger"."gscheduler_trigger"."suspend_flag" IS '暂停标识';
 
 -- ----------------------------
 -- Uniques structure for table gscheduler_trigger

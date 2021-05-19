@@ -1,1 +1,8 @@
 # gscheduler-server.yml
+dolphinscheduler:
+  password: dolphinscheduler123
+  url: http://gscheduler:12345/dolphinscheduler
+  username: admin
+gscheduler:
+  purview:
+    flag: true
