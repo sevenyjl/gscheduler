@@ -2,6 +2,7 @@ package com.gs.cd.gscheduler.server.controller;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
@@ -22,10 +23,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 项目管理
@@ -167,6 +167,9 @@ public class ProjectController {
                              @RequestHeader(HttpHeadersParam.TOKEN) String token) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         check(id, GschedulerProjectPurview.configurePermissions, token, tenantCode);
+        //删除原来的
+        boolean remove = gschedulerProjectPurviewService.remove(new QueryWrapper<GschedulerProjectPurview>().lambda()
+                .eq(GschedulerProjectPurview::getProjectId, id));
         userGroupAndRoleVOS.forEach(s -> {
             GschedulerProjectPurview gschedulerProjectPurview = new GschedulerProjectPurview();
             gschedulerProjectPurview.setProjectId(id);
@@ -186,8 +189,23 @@ public class ProjectController {
     public ApiResult purviewGetById(@PathVariable Integer id,
                                     @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                                     @RequestHeader(HttpHeadersParam.TOKEN) String token) {
-        Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
-        return ApiResult.success(resourcesByProjectId);
+//        Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
+        List<GschedulerProjectPurview> gschedulerProjectPurviews = gschedulerProjectPurviewService.listByProjectId(id);
+        HashMap<String, UserGroupAndRoleVO> result = new HashMap<>();
+        gschedulerProjectPurviews.forEach(s -> {
+            UserGroupAndRoleVO orDefault = result.getOrDefault(s.getRoleId(), new UserGroupAndRoleVO());
+            orDefault.setRoleId(s.getRoleId());
+            List<String> userGroupId = orDefault.getUserGroupId();
+            if (userGroupId == null) {
+                ArrayList<String> strings = new ArrayList<>();
+                strings.add(s.getUserGroupId());
+                orDefault.setUserGroupId(strings);
+            } else {
+                userGroupId.add(s.getUserGroupId());
+            }
+            result.put(s.getRoleId(), orDefault);
+        });
+        return ApiResult.success(result.values());
     }
 
     //是否开启业务权限配置
@@ -197,7 +215,8 @@ public class ProjectController {
     private void check(Integer id, @NonNull String resourcesParams, String token, String tenantCode) {
         if (purviewFlag) {
             Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
-            if (!resourcesByProjectId.contains(resourcesParams)) {
+            Resource resource = resourcesByProjectId.stream().filter(s -> s.getPerms().equals(resourcesParams)).findFirst().orElse(null);
+            if (resource == null) {
                 log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
                 throw new RuntimeException("当前用户无权限操作");
             }

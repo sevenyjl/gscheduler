@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface GschedulerProjectPurviewService extends IService<GschedulerProjectPurview> {
     Collection<Resource> getResourcesByProjectId(Integer id, String token, String tenantCode);
+
+    List<GschedulerProjectPurview> listByProjectId(Integer projectId);
 }

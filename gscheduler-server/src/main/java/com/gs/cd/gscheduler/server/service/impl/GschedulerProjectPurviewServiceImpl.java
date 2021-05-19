@@ -13,6 +13,7 @@ import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.gscheduler.server.mapper.GschedulerProjectPurviewMapper;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
 import com.gs.cd.kmp.api.AuthClient;
+import com.gs.cd.kmp.api.enums.ResourceCategoryEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,11 +44,11 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
     public Collection<Resource> getResourcesByProjectId(Integer id, String token, String tenantCode) {
         HashSet<Resource> resourcesSet = new HashSet<>();
         //获取当前用户的所有权限
-        ApiResult loginUserAllResource = authClient.listLoginUserAllResource(token, tenantCode);
+        ApiResult loginUserAllResource = authClient.listLoginUserAllResource(ResourceCategoryEnum.TENANT, token, tenantCode);
         if (loginUserAllResource.isSuccess()) {
-            LinkedHashMap data = (LinkedHashMap) loginUserAllResource.getData();
+            ArrayList tenantResource = (ArrayList) loginUserAllResource.getData();
             //只获取tenant层级
-            ArrayList tenantResource = (ArrayList) data.getOrDefault("tenant", new ArrayList<>());
+//            ArrayList tenantResource = (ArrayList) data.getOrDefault("tenant", new ArrayList<>());
             tenantResource.forEach(s -> {
                 JSONObject jsonObject = JSONUtil.parseObj(s);
                 if (permsList.contains(jsonObject.getStr("perms"))) {
@@ -90,6 +91,7 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
         }
     }
 
+    @Override
     public List<GschedulerProjectPurview> listByProjectId(Integer projectId) {
         return list(new QueryWrapper<GschedulerProjectPurview>().lambda().eq(GschedulerProjectPurview::getProjectId, projectId));
     }
