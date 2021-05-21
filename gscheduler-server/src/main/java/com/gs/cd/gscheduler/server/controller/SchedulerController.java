@@ -106,9 +106,6 @@ public class SchedulerController {
             return createSchedule(tenantCode, projectName, processDefinitionId, schedule, warningType, warningGroupId, failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
         } else {
             Result offline = schedulerApi.offline(TenantCodeService.getSessionId(tenantCode), projectName, id);
-            if (!offline.isSuccess()) {
-                return offline.apiResult();
-            }
             Result updateSchedule = schedulerApi.updateSchedule(TenantCodeService.getSessionId(tenantCode), projectName, id, schedule, warningType,
                     warningGroupId, failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
             if (!updateSchedule.isSuccess()) {
