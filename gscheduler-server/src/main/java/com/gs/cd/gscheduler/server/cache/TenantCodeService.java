@@ -52,7 +52,7 @@ public class TenantCodeService {
         if (sessionId == null) {
             //登录
             Result login = loginApi.login(tenantCode, defaultPassword);
-            if (login.getCode() == 10013) {
+            if (login.getCode() == 10013 || login.getCode() == 10043) {
                 //检测用户并创建
                 // TODO: 2021/4/13 创建用户逻辑应该在创建租户那里做
                 Result<List<User>> result = usersApi.listUser(adminSessionId);

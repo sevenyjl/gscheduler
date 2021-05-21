@@ -8,6 +8,7 @@ import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
 import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProcessDefinitionApi;
+import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;

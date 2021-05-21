@@ -67,5 +67,11 @@ public interface ProjectApi {
     @GetMapping(value = "/query-project-list")
     public Result queryAllProjectList(@RequestHeader(name = "Cookie") String sessinoId);
 
-
+    //    auth: seven
+//
+//    date: 2021/05/21 19:51:50
+    @GetMapping(value = "changeOwner")
+    public Result changeUserId(@RequestHeader(name = "Cookie") String sessinoId,
+                               @RequestParam("userId") Integer userId,
+                               @RequestParam("projectId") Integer projectId);
 }

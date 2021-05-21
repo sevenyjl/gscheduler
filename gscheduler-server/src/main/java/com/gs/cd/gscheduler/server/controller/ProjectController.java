@@ -1,5 +1,7 @@
 package com.gs.cd.gscheduler.server.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -139,9 +141,10 @@ public class ProjectController {
             @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam("projectId") Integer projectId
     ) {
+        // TODO: 2021/5/21 这里改为admin的项目，来模拟删除，并不是真实删库，删库有风险
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
         check(projectId, GschedulerProjectPurview.delete, token, tenantCode);
-        return projectApi.deleteProject(TenantCodeService.getSessionId(tenantCode), projectId).apiResult();
+        return projectApi.changeUserId(TenantCodeService.getSessionId(tenantCode),1, projectId).apiResult();
     }
 
 
@@ -166,6 +169,10 @@ public class ProjectController {
                              @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
                              @RequestHeader(HttpHeadersParam.TOKEN) String token) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        for (UserGroupAndRoleVO userGroupAndRoleVO : userGroupAndRoleVOS) {
+            if (StrUtil.isEmpty(userGroupAndRoleVO.getRoleId())) return ApiResult.error("角色信息不能为空");
+            if (CollectionUtil.isEmpty(userGroupAndRoleVO.getUserGroupId())) return ApiResult.error("用户组信息不能为空");
+        }
         check(id, GschedulerProjectPurview.configurePermissions, token, tenantCode);
         //删除原来的
         boolean remove = gschedulerProjectPurviewService.remove(new QueryWrapper<GschedulerProjectPurview>().lambda()
