@@ -133,14 +133,15 @@ public class SchedulerController {
                                     @RequestParam Integer processDefinitionId) {
         Result result = schedulerApi.queryScheduleListPaging(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, "", 1, 1);
+        Schedule schedule = null;
         if (result.isSuccess()) {
             JSONArray totalList = JSONUtil.parseObj(result.getData()).getJSONArray("totalList");
             if (totalList.size() > 0) {
                 JSONObject jsonObject = totalList.getJSONObject(0);
-                Schedule schedule = jsonObject.toBean(Schedule.class);
+                schedule = jsonObject.toBean(Schedule.class);
                 return ApiResult.success(schedule);
             } else {
-                return ApiResult.success(new Object());
+                return ApiResult.success(schedule);
             }
         } else {
             return result.apiResult();
