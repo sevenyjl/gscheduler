@@ -63,6 +63,12 @@ public class ExecutorController {
         if (warningType == null) {
             warningType = WarningType.NONE;
         }
+        if (taskDependType == null) {
+            taskDependType = TaskDependType.TASK_POST;
+        }
+        if (processInstancePriority == null) {
+            processInstancePriority = Priority.MEDIUM;
+        }
         return executorApi.startProcessInstance(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, scheduleTime, failureStrategy, startNodeList,
                 taskDependType, execType, warningType, warningGroupId, receivers,
@@ -73,6 +79,7 @@ public class ExecutorController {
 
     /**
      * 执行 execute
+     *
      * @param tenantCode        租户code
      * @param projectName       项目名称
      * @param processInstanceId
