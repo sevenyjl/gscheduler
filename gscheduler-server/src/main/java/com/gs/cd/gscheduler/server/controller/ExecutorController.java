@@ -88,17 +88,19 @@ public class ExecutorController {
     @PostMapping(value = "/start-check")
     public ApiResult startCheckProcessDefinition(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @PathVariable String projectName,
             @RequestParam(value = "processDefinitionId") int processDefinitionId) {
-        return executorApi.startCheckProcessDefinition(TenantCodeService.getSessionId(tenantCode), processDefinitionId).apiResult();
+        return executorApi.startCheckProcessDefinition(projectName, TenantCodeService.getSessionId(tenantCode), processDefinitionId).apiResult();
     }
 
 
     @GetMapping(value = "/get-receiver-cc")
     public ApiResult getReceiverCc(
+            @PathVariable String projectName,
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestParam(value = "processDefinitionId", required = false) Integer processDefinitionId,
             @RequestParam(value = "processInstanceId", required = false) Integer processInstanceId) {
-        return executorApi.getReceiverCc(TenantCodeService.getSessionId(tenantCode), processDefinitionId, processInstanceId).apiResult();
+        return executorApi.getReceiverCc(projectName, TenantCodeService.getSessionId(tenantCode), processDefinitionId, processInstanceId).apiResult();
     }
 
 

@@ -40,11 +40,15 @@ public interface ExecutorApi {
     );
 
     @PostMapping(value = "/projects/{projectName}/executors/start-check")
-    public Result startCheckProcessDefinition(@RequestHeader(name = "Cookie") String sessinoId,
-                                              @RequestParam(value = "processDefinitionId") int processDefinitionId);
+    public Result startCheckProcessDefinition(
+            @PathVariable String projectName,
+            @RequestHeader(name = "Cookie") String sessinoId,
+            @RequestParam(value = "processDefinitionId") int processDefinitionId);
 
     @GetMapping(value = "/projects/{projectName}/executors/get-receiver-cc")
-    public Result getReceiverCc(@RequestHeader(name = "Cookie") String sessinoId,
-                                @RequestParam(value = "processDefinitionId", required = false) Integer processDefinitionId,
-                                @RequestParam(value = "processInstanceId", required = false) Integer processInstanceId);
+    public Result getReceiverCc(
+            @PathVariable String projectName,
+            @RequestHeader(name = "Cookie") String sessinoId,
+            @RequestParam(value = "processDefinitionId", required = false) Integer processDefinitionId,
+            @RequestParam(value = "processInstanceId", required = false) Integer processInstanceId);
 }
