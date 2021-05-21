@@ -18,15 +18,14 @@ package com.gs.cd.gscheduler.server.controller;
 
 
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.gs.cd.cloud.common.HttpHeadersParam;
-import com.gs.cd.cloud.utils.jwt.JwtUserInfo;
-import com.gs.cd.cloud.utils.jwt.JwtUtils;
 
 import com.gs.cd.cloud.common.ApiResult;
 
 import com.gs.cd.gscheduler.api.SchedulerApi;
+import com.gs.cd.gscheduler.entity.Schedule;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import com.gs.cd.gscheduler.utils.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -115,8 +114,9 @@ public class SchedulerController {
         if (result.isSuccess()) {
             JSONArray totalList = JSONUtil.parseObj(result.getData()).getJSONArray("totalList");
             if (totalList.size() > 0) {
-                Object o = totalList.get(0);
-                return ApiResult.success(o);
+                JSONObject jsonObject = totalList.getJSONObject(0);
+                Schedule schedule = jsonObject.toBean(Schedule.class);
+                return ApiResult.success(schedule);
             } else {
                 return ApiResult.success(new Object());
             }
@@ -127,6 +127,7 @@ public class SchedulerController {
 
     /**
      * 删除工作流的定时任务
+     *
      * @param tenantCode
      * @param projectName
      * @param processDefinitionId
@@ -145,7 +146,7 @@ public class SchedulerController {
             totalList.forEach(s -> {
                 JSONObject j = (JSONObject) s;
                 Result r = schedulerApi.deleteScheduleById(TenantCodeService.getSessionId(tenantCode),
-                        projectName, j.getInteger("id"));
+                        projectName, j.getInt("id"));
                 results.add(r);
             });
             log.debug("删除定时任务：{}", results);
