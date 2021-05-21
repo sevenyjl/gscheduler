@@ -20,6 +20,6 @@ public interface LoggerApi {
 
 
     @GetMapping(value = "/log/download-log")
-    public ResponseEntity downloadTaskLog(@RequestHeader(name = "Cookie") String sessinoId,
+    public String downloadTaskLog(@RequestHeader(name = "Cookie") String sessinoId,
                                           @RequestParam(value = "taskInstanceId") int taskInstanceId);
 }

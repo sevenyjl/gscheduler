@@ -87,7 +87,7 @@ public class SchedulerController {
                           @RequestParam ReleaseState releaseState,
                           @RequestParam(value = "schedule") String schedule,
                           @RequestParam(value = "warningType", required = false, defaultValue = DEFAULT_WARNING_TYPE) WarningType warningType,
-                          @RequestParam(value = "warningGroupId", required = false) int warningGroupId,
+                          @RequestParam(value = "warningGroupId", required = false, defaultValue = "0") int warningGroupId,
                           @RequestParam(value = "failureStrategy", required = false, defaultValue = "END") FailureStrategy failureStrategy,
                           @RequestParam(value = "receivers", required = false) String receivers,
                           @RequestParam(value = "receiversCc", required = false) String receiversCc,
