@@ -31,6 +31,7 @@ import com.gs.cd.gscheduler.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.enums.FailureStrategy;
 import org.apache.dolphinscheduler.common.enums.Priority;
+import org.apache.dolphinscheduler.common.enums.ReleaseState;
 import org.apache.dolphinscheduler.common.enums.WarningType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ public class SchedulerController {
      * @param projectName
      * @param id
      * @param processDefinitionId
+     * @param releaseState            上线状态
      * @param schedule
      * @param warningType
      * @param warningGroupId
@@ -82,6 +84,7 @@ public class SchedulerController {
                           @PathVariable String projectName,
                           @RequestParam(value = "id", required = false) Integer id,
                           @RequestParam(value = "processDefinitionId") Integer processDefinitionId,
+                          @RequestParam ReleaseState releaseState,
                           @RequestParam(value = "schedule") String schedule,
                           @RequestParam(value = "warningType", required = false, defaultValue = DEFAULT_WARNING_TYPE) WarningType warningType,
                           @RequestParam(value = "warningGroupId", required = false) int warningGroupId,
@@ -91,9 +94,31 @@ public class SchedulerController {
                           @RequestParam(value = "workerGroup", required = false, defaultValue = "default") String workerGroup,
                           @RequestParam(value = "processInstancePriority", required = false) Priority processInstancePriority) throws IOException {
         if (id == null) {
+            Result create = schedulerApi.createSchedule(TenantCodeService.getSessionId(tenantCode), projectName, processDefinitionId, schedule, warningType, warningGroupId,
+                    failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
+            if (!create.isSuccess()) {
+                return create.apiResult();
+            }
+            int createId = Integer.parseInt(create.getData().toString());
+            if (releaseState == ReleaseState.ONLINE) {
+                return schedulerApi.online(TenantCodeService.getSessionId(tenantCode), projectName, createId).apiResult();
+            }
             return createSchedule(tenantCode, projectName, processDefinitionId, schedule, warningType, warningGroupId, failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
         } else {
-            return updateSchedule(tenantCode, projectName, id, schedule, warningType, warningGroupId, failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
+            Result offline = schedulerApi.offline(TenantCodeService.getSessionId(tenantCode), projectName, id);
+            if (!offline.isSuccess()) {
+                return offline.apiResult();
+            }
+            Result updateSchedule = schedulerApi.updateSchedule(TenantCodeService.getSessionId(tenantCode), projectName, id, schedule, warningType,
+                    warningGroupId, failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);
+            if (!updateSchedule.isSuccess()) {
+                return updateSchedule.apiResult();
+            }
+            if (releaseState == ReleaseState.ONLINE) {
+                return schedulerApi.online(TenantCodeService.getSessionId(tenantCode), projectName, id).apiResult();
+            } else {
+                return updateSchedule.apiResult();
+            }
         }
     }
 
