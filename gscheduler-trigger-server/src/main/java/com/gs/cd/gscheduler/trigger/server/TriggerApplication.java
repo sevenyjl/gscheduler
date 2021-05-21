@@ -14,7 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableFeignClients
 @MapperScan("com.gs.cd.gscheduler.trigger.server.mapper")
-public class TriggerApplication {
+public class TriggerApplication{
     public static void main(String[] args) {
         SpringApplication.run(TriggerApplication.class, args);
     }

@@ -52,7 +52,7 @@ public class ExecutorController {
             @RequestParam(value = "taskDependType", required = false) TaskDependType taskDependType,
             @RequestParam(value = "execType", required = false) CommandType execType,
             @RequestParam(value = "warningType", required = true) WarningType warningType,
-            @RequestParam(value = "warningGroupId", required = false) int warningGroupId,
+            @RequestParam(value = "warningGroupId", required = false, defaultValue = "0") int warningGroupId,
             @RequestParam(value = "receivers", required = false) String receivers,
             @RequestParam(value = "receiversCc", required = false) String receiversCc,
             @RequestParam(value = "runMode", required = false) RunMode runMode,

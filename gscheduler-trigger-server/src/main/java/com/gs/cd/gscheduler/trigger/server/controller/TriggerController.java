@@ -3,7 +3,6 @@ package com.gs.cd.gscheduler.trigger.server.controller;
 import cn.hutool.core.net.Ipv4Util;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.nacos.client.utils.IPUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.trigger.server.service.GschedulerTriggerService;
