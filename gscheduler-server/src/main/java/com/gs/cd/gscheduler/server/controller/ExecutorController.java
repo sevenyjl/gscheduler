@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * 执行工作流控制器
  * execute process controller
  */
 @RestController
@@ -71,6 +72,7 @@ public class ExecutorController {
 
 
     /**
+     * 执行 execute
      * @param tenantCode        租户code
      * @param projectName       项目名称
      * @param processInstanceId
