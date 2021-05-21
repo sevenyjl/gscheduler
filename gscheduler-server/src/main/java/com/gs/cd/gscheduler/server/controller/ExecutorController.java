@@ -51,7 +51,7 @@ public class ExecutorController {
             @RequestParam(value = "startNodeList", required = false) String startNodeList,
             @RequestParam(value = "taskDependType", required = false) TaskDependType taskDependType,
             @RequestParam(value = "execType", required = false) CommandType execType,
-            @RequestParam(value = "warningType", required = true) WarningType warningType,
+            @RequestParam(value = "warningType", required = false) WarningType warningType,
             @RequestParam(value = "warningGroupId", required = false, defaultValue = "0") int warningGroupId,
             @RequestParam(value = "receivers", required = false) String receivers,
             @RequestParam(value = "receiversCc", required = false) String receiversCc,
@@ -59,6 +59,9 @@ public class ExecutorController {
             @RequestParam(value = "processInstancePriority", required = false) Priority processInstancePriority,
             @RequestParam(value = "workerGroup", required = false, defaultValue = "default") String workerGroup,
             @RequestParam(value = "timeout", required = false) Integer timeout) {
+        if (warningType == null) {
+            warningType = WarningType.NONE;
+        }
         return executorApi.startProcessInstance(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, scheduleTime, failureStrategy, startNodeList,
                 taskDependType, execType, warningType, warningGroupId, receivers,
