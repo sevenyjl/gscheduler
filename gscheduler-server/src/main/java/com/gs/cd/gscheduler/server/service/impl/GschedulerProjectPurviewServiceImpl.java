@@ -35,7 +35,7 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
     @Autowired
     AuthClient authClient;
     private static final List<String> permsList = Arrays.asList(
-//            GschedulerProjectPurview.add,
+            GschedulerProjectPurview.add,
             GschedulerProjectPurview.configurePermissions,
             GschedulerProjectPurview.delete,
             GschedulerProjectPurview.edit,

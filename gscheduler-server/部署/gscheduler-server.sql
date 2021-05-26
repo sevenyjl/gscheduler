@@ -9,8 +9,9 @@ CREATE TABLE "developer_gs"."gscheduler_project_purview"
 (
     "id"            serial8,
     "project_id"    int4,
-    "user_group_id" varchar(255) COLLATE "pg_catalog"."default",
-    "role_id"       varchar(255) COLLATE "pg_catalog"."default"
+    "user_group_id" varchar(255),
+    "role_id"       varchar(255),
+    "project_name"  varchar(255)
 )
 ;
 ALTER TABLE "developer_gs"."gscheduler_project_purview"
