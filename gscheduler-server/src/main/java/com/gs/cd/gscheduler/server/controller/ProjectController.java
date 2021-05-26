@@ -43,6 +43,8 @@ import java.util.stream.Stream;
 public class ProjectController {
     @Autowired
     ProjectApi projectApi;
+    @Autowired
+    private GschedulerProjectPurviewService gschedulerProjectPurviewService;
 
 
     /**
@@ -61,7 +63,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-//        check(GschedulerProjectPurview.add, jwtUserInfo);
+        gschedulerProjectPurviewService.check((Integer) null, GschedulerProjectPurview.add, token, tenantCode);
         return projectApi.createProject(sessionId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -83,7 +85,7 @@ public class ProjectController {
             @RequestParam(value = "description", required = false) String description) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(projectId, GschedulerProjectPurview.edit, token, tenantCode);
+        gschedulerProjectPurviewService.check(projectId, GschedulerProjectPurview.edit, token, tenantCode);
         return projectApi.updateProject(sessionId, projectId, projectName, description, jwtUserInfo.getUserName()).apiResult();
     }
 
@@ -101,7 +103,7 @@ public class ProjectController {
             @RequestParam("projectId") Integer projectId) {
         String sessionId = TenantCodeService.getSessionId(tenantCode);
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-//        check(GschedulerProjectPurview.view, jwtUserInfo);
+        gschedulerProjectPurviewService.check(projectId, GschedulerProjectPurview.view, token, tenantCode);
         return projectApi.queryProjectById(sessionId, projectId).apiResult();
     }
 
@@ -143,8 +145,10 @@ public class ProjectController {
     ) {
         // TODO: 2021/5/21 这里改为admin的项目，来模拟删除，并不是真实删库，删库有风险
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
-        check(projectId, GschedulerProjectPurview.delete, token, tenantCode);
-        return projectApi.changeUserId(TenantCodeService.getSessionId(tenantCode),1, projectId).apiResult();
+        gschedulerProjectPurviewService.check(projectId, GschedulerProjectPurview.delete, token, tenantCode);
+        //删除配置的权限
+        boolean b = gschedulerProjectPurviewService.removeByProjectId(projectId);
+        return projectApi.changeUserId(TenantCodeService.getSessionId(tenantCode), 1, projectId).apiResult();
     }
 
 
@@ -158,8 +162,6 @@ public class ProjectController {
         return projectApi.importProcessDefinition(TenantCodeService.getSessionId(tenantCode), file, projectName, jwtUserInfo.getUserName()).apiResult();
     }
 
-    @Autowired
-    private GschedulerProjectPurviewService gschedulerProjectPurviewService;
 
     /**
      * 配置权限
@@ -173,18 +175,26 @@ public class ProjectController {
             if (StrUtil.isEmpty(userGroupAndRoleVO.getRoleId())) return ApiResult.error("角色信息不能为空");
             if (CollectionUtil.isEmpty(userGroupAndRoleVO.getUserGroupId())) return ApiResult.error("用户组信息不能为空");
         }
-        check(id, GschedulerProjectPurview.configurePermissions, token, tenantCode);
+        gschedulerProjectPurviewService.check(id, GschedulerProjectPurview.configurePermissions, token, tenantCode);
         //删除原来的
         boolean remove = gschedulerProjectPurviewService.remove(new QueryWrapper<GschedulerProjectPurview>().lambda()
                 .eq(GschedulerProjectPurview::getProjectId, id));
         userGroupAndRoleVOS.forEach(s -> {
             GschedulerProjectPurview gschedulerProjectPurview = new GschedulerProjectPurview();
-            gschedulerProjectPurview.setProjectId(id);
-            gschedulerProjectPurview.setRoleId(s.getRoleId());
-            s.getUserGroupId().forEach(sb -> {
-                gschedulerProjectPurview.setUserGroupId(sb);
-                gschedulerProjectPurviewService.save(gschedulerProjectPurview);
-            });
+            Result result = projectApi.queryProjectById(TenantCodeService.getSessionId(tenantCode), id);
+            if (result.isSuccess()) {
+                Project project = JSONUtil.parseObj(result.getData()).toBean(Project.class);
+                gschedulerProjectPurview.setProjectName(project.getName());
+                gschedulerProjectPurview.setProjectId(id);
+                gschedulerProjectPurview.setRoleId(s.getRoleId());
+                s.getUserGroupId().forEach(sb -> {
+                    gschedulerProjectPurview.setUserGroupId(sb);
+                    gschedulerProjectPurviewService.save(gschedulerProjectPurview);
+                });
+            } else {
+                log.error("配置权限错误：{}", result);
+                throw new RuntimeException(result.getMsg());
+            }
         });
         return ApiResult.success();
     }
@@ -215,18 +225,4 @@ public class ProjectController {
         return ApiResult.success(result.values());
     }
 
-    //是否开启业务权限配置
-    @Value("${gscheduler.purview.flag:true}")
-    private boolean purviewFlag = true;
-
-    private void check(Integer id, @NonNull String resourcesParams, String token, String tenantCode) {
-        if (purviewFlag) {
-            Collection<Resource> resourcesByProjectId = gschedulerProjectPurviewService.getResourcesByProjectId(id, token, tenantCode);
-            Resource resource = resourcesByProjectId.stream().filter(s -> s.getPerms().equals(resourcesParams)).findFirst().orElse(null);
-            if (resource == null) {
-                log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
-                throw new RuntimeException("当前用户无权限操作");
-            }
-        }
-    }
 }

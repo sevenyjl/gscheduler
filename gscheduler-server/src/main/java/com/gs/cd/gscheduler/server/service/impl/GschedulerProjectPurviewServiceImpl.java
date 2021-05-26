@@ -14,8 +14,10 @@ import com.gs.cd.gscheduler.server.mapper.GschedulerProjectPurviewMapper;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
 import com.gs.cd.kmp.api.AuthClient;
 import com.gs.cd.kmp.api.enums.ResourceCategoryEnum;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -41,7 +43,7 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
 
 
     @Override
-    public Collection<Resource> getResourcesByProjectId(Integer id, String token, String tenantCode) {
+    public Collection<Resource> getResources(List<GschedulerProjectPurview> gschedulerProjectPurviews, String token, String tenantCode) {
         HashSet<Resource> resourcesSet = new HashSet<>();
         //获取当前用户的所有权限
         ApiResult loginUserAllResource = authClient.listLoginUserAllResource(ResourceCategoryEnum.TENANT, token, tenantCode);
@@ -62,7 +64,6 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
             throw new RuntimeException(loginUserAllResource.getMsg());
         }
         //查询所有角色
-        List<GschedulerProjectPurview> gschedulerProjectPurviews = listByProjectId(id);
         if (gschedulerProjectPurviews.isEmpty()) {
             return resourcesSet;
         }
@@ -94,6 +95,45 @@ public class GschedulerProjectPurviewServiceImpl extends ServiceImpl<GschedulerP
     @Override
     public List<GschedulerProjectPurview> listByProjectId(Integer projectId) {
         return list(new QueryWrapper<GschedulerProjectPurview>().lambda().eq(GschedulerProjectPurview::getProjectId, projectId));
+    }
+
+    //是否开启业务权限配置
+    @Value("${gscheduler.purview.flag:true}")
+    private boolean purviewFlag = true;
+
+    @Override
+    public void check(Integer id, @NonNull String resourcesParams, String token, String tenantCode) {
+        if (purviewFlag) {
+            List<GschedulerProjectPurview> gschedulerProjectPurviews = listByProjectId(id);
+            Collection<Resource> resourcesByProjectId = getResources(gschedulerProjectPurviews, token, tenantCode);
+            Resource resource = resourcesByProjectId.stream().filter(s -> s.getPerms().equals(resourcesParams)).findFirst().orElse(null);
+            if (resource == null) {
+                log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", id, resourcesParams, tenantCode, resourcesByProjectId);
+                throw new RuntimeException("当前用户无权限操作");
+            }
+        }
+    }
+
+    @Override
+    public void check(String projectName, @NonNull String resourcesParams, String token, String tenantCode) {
+        if (purviewFlag) {
+            List<GschedulerProjectPurview> resourcesByProjectName = getResourcesByProjectName(projectName);
+            Collection<Resource> resourcesByProjectId = getResources(resourcesByProjectName, token, tenantCode);
+            Resource resource = resourcesByProjectId.stream().filter(s -> s.getPerms().equals(resourcesParams)).findFirst().orElse(null);
+            if (resource == null) {
+                log.error("参数：projectId={},resourcesParams={},tenantCode={},当前用户权限={}", resourcesByProjectName, resourcesParams, tenantCode, resourcesByProjectId);
+                throw new RuntimeException("当前用户无权限操作");
+            }
+        }
+    }
+    @Override
+    public List<GschedulerProjectPurview> getResourcesByProjectName(String projectName) {
+        return list(new QueryWrapper<GschedulerProjectPurview>().lambda().eq(GschedulerProjectPurview::getProjectName, projectName));
+    }
+
+    @Override
+    public boolean removeByProjectId(Integer projectId) {
+        return remove(new QueryWrapper<GschedulerProjectPurview>().lambda().eq(GschedulerProjectPurview::getProjectId, projectId));
     }
 
     private JSONObject underCase2CamelCase(JSONObject jsonObject) {

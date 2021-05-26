@@ -10,6 +10,8 @@ import com.gs.cd.cloud.utils.jwt.JwtUtils;
 import com.gs.cd.gscheduler.api.ProcessDefinitionApi;
 import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
+import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.Constants;
@@ -42,7 +44,8 @@ import java.util.Date;
 public class ProcessDefinitionController {
     @Autowired
     ProcessDefinitionApi processDefinitionApi;
-
+    @Autowired
+    private GschedulerProjectPurviewService gschedulerProjectPurviewService;
 
     /**
      * 创建process定义
@@ -219,11 +222,13 @@ public class ProcessDefinitionController {
     @GetMapping(value = "/list-paging")
     public ApiResult queryProcessDefinitionListPaging(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam(value = "searchVal", required = false) String searchVal,
             @RequestParam(value = "userId", required = false, defaultValue = "0") Integer userId,
             @RequestParam("pageSize") Integer pageSize) {
+        gschedulerProjectPurviewService.check(projectName, GschedulerProjectPurview.view, token, tenantCode);
         return processDefinitionApi.queryProcessDefinitionListPaging(TenantCodeService.getSessionId(tenantCode),
                 projectName, pageNo, pageSize, searchVal, userId).apiResult();
     }

@@ -21,6 +21,8 @@ import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
+import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
 import org.apache.dolphinscheduler.common.enums.ExecutionStatus;
 import org.apache.dolphinscheduler.common.enums.Flag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,9 @@ public class ProcessInstanceController {
     @Autowired
     ProcessInstanceApi processInstanceApi;
 
+    @Autowired
+    GschedulerProjectPurviewService gschedulerProjectPurviewService;
+
 
     /**
      * 工作流实例列表【分页】
@@ -64,6 +69,7 @@ public class ProcessInstanceController {
     @GetMapping(value = "list-paging")
     public ApiResult queryProcessInstanceList(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "processDefinitionId", required = false, defaultValue = "0") Integer processDefinitionId,
             @RequestParam(value = "searchVal", required = false) String searchVal,
@@ -74,6 +80,7 @@ public class ProcessInstanceController {
             @RequestParam(value = "endDate", required = false) String endTime,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
+        gschedulerProjectPurviewService.check(projectName, GschedulerProjectPurview.view, token, tenantCode);
         return processInstanceApi.queryProcessInstanceList(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, searchVal, executorName, stateType, host, startTime, endTime, pageNo, pageSize).apiResult();
     }
@@ -129,8 +136,8 @@ public class ProcessInstanceController {
     /**
      * 通过id查询
      *
-     * @param tenantCode 租户code
-     * @param projectName 项目名称
+     * @param tenantCode        租户code
+     * @param projectName       项目名称
      * @param processInstanceId 工作流实例id
      * @return
      */
@@ -147,8 +154,8 @@ public class ProcessInstanceController {
     /**
      * 通过id删除
      *
-     * @param tenantCode 租户code
-     * @param projectName 项目名称
+     * @param tenantCode        租户code
+     * @param projectName       项目名称
      * @param processInstanceId 工作流实例id
      * @return
      */
@@ -164,7 +171,8 @@ public class ProcessInstanceController {
 
     /**
      * 未知
-     * @param tenantCode 租户code
+     *
+     * @param tenantCode  租户code
      * @param projectName 项目名称
      * @param taskId
      * @return
@@ -180,7 +188,8 @@ public class ProcessInstanceController {
 
     /**
      * 未知
-     * @param tenantCode 租户code
+     *
+     * @param tenantCode  租户code
      * @param projectName 项目名称
      * @param subId
      * @return
@@ -194,7 +203,7 @@ public class ProcessInstanceController {
                 projectName, subId).apiResult();
     }
 
-//    @GetMapping(value = "/view-variables")
+    //    @GetMapping(value = "/view-variables")
     public ApiResult viewVariables(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
             @RequestParam("processInstanceId") Integer processInstanceId) throws Exception {
@@ -204,8 +213,9 @@ public class ProcessInstanceController {
 
     /**
      * 查看甘特图
-     * @param tenantCode 租户code
-     * @param projectName 项目名称
+     *
+     * @param tenantCode        租户code
+     * @param projectName       项目名称
      * @param processInstanceId
      * @return
      * @throws Exception
@@ -222,8 +232,9 @@ public class ProcessInstanceController {
 
     /**
      * 通过工作流实例批量删除
-     * @param tenantCode 租户code
-     * @param projectName 项目名称
+     *
+     * @param tenantCode         租户code
+     * @param projectName        项目名称
      * @param processInstanceIds 工作流实例id集合 eg:[876,869]
      * @return
      */
