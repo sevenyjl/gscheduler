@@ -4,10 +4,14 @@ import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.api.ExecutorApi;
 import com.gs.cd.gscheduler.enums.ExecuteType;
+import com.gs.cd.gscheduler.server.Constant;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import com.gs.cd.gscheduler.server.service.impl.PurviewCheckService;
 import org.apache.dolphinscheduler.common.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 /**
  * 执行工作流控制器
@@ -17,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/projects/{projectName}/executors")
 public class ExecutorController {
 
-
+    @Autowired
+    PurviewCheckService purviewCheckService;
     @Autowired
     private ExecutorApi executorApi;
 
@@ -45,6 +50,7 @@ public class ExecutorController {
     @PostMapping(value = "start-process-instance")
     public ApiResult startProcessInstance(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "processDefinitionId") int processDefinitionId,
             @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
@@ -60,6 +66,7 @@ public class ExecutorController {
             @RequestParam(value = "processInstancePriority", required = false) Priority processInstancePriority,
             @RequestParam(value = "workerGroup", required = false, defaultValue = "default") String workerGroup,
             @RequestParam(value = "timeout", required = false) Integer timeout) {
+        purviewCheckService.check("运行工作流", Constant.ProcessDefinitionPerms.run_now, token, tenantCode);
         if (warningType == null) {
             warningType = WarningType.NONE;
         }
@@ -89,10 +96,12 @@ public class ExecutorController {
     @PostMapping(value = "/execute")
     public ApiResult execute(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam("processInstanceId") Integer processInstanceId,
             @RequestParam("executeType") ExecuteType executeType
     ) {
+        purviewCheckService.check("执行", Arrays.asList(Constant.ProcessInstancePerms.recovery_failed, Constant.ProcessInstancePerms.rerun), token, tenantCode);
         return executorApi.execute(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceId, executeType).apiResult();
     }
@@ -100,6 +109,7 @@ public class ExecutorController {
     @PostMapping(value = "/start-check")
     public ApiResult startCheckProcessDefinition(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam(value = "processDefinitionId") int processDefinitionId) {
         return executorApi.startCheckProcessDefinition(projectName, TenantCodeService.getSessionId(tenantCode), processDefinitionId).apiResult();
@@ -110,6 +120,7 @@ public class ExecutorController {
     public ApiResult getReceiverCc(
             @PathVariable String projectName,
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @RequestParam(value = "processDefinitionId", required = false) Integer processDefinitionId,
             @RequestParam(value = "processInstanceId", required = false) Integer processInstanceId) {
         return executorApi.getReceiverCc(projectName, TenantCodeService.getSessionId(tenantCode), processDefinitionId, processInstanceId).apiResult();

@@ -12,6 +12,7 @@ import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
+import com.gs.cd.gscheduler.server.service.impl.PurviewCheckService;
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.Constants;
@@ -30,6 +31,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import com.gs.cd.gscheduler.server.Constant.ProcessDefinitionPerms;
+
 /**
  * 工作流定义管理
  *
@@ -44,6 +47,8 @@ import java.util.Date;
 public class ProcessDefinitionController {
     @Autowired
     ProcessDefinitionApi processDefinitionApi;
+    @Autowired
+    PurviewCheckService purviewCheckService;
     @Autowired
     private GschedulerProjectPurviewService gschedulerProjectPurviewService;
 
@@ -82,6 +87,7 @@ public class ProcessDefinitionController {
             @RequestParam(value = "description", required = false) String description
     ) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        purviewCheckService.check("添加", ProcessDefinitionPerms.add, token, tenantCode);
         return processDefinitionApi.createProcessDefinition(TenantCodeService.getSessionId(tenantCode),
                 projectName, name, json, locations, connects, description, jwtUserInfo.getUserName()).apiResult();
     }
@@ -102,6 +108,7 @@ public class ProcessDefinitionController {
             @RequestParam(value = "processId", required = true) int processId
     ) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        purviewCheckService.check("复制", ProcessDefinitionPerms.copy, token, tenantCode);
         return processDefinitionApi.copyProcessDefinition(TenantCodeService.getSessionId(tenantCode),
                 projectName, processId, jwtUserInfo.getUserName()).apiResult();
     }
@@ -148,6 +155,7 @@ public class ProcessDefinitionController {
             @RequestParam(value = "connects", required = false) String connects,
             @RequestParam(value = "description", required = false) String description) {
         JwtUserInfo jwtUserInfo = JwtUtils.getJwtUserInfo(token);
+        purviewCheckService.check("编辑", ProcessDefinitionPerms.edit, token, tenantCode);
         return processDefinitionApi.updateProcessDefinition(TenantCodeService.getSessionId(tenantCode),
                 projectName, name, id, processDefinitionJson, locations, connects, description, jwtUserInfo.getUserName()).apiResult();
     }
@@ -290,9 +298,11 @@ public class ProcessDefinitionController {
     @GetMapping(value = "/delete")
     public ApiResult deleteProcessDefinitionById(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam("processDefinitionId") Integer processDefinitionId
     ) {
+        purviewCheckService.check("删除", ProcessDefinitionPerms.delete, token, tenantCode);
         return processDefinitionApi.deleteProcessDefinitionById(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId).apiResult();
     }
@@ -326,9 +336,11 @@ public class ProcessDefinitionController {
     @GetMapping(value = "/export")
     public void batchExportProcessDefinitionByIds(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam("processDefinitionIds") String processDefinitionIds,
             HttpServletResponse response) throws IOException {
+        purviewCheckService.check("导出", ProcessDefinitionPerms.export, token, tenantCode);
         String r = processDefinitionApi.batchExportProcessDefinitionByIds(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionIds);
         ServletOutputStream outputStream = null;

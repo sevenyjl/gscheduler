@@ -30,7 +30,7 @@ import java.util.Properties;
 public class NacosUtilsTest {
 
     public static void main(String[] args) throws NacosException {
-        String serverAddr = "10.201.83.180:8840";
+        String serverAddr = "10.201.81.185:8840";
         String namespace = "kipf-dev";
         String group = "DEFAULT_GROUP";
         Properties properties = new Properties();

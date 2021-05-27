@@ -26,7 +26,9 @@ import com.gs.cd.cloud.common.ApiResult;
 
 import com.gs.cd.gscheduler.api.SchedulerApi;
 import com.gs.cd.gscheduler.entity.Schedule;
+import com.gs.cd.gscheduler.server.Constant;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
+import com.gs.cd.gscheduler.server.service.impl.PurviewCheckService;
 import com.gs.cd.gscheduler.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.enums.FailureStrategy;
@@ -58,6 +60,8 @@ public class SchedulerController {
 
     @Autowired
     private SchedulerApi schedulerApi;
+    @Autowired
+    PurviewCheckService purviewCheckService;
 
     /**
      * 添加Or修改
@@ -81,6 +85,7 @@ public class SchedulerController {
      */
     @PostMapping("coru")
     public ApiResult coru(@RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+                          @RequestHeader(HttpHeadersParam.TOKEN) String token,
                           @PathVariable String projectName,
                           @RequestParam(value = "id", required = false) Integer id,
                           @RequestParam(value = "processDefinitionId") Integer processDefinitionId,
@@ -93,6 +98,7 @@ public class SchedulerController {
                           @RequestParam(value = "receiversCc", required = false) String receiversCc,
                           @RequestParam(value = "workerGroup", required = false, defaultValue = "default") String workerGroup,
                           @RequestParam(value = "processInstancePriority", required = false) Priority processInstancePriority) throws IOException {
+        purviewCheckService.check("定时运行",Constant.ProcessDefinitionPerms.timed_run, token, tenantCode);
         if (id == null) {
             Result create = schedulerApi.createSchedule(TenantCodeService.getSessionId(tenantCode), projectName, processDefinitionId, schedule, warningType, warningGroupId,
                     failureStrategy, receivers, receiversCc, workerGroup, processInstancePriority);

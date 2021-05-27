@@ -17,16 +17,24 @@
 package com.gs.cd.gscheduler.server.controller;
 
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.gs.cd.cloud.common.ApiResult;
 import com.gs.cd.cloud.common.HttpHeadersParam;
 import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
+import com.gs.cd.kmp.api.AuthClient;
+import com.gs.cd.kmp.api.entity.Resource;
+import com.gs.cd.kmp.api.enums.ResourceCategoryEnum;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dolphinscheduler.common.enums.ExecutionStatus;
 import org.apache.dolphinscheduler.common.enums.Flag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.gs.cd.gscheduler.server.Constant.ProcessInstancePerms;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -39,9 +47,9 @@ import java.util.Map;
  * 工作流实例
  */
 @RestController
+@Slf4j
 @RequestMapping("projects/{projectName}/instance")
 public class ProcessInstanceController {
-
 
     @Autowired
     ProcessInstanceApi processInstanceApi;
@@ -80,7 +88,7 @@ public class ProcessInstanceController {
             @RequestParam(value = "endDate", required = false) String endTime,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
-        gschedulerProjectPurviewService.check(projectName, GschedulerProjectPurview.view, token, tenantCode);
+        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.view, token, tenantCode);
         return processInstanceApi.queryProcessInstanceList(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, searchVal, executorName, stateType, host, startTime, endTime, pageNo, pageSize).apiResult();
     }
@@ -120,15 +128,17 @@ public class ProcessInstanceController {
     @PostMapping(value = "/update")
     public ApiResult updateProcessInstance(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
-            @RequestParam(value = "processInstanceJson", required = false) String processInstanceJson,
+            @RequestParam(value = "processInstanceJson") String processInstanceJson,
             @RequestParam(value = "processInstanceId") Integer processInstanceId,
             @RequestParam(value = "scheduleTime", required = false) String scheduleTime,
-            @RequestParam(value = "syncDefine", required = true) Boolean syncDefine,
-            @RequestParam(value = "locations", required = false) String locations,
-            @RequestParam(value = "connects", required = false) String connects,
+            @RequestParam(value = "syncDefine", required = false, defaultValue = "true") Boolean syncDefine,
+            @RequestParam(value = "locations") String locations,
+            @RequestParam(value = "connects", required = false, defaultValue = "[]") String connects,
             @RequestParam(value = "flag", required = false) Flag flag
     ) throws ParseException {
+        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.edit, token, tenantCode);
         return processInstanceApi.updateProcessInstance(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceJson, processInstanceId, scheduleTime, syncDefine, locations, connects, flag).apiResult();
     }
@@ -162,9 +172,11 @@ public class ProcessInstanceController {
     @GetMapping(value = "/delete")
     public ApiResult deleteProcessInstanceById(
             @RequestHeader(HttpHeadersParam.TENANT_CODE) String tenantCode,
+            @RequestHeader(HttpHeadersParam.TOKEN) String token,
             @PathVariable String projectName,
             @RequestParam("processInstanceId") Integer processInstanceId
     ) {
+        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.delete, token, tenantCode);
         return processInstanceApi.deleteProcessInstanceById(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceId).apiResult();
     }
