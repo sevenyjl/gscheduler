@@ -55,17 +55,19 @@ public class TenantCodeService {
             if (login.getCode() == 10013 || login.getCode() == 10043) {
                 //检测用户并创建
                 // TODO: 2021/4/13 创建用户逻辑应该在创建租户那里做
-                Result<List<User>> result = usersApi.listUser(adminSessionId);
-                User user = result.getData().stream().filter(s -> s.getUserName().equals(tenantCode)).findFirst().orElse(null);
-                if (user == null) {
-                    //创建
+                Result verifyUserName = usersApi.verifyUserName(adminSessionId, tenantCode);
+                if (verifyUserName.isSuccess()) {
                     usersApi.createUser(adminSessionId, tenantCode, defaultPassword, tenant.getId(), null, "test@test.com", null);
                 } else {
-                    //修改密码
-                    usersApi.updateUser(adminSessionId, user.getId(), user.getUserName(), defaultPassword, user.getQueue(), user.getEmail(), user.getTenantId(), null);
+                    Result<List<User>> result = usersApi.listUser(adminSessionId);
+                    User user = result.getData().stream().filter(s -> s.getUserName().equals(tenantCode)).findFirst().orElse(null);
+                    if (user != null) {
+                        usersApi.updateUser(adminSessionId, user.getId(), user.getUserName(), defaultPassword, user.getQueue(), user.getEmail(), user.getTenantId(), null);
+                    }
                 }
                 if (runTimes > 10) {
                     log.error("重试次数过多了，请联系程序员修复。重试次数：{}", runTimes);
+                    throw new RuntimeException("调度系统错误，请联系程序员");
                 }
                 runTimes++;
                 return check(tenantCode);
