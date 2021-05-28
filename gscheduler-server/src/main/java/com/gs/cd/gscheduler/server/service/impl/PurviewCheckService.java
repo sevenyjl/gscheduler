@@ -57,10 +57,10 @@ public class PurviewCheckService {
                     return ApiResult.success();
                 }
             }
-            return ApiResult.error("当前用户无操作[" + module + "]权限");
+            throw new RuntimeException("当前用户无操作[" + module + "]权限");
         } else {
             log.error("请求错误/auth/user/list/resource 错误信息:{}", loginUserAllResource);
-            return loginUserAllResource;
+            throw new RuntimeException("当前用户无操作[" + module + "]权限");
         }
     }
 }

@@ -101,7 +101,7 @@ public class ExecutorController {
             @RequestParam("processInstanceId") Integer processInstanceId,
             @RequestParam("executeType") ExecuteType executeType
     ) {
-        purviewCheckService.check("执行", Arrays.asList(Constant.ProcessInstancePerms.recovery_failed, Constant.ProcessInstancePerms.rerun), token, tenantCode);
+        purviewCheckService.check("恢复失败/重跑", Arrays.asList(Constant.ProcessInstancePerms.recovery_failed, Constant.ProcessInstancePerms.rerun), token, tenantCode);
         return executorApi.execute(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceId, executeType).apiResult();
     }
