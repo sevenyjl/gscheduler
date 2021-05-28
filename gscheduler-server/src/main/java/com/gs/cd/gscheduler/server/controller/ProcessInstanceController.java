@@ -25,6 +25,7 @@ import com.gs.cd.gscheduler.api.ProcessInstanceApi;
 import com.gs.cd.gscheduler.server.cache.TenantCodeService;
 import com.gs.cd.gscheduler.server.entity.GschedulerProjectPurview;
 import com.gs.cd.gscheduler.server.service.GschedulerProjectPurviewService;
+import com.gs.cd.gscheduler.server.service.impl.PurviewCheckService;
 import com.gs.cd.kmp.api.AuthClient;
 import com.gs.cd.kmp.api.entity.Resource;
 import com.gs.cd.kmp.api.enums.ResourceCategoryEnum;
@@ -55,7 +56,7 @@ public class ProcessInstanceController {
     ProcessInstanceApi processInstanceApi;
 
     @Autowired
-    GschedulerProjectPurviewService gschedulerProjectPurviewService;
+    PurviewCheckService purviewCheckService;
 
 
     /**
@@ -88,7 +89,7 @@ public class ProcessInstanceController {
             @RequestParam(value = "endDate", required = false) String endTime,
             @RequestParam("pageNo") Integer pageNo,
             @RequestParam("pageSize") Integer pageSize) {
-        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.view, token, tenantCode);
+        purviewCheckService.check(projectName, ProcessInstancePerms.view, token, tenantCode);
         return processInstanceApi.queryProcessInstanceList(TenantCodeService.getSessionId(tenantCode),
                 projectName, processDefinitionId, searchVal, executorName, stateType, host, startTime, endTime, pageNo, pageSize).apiResult();
     }
@@ -138,7 +139,7 @@ public class ProcessInstanceController {
             @RequestParam(value = "connects", required = false, defaultValue = "[]") String connects,
             @RequestParam(value = "flag", required = false) Flag flag
     ) throws ParseException {
-        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.edit, token, tenantCode);
+        purviewCheckService.check(projectName, ProcessInstancePerms.edit, token, tenantCode);
         return processInstanceApi.updateProcessInstance(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceJson, processInstanceId, scheduleTime, syncDefine, locations, connects, flag).apiResult();
     }
@@ -176,7 +177,7 @@ public class ProcessInstanceController {
             @PathVariable String projectName,
             @RequestParam("processInstanceId") Integer processInstanceId
     ) {
-        gschedulerProjectPurviewService.check(projectName, ProcessInstancePerms.delete, token, tenantCode);
+        purviewCheckService.check(projectName, ProcessInstancePerms.delete, token, tenantCode);
         return processInstanceApi.deleteProcessInstanceById(TenantCodeService.getSessionId(tenantCode),
                 projectName, processInstanceId).apiResult();
     }
